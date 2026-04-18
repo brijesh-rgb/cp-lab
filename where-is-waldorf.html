@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Connect FINAL BOSS 💀🔥</title>
+
+<style>
+body {
+    font-family: sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
+    color: white;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(8, 50px);
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+    position: relative;
+}
+
+.cell {
+    width: 50px;
+    height: 50px;
+    background: white;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.cell.selected { background: limegreen; color: white; }
+.cell.found { background: gold; color: black; }
+.cell.hint { background: orange; }
+
+.info {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 10px;
+    font-size: 18px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    background: black;
+    color: white;
+    cursor: pointer;
+}
+
+#pattern { margin-top:10px; font-size:18px; }
+</style>
+</head>
+
+<body>
+
+<h1>FINAL BOSS WORD GAME 💀🔥</h1>
+
+<div class="info">
+<div>Score: <span id="score">0</span></div>
+<div>Time: <span id="timer">0</span>s</div>
+<div>Best: <span id="best">0</span></div>
+</div>
+
+<div id="pattern"></div>
+
+<div id="grid"></div>
+
+<button onclick="showHint()">💡 Hint</button>
+<button onclick="newGame()">🔄 New Game</button>
+
+<script>
+const WORD_POOL = ["CAT","DOG","SUN","MOON","STAR","FISH","BIRD","TREE","BOOK","GAME","APPLE","BANANA"];
+
+let gridSize = 8;
+let grid = Array(gridSize * gridSize).fill("");
+let targetWords = [];
+let foundWords = [];
+let wordPositions = {};
+
+let score = 0;
+let time = 0;
+let timer;
+
+const gridElement = document.getElementById("grid");
+
+let isSelecting = false;
+let selectedCells = [];
+let currentWord = "";
+
+// 🎯 GAME START
+function newGame() {
+    grid.fill("");
+    foundWords = [];
+    wordPositions = {};
+    score = 0;
+    time = 0;
+
+    document.getElementById("score").innerText = score;
+
+    targetWords = shuffle(WORD_POOL).slice(0, 6);
+
+    placeWords();
+    fillRandomLetters();
+    renderGrid();
+
+    startTimer();
+    updatePattern();
+
+    loadBest();
+}
+
+// ⏱️ TIMER ASCENDING
+function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(()=>{
+        time++;
+        document.getElementById("timer").innerText = time;
+    },1000);
+}
+
+// 🏆 SAVE BEST
+function saveBest() {
+    let best = localStorage.getItem("bestScore") || 0;
+    if(score > best){
+        localStorage.setItem("bestScore",score);
+    }
+}
+
+function loadBest(){
+    document.getElementById("best").innerText = localStorage.getItem("bestScore") || 0;
+}
+
+// 🔀 Shuffle
+function shuffle(arr){
+    return arr.sort(()=>Math.random()-0.5);
+}
+
+// 📌 Place words (ALL directions)
+function placeWords(){
+    const directions = [1,gridSize,gridSize+1,gridSize-1];
+
+    targetWords.forEach(word=>{
+        let placed=false;
+
+        while(!placed){
+            let dir = directions[Math.floor(Math.random()*directions.length)];
+            let start = Math.floor(Math.random()*grid.length);
+
+            let positions=[];
+            let valid=true;
+
+            for(let i=0;i<word.length;i++){
+                let idx = start + i*dir;
+
+                if(idx>=grid.length || idx<0){
+                    valid=false; break;
+                }
+
+                positions.push(idx);
+            }
+
+            if(valid){
+                placed=true;
+                positions.forEach((pos,i)=>{
+                    grid[pos]=word[i];
+                });
+                wordPositions[word]=positions;
+            }
+        }
+    });
+}
+
+// 🔤 Fill
+function fillRandomLetters(){
+    const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(let i=0;i<grid.length;i++){
+        if(grid[i]===""){
+            grid[i]=letters[Math.floor(Math.random()*26)];
+        }
+    }
+}
+
+// 🧱 Render
+function renderGrid(){
+    gridElement.innerHTML="";
+
+    grid.forEach((letter,i)=>{
+        const cell=document.createElement("div");
+        cell.className="cell";
+        cell.textContent=letter;
+        cell.dataset.index=i;
+
+        // Mouse
+        cell.addEventListener("mousedown",()=>startSelection(cell));
+        cell.addEventListener("mouseenter",()=>continueSelection(cell));
+
+        // Touch
+        cell.addEventListener("touchstart",()=>startSelection(cell));
+        cell.addEventListener("touchmove",(e)=>{
+            let el=document.elementFromPoint(
+                e.touches[0].clientX,
+                e.touches[0].clientY
+            );
+            if(el && el.classList.contains("cell")){
+                continueSelection(el);
+            }
+        });
+
+        gridElement.appendChild(cell);
+    });
+}
+
+window.addEventListener("mouseup",endSelection);
+window.addEventListener("touchend",endSelection);
+
+function startSelection(cell){
+    isSelecting=true;
+    selectCell(cell);
+}
+
+function continueSelection(cell){
+    if(!isSelecting || selectedCells.includes(cell)) return;
+    selectCell(cell);
+}
+
+function selectCell(cell){
+    cell.classList.add("selected");
+    selectedCells.push(cell);
+    currentWord+=cell.textContent;
+}
+
+function endSelection(){
+    if(!isSelecting) return;
+
+    if(targetWords.includes(currentWord) && !foundWords.includes(currentWord)){
+        foundWords.push(currentWord);
+
+        score+=10;
+        document.getElementById("score").innerText=score;
+
+        selectedCells.forEach(c=>c.classList.add("found"));
+        updatePattern();
+        saveBest();
+    }
+
+    resetSelection();
+}
+
+function resetSelection(){
+    isSelecting=false;
+    selectedCells.forEach(c=>c.classList.remove("selected"));
+    selectedCells=[];
+    currentWord="";
+}
+
+// 🧠 Pattern (BANANA → B_N_N_)
+function updatePattern(){
+    let patterns=targetWords.map(w=>{
+        if(foundWords.includes(w)) return w;
+        return w.split("").map((c,i)=> i%2===0?c:"_").join("");
+    });
+    document.getElementById("pattern").innerText="Find: "+patterns.join(" , ");
+}
+
+// 💡 Hint (full path)
+function showHint(){
+    let remaining=targetWords.filter(w=>!foundWords.includes(w));
+    if(!remaining.length) return alert("All words done!");
+
+    let word=remaining[0];
+
+    wordPositions[word].forEach(i=>{
+        const cell=document.querySelector(`[data-index='${i}']`);
+        cell.classList.add("hint");
+        setTimeout(()=>cell.classList.remove("hint"),800);
+    });
+}
+
+newGame();
+</script>
+
+</body>
+</html>

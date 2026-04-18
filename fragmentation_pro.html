@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Memory Allocation & Fragmentation Simulator</title>
+<style>
+body {
+  background:#0f1117;
+  color:#fff;
+  text-align:center;
+  font-family:Arial;
+}
+
+h1 { color:#00ffd5; }
+
+#memory { margin:20px; }
+
+.block {
+  display:inline-block;
+  width:18px;
+  height:18px;
+  margin:2px;
+  border-radius:3px;
+}
+
+.free { background:#333; }
+
+.controls {
+  margin:15px;
+}
+
+button, select, input {
+  padding:6px 10px;
+  margin:5px;
+  border-radius:5px;
+  border:none;
+}
+
+button {
+  background:#00bcd4;
+  color:black;
+  cursor:pointer;
+}
+
+button:hover { background:#26c6da; }
+
+canvas {
+  background:#1c1f26;
+  margin-top:20px;
+  border:1px solid #444;
+}
+
+</style>
+</head>
+<body>
+
+<h1>📊 Memory Fragmentation Simulator (Final Project)</h1>
+
+<div class="controls">
+  <select id="algo">
+    <option value="first">First Fit</option>
+    <option value="best">Best Fit</option>
+    <option value="worst">Worst Fit</option>
+  </select>
+
+  <input type="number" id="size" placeholder="Process size (1-10)" min="1" max="10">
+
+  <button onclick="allocate()">Allocate</button>
+  <button onclick="freeRandom()">Free Random</button>
+  <button onclick="resetMem()">Reset</button>
+</div>
+
+<div id="memory"></div>
+
+<canvas id="chart" width="500" height="250"></canvas>
+
+<h3 id="stats"></h3>
+
+<script>
+let mem = new Array(50).fill(0);
+let processId = 1;
+
+function drawMemory(){
+  const div = document.getElementById("memory");
+  div.innerHTML="";
+
+  mem.forEach(v=>{
+    let d=document.createElement("div");
+    d.className="block";
+
+    if(v===0){
+      d.classList.add("free");
+    } else {
+      d.style.background = `hsl(${v*40},70%,50%)`;
+    }
+
+    div.appendChild(d);
+  });
+}
+
+function getFreeBlocks(){
+  let blocks = [];
+  let start = -1;
+
+  for(let i=0;i<mem.length;i++){
+    if(mem[i]===0){
+      if(start===-1) start=i;
+    } else {
+      if(start!==-1){
+        blocks.push({start, size:i-start});
+        start=-1;
+      }
+    }
+  }
+  if(start!==-1) blocks.push({start, size:mem.length-start});
+  return blocks;
+}
+
+function allocate(){
+  let size = parseInt(document.getElementById("size").value);
+  let algo = document.getElementById("algo").value;
+
+  if(!size || size<1) return alert("Enter valid size");
+
+  let blocks = getFreeBlocks();
+  let chosen = null;
+
+  if(algo==="first"){
+    chosen = blocks.find(b=>b.size>=size);
+  }
+  else if(algo==="best"){
+    blocks = blocks.filter(b=>b.size>=size);
+    chosen = blocks.sort((a,b)=>a.size-b.size)[0];
+  }
+  else if(algo==="worst"){
+    blocks = blocks.filter(b=>b.size>=size);
+    chosen = blocks.sort((a,b)=>b.size-a.size)[0];
+  }
+
+  if(!chosen){
+    alert("❌ Fragmentation! No suitable block");
+    return;
+  }
+
+  for(let i=0;i<size;i++){
+    mem[chosen.start+i] = processId;
+  }
+
+  processId++;
+  update();
+}
+
+function freeRandom(){
+  for(let i=0;i<mem.length;i++){
+    if(Math.random()<0.2) mem[i]=0;
+  }
+  update();
+}
+
+function resetMem(){
+  mem.fill(0);
+  processId=1;
+  update();
+}
+
+function calcFragmentation(){
+  let blocks = getFreeBlocks();
+  if(blocks.length<=1) return 0;
+
+  let totalFree = blocks.reduce((s,b)=>s+b.size,0);
+  let largest = Math.max(...blocks.map(b=>b.size));
+
+  return ((totalFree - largest)/totalFree * 100).toFixed(2);
+}
+
+function drawGraph(){
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  let used = mem.filter(x=>x!==0).length;
+  let free = mem.length - used;
+
+  let total = mem.length;
+
+  let usedH = (used/total)*180;
+  let freeH = (free/total)*180;
+
+  ctx.fillStyle="lime";
+  ctx.fillRect(120,200-usedH,80,usedH);
+
+  ctx.fillStyle="gray";
+  ctx.fillRect(300,200-freeH,80,freeH);
+
+  ctx.fillStyle="white";
+  ctx.fillText("USED",140,220);
+  ctx.fillText("FREE",320,220);
+}
+
+function update(){
+  drawMemory();
+  drawGraph();
+
+  let frag = calcFragmentation();
+  document.getElementById("stats").innerHTML =
+    `📉 Fragmentation: <b>${frag}%</b>`;
+}
+
+update();
+</script>
+
+</body>
+</html>

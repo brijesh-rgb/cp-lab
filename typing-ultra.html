@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typing App</title>
+
+<style>
+body {
+    margin: 0;
+    background: #111;
+    color: #aaa;
+    font-family: monospace;
+    text-align: center;
+}
+
+#controls { margin: 10px; }
+
+#text {
+    max-width: 900px;
+    margin: 20px auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.word { margin: 5px 8px; }
+.letter { opacity: 0.4; }
+.correct { color: #00ffcc; opacity: 1; }
+.wrong { color: red; opacity: 1; }
+.current { border-left: 2px solid white; }
+
+#stats { margin: 10px; }
+
+#result { margin-top: 10px; color: #00ffcc; }
+
+/* keyboard */
+#keyboard { margin-top: 20px; }
+.row { display: flex; justify-content: center; }
+
+.key {
+    background: #222;
+    margin: 4px;
+    padding: 10px;
+    width: 32px;
+    border-radius: 5px;
+}
+.key.good { background: green; }
+.key.bad { background: red; }
+
+canvas {
+    margin-top: 15px;
+    background: #222;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Typing App 🚀</h2>
+
+<div id="controls">
+Words: <input type="number" id="wordLimit" value="20">
+<button onclick="startGame()">Start</button>
+</div>
+
+<div id="text"></div>
+
+<div id="stats">
+Time: <span id="time">0</span>s |
+WPM: <span id="wpm">0</span> |
+Acc: <span id="acc">100</span>%
+</div>
+
+<div id="result"></div>
+
+<canvas id="graph" width="300" height="150"></canvas>
+
+<div id="keyboard"></div>
+
+<script>
+// WORDS
+const WORDS = "the be to of and in that have it for not on with as you do at this".split(" ");
+
+let currentWord=0,currentLetter=0,startTime=null,time=0,timer;
+let totalWords=20,wpmHistory=[],finished=false;
+
+// GENERATE
+function generate(){
+ const text=document.getElementById("text");
+ text.innerHTML="";
+ for(let i=0;i<totalWords;i++){
+  let w=WORDS[Math.floor(Math.random()*WORDS.length)];
+  let wd=document.createElement("div");
+  wd.className="word";
+
+  w.split("").forEach(l=>{
+   let s=document.createElement("span");
+   s.innerText=l;
+   s.className="letter";
+   wd.appendChild(s);
+  });
+
+  text.appendChild(wd);
+ }
+ setCursor();
+}
+
+// CURSOR
+function setCursor(){
+ document.querySelectorAll(".letter").forEach(l=>l.classList.remove("current"));
+ let w=document.getElementById("text").children[currentWord];
+ if(!w)return;
+ let l=w.children[currentLetter];
+ if(l)l.classList.add("current");
+}
+
+// START
+function startGame(){
+ totalWords=parseInt(document.getElementById("wordLimit").value)||20;
+ currentWord=0;currentLetter=0;time=0;finished=false;
+ startTime=null;wpmHistory=[];
+ document.getElementById("result").innerText="";
+ clearInterval(timer);
+ document.getElementById("time").innerText=0;
+ generate();
+ drawGraph();
+}
+
+// KEYBOARD UI
+const layout=["qwertyuiop","asdfghjkl","zxcvbnm"];
+const kb=document.getElementById("keyboard");
+
+layout.forEach(r=>{
+ let row=document.createElement("div");
+ row.className="row";
+ r.split("").forEach(k=>{
+  let key=document.createElement("div");
+  key.className="key";
+  key.id="k-"+k;
+  key.innerText=k;
+  row.appendChild(key);
+ });
+ kb.appendChild(row);
+});
+
+// TYPING
+document.addEventListener("keydown",e=>{
+ if(finished)return;
+
+ if(!startTime){
+  startTime=new Date();
+  timer=setInterval(()=>{
+    time++;
+    document.getElementById("time").innerText=time;
+    updateStats();
+    wpmHistory.push(getWPM());
+    drawGraph();
+  },1000);
+ }
+
+ let key=e.key.toLowerCase();
+ let keyEl=document.getElementById("k-"+key);
+
+ document.querySelectorAll(".key").forEach(k=>k.classList.remove("good","bad"));
+
+ let w=document.getElementById("text").children[currentWord];
+ if(!w)return;
+
+ let letters=w.children;
+
+ if(e.key===" "){
+  currentWord++;
+  currentLetter=0;
+
+  if(currentWord>=totalWords){
+    finishGame();
+  }
+
+  setCursor();
+  return;
+ }
+
+ if(e.key==="Backspace"){
+  if(currentLetter>0){
+    let prev=currentLetter-1;
+    let letter=letters[prev];
+    if(letter.classList.contains("wrong")){
+      letter.classList.remove("wrong");
+      currentLetter--;
+    }
+  }
+  setCursor();
+  return;
+ }
+
+ let l=letters[currentLetter];
+ if(!l)return;
+
+ if(e.key===l.innerText){
+  l.classList.add("correct");
+  if(keyEl)keyEl.classList.add("good");
+ }else{
+  l.classList.add("wrong");
+  if(keyEl)keyEl.classList.add("bad");
+ }
+
+ currentLetter++;
+ setCursor();
+});
+
+// STATS
+function getWPM(){
+ let elapsed=(new Date()-startTime)/1000;
+ let typed=currentWord*5+currentLetter;
+ return Math.round((typed/5)/(elapsed/60));
+}
+
+function updateStats(){
+ document.getElementById("wpm").innerText=getWPM();
+
+ let correct=document.querySelectorAll(".correct").length;
+ let total=document.querySelectorAll(".correct,.wrong").length;
+
+ let acc=total?Math.round(correct/total*100):100;
+ document.getElementById("acc").innerText=acc;
+}
+
+// GRAPH
+function drawGraph(){
+ const canvas=document.getElementById("graph");
+ const ctx=canvas.getContext("2d");
+
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.beginPath();
+ ctx.moveTo(0,150);
+
+ wpmHistory.forEach((wpm,i)=>{
+  ctx.lineTo(i*10,150-wpm);
+ });
+
+ ctx.strokeStyle="#00ffcc";
+ ctx.stroke();
+}
+
+// FINISH
+function finishGame(){
+ finished=true;
+ clearInterval(timer);
+
+ let wpm=getWPM();
+ let correct=document.querySelectorAll(".correct").length;
+ let total=document.querySelectorAll(".correct,.wrong").length;
+ let acc=Math.round((correct/total)*100);
+
+ document.getElementById("result").innerText =
+ "🔥 WPM: "+wpm+" | Accuracy: "+acc+"%";
+
+ saveScore(wpm);
+ showLeaderboard();
+}
+
+// LEADERBOARD
+function saveScore(score){
+ let scores=JSON.parse(localStorage.getItem("scores")||"[]");
+ scores.push(score);
+ scores.sort((a,b)=>b-a);
+ scores=scores.slice(0,5);
+ localStorage.setItem("scores",JSON.stringify(scores));
+}
+
+function showLeaderboard(){
+ console.log("Top Scores:",localStorage.getItem("scores"));
+}
+
+// INIT
+startGame();
+</script>
+
+</body>
+</html>

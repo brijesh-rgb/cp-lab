@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trip Expense Tracker</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #1a1a2e;
+  color: #fff;
+  text-align: center;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+}
+
+input, select, button {
+  margin: 5px;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  background: #7855c8;
+  color: white;
+  cursor: pointer;
+}
+
+.card {
+  background: #2a2a4a;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>💸 Trip Expense Tracker</h1>
+
+  <!-- Add Member -->
+  <input id="memberName" placeholder="Enter name">
+  <button onclick="addMember()">Add Member</button>
+
+  <h3>Members:</h3>
+  <div id="members"></div>
+
+  <hr>
+
+  <!-- Add Expense -->
+  <input id="amount" type="number" placeholder="Amount">
+  <select id="payer"></select>
+  <input id="desc" placeholder="Description">
+  <button onclick="addExpense()">Add Expense</button>
+
+  <h3>Expenses:</h3>
+  <div id="expenses"></div>
+
+  <hr>
+
+  <button onclick="calculate()">💰 Settle Expenses</button>
+
+  <h3>Result:</h3>
+  <div id="result"></div>
+</div>
+
+<script>
+let members = [];
+let expenses = [];
+
+function addMember() {
+  const name = document.getElementById("memberName").value.trim();
+  if (!name) return;
+
+  members.push(name);
+  document.getElementById("memberName").value = "";
+
+  updateMembers();
+}
+
+function updateMembers() {
+  const memberDiv = document.getElementById("members");
+  const payerSelect = document.getElementById("payer");
+
+  memberDiv.innerHTML = "";
+  payerSelect.innerHTML = "";
+
+  members.forEach(m => {
+    memberDiv.innerHTML += `<div class="card">${m}</div>`;
+    payerSelect.innerHTML += `<option value="${m}">${m}</option>`;
+  });
+}
+
+function addExpense() {
+  const amount = parseFloat(document.getElementById("amount").value);
+  const payer = document.getElementById("payer").value;
+  const desc = document.getElementById("desc").value;
+
+  if (!amount || !payer) return;
+
+  expenses.push({ amount, payer, desc });
+
+  document.getElementById("amount").value = "";
+  document.getElementById("desc").value = "";
+
+  updateExpenses();
+}
+
+function updateExpenses() {
+  const expDiv = document.getElementById("expenses");
+  expDiv.innerHTML = "";
+
+  expenses.forEach(e => {
+    expDiv.innerHTML += `
+      <div class="card">
+        ${e.payer} paid ₹${e.amount} (${e.desc})
+      </div>
+    `;
+  });
+}
+
+function calculate() {
+  let total = 0;
+  let balances = {};
+
+  members.forEach(m => balances[m] = 0);
+
+  expenses.forEach(e => {
+    balances[e.payer] += e.amount;
+    total += e.amount;
+  });
+
+  const share = total / members.length;
+
+  members.forEach(m => {
+    balances[m] -= share;
+  });
+
+  let creditors = [], debtors = [];
+
+  for (let m in balances) {
+    if (balances[m] > 0) creditors.push({ name: m, amount: balances[m] });
+    else if (balances[m] < 0) debtors.push({ name: m, amount: -balances[m] });
+  }
+
+  let result = [];
+
+  creditors.forEach(c => {
+    debtors.forEach(d => {
+      if (c.amount > 0 && d.amount > 0) {
+        let pay = Math.min(c.amount, d.amount);
+        result.push(`${d.name} pays ${c.name} ₹${pay.toFixed(2)}`);
+        c.amount -= pay;
+        d.amount -= pay;
+      }
+    });
+  });
+
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "";
+
+  result.forEach(r => {
+    resultDiv.innerHTML += `<div class="card">${r}</div>`;
+  });
+}
+</script>
+
+</body>
+</html>

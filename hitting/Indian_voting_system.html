@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>भारतीय मतदान प्रणाली — Indian Voting System</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Rajdhani:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --saffron:#FF9933;--white:#fff;--green:#138808;--navy:#000080;--ashoka:#1a1a6e;
+  --bg:#f5f0e8;--card:#fff;--border:#ddd;--text:#1a1a1a;--muted:#666;
+  --shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);min-height:100vh;color:var(--text);}
+
+/* TOP BAR */
+.topbar{
+  background:linear-gradient(135deg,var(--saffron) 0%,#e07800 50%,var(--saffron) 100%);
+  padding:0;display:flex;flex-direction:column;align-items:center;
+  border-bottom:4px solid var(--green);position:relative;overflow:hidden;
+}
+.topbar::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0px,rgba(255,255,255,.04) 2px,transparent 2px,transparent 12px);}
+.flag-stripe{display:flex;width:100%;height:6px;}
+.fs1{flex:1;background:var(--saffron);}
+.fs2{flex:1;background:#fff;}
+.fs3{flex:1;background:var(--green);}
+.topbar-inner{display:flex;align-items:center;gap:16px;padding:14px 24px;position:relative;z-index:1;}
+.emblem{font-size:3rem;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3));}
+.topbar-text h1{font-size:clamp(1.1rem,3vw,1.8rem);font-weight:700;color:#fff;
+  text-shadow:0 2px 6px rgba(0,0,0,0.3);letter-spacing:.05em;}
+.topbar-text p{font-size:.8rem;color:rgba(255,255,255,.85);letter-spacing:.12em;font-family:'Noto Sans Devanagari',sans-serif;}
+.eci-badge{margin-left:auto;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  border-radius:8px;padding:8px 14px;text-align:center;backdrop-filter:blur(4px);}
+.eci-badge .eci-t{font-size:.6rem;color:rgba(255,255,255,.8);letter-spacing:.15em;text-transform:uppercase;}
+.eci-badge .eci-v{font-size:1.1rem;font-weight:700;color:#fff;}
+
+/* SCREENS */
+#screen-login,#screen-vote,#screen-result{display:none;}
+#screen-login.active,#screen-vote.active,#screen-result.active{display:block;}
+
+.container{max-width:900px;margin:0 auto;padding:24px 16px;}
+
+/* VOTER ID CARD */
+.voter-card{
+  background:var(--card);border-radius:16px;box-shadow:var(--shadow);
+  overflow:hidden;max-width:520px;margin:0 auto;
+  border:2px solid var(--saffron);
+}
+.vc-header{background:linear-gradient(135deg,var(--navy),#0a0a5e);
+  padding:14px 20px;display:flex;align-items:center;gap:12px;}
+.vc-header .emblem-sm{font-size:1.8rem;}
+.vc-header-text h2{color:#fff;font-size:1rem;font-weight:700;letter-spacing:.08em;}
+.vc-header-text p{color:rgba(255,255,255,.7);font-size:.7rem;font-family:'Noto Sans Devanagari',sans-serif;}
+.vc-body{padding:24px 20px;display:flex;flex-direction:column;gap:16px;}
+.vc-body h3{font-size:1rem;color:var(--muted);text-align:center;letter-spacing:.1em;text-transform:uppercase;font-size:.75rem;}
+.input-group{display:flex;flex-direction:column;gap:6px;}
+.input-group label{font-size:.75rem;font-weight:600;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.inp{
+  padding:12px 16px;border:2px solid #e0e0e0;border-radius:8px;font-size:1rem;
+  font-family:'Rajdhani',sans-serif;font-weight:600;background:#fafafa;
+  transition:border-color .2s,box-shadow .2s;outline:none;
+}
+.inp:focus{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(255,153,51,.15);}
+.inp.err{border-color:#e53e3e;}
+.err-msg{color:#e53e3e;font-size:.72rem;font-weight:600;display:none;}
+.err-msg.show{display:block;}
+.btn-login{
+  width:100%;padding:14px;background:linear-gradient(135deg,var(--green),#0e6b06);
+  color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;
+  font-family:'Rajdhani',sans-serif;letter-spacing:.15em;cursor:pointer;
+  transition:all .2s;box-shadow:0 4px 14px rgba(19,136,8,.3);
+}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(19,136,8,.4);}
+.btn-login:active{transform:translateY(0);}
+.demo-hint{background:#fffbeb;border:1px solid #f6d860;border-radius:8px;padding:12px;font-size:.75rem;color:#856404;}
+.demo-hint strong{display:block;margin-bottom:4px;color:#744210;}
+
+/* VOTING SCREEN */
+.vote-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.vote-header h2{font-size:1.3rem;font-weight:700;color:var(--navy);}
+.voter-info-pill{background:var(--navy);color:#fff;border-radius:20px;padding:6px 14px;font-size:.78rem;font-weight:600;}
+.constituency-box{
+  background:linear-gradient(135deg,#1a1a6e,#000080);color:#fff;
+  border-radius:12px;padding:16px 20px;margin-bottom:20px;
+  display:flex;align-items:center;gap:14px;
+}
+.constituency-box .icon{font-size:2rem;}
+.constituency-box h3{font-size:1.1rem;font-weight:700;}
+.constituency-box p{font-size:.78rem;opacity:.8;margin-top:2px;}
+
+.candidates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px;}
+.candidate-card{
+  background:var(--card);border-radius:12px;border:2px solid #e8e8e8;
+  padding:16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+}
+.candidate-card:hover{border-color:var(--saffron);box-shadow:0 4px 16px rgba(255,153,51,.2);transform:translateY(-2px);}
+.candidate-card.selected{border-color:var(--green);box-shadow:0 4px 20px rgba(19,136,8,.25);background:#f0fff4;}
+.candidate-card.selected::after{content:'✓';position:absolute;top:10px;right:12px;
+  width:26px;height:26px;background:var(--green);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;}
+.cand-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.cand-avatar{
+  width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;font-weight:700;flex-shrink:0;border:3px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.cand-info h3{font-size:1rem;font-weight:700;color:var(--text);}
+.cand-info .cand-party{font-size:.75rem;font-weight:600;margin-top:2px;}
+.cand-info .cand-num{font-size:.7rem;color:var(--muted);margin-top:1px;}
+.party-symbol{
+  display:flex;align-items:center;gap:6px;background:#f5f5f5;
+  border-radius:6px;padding:6px 10px;font-size:.78rem;color:var(--muted);font-weight:600;
+}
+.party-symbol span{font-size:1.2rem;}
+.nota{
+  background:#fff8f0;border:2px dashed #ccc;
+}
+.nota:hover{border-color:#999;}
+.nota.selected{border-color:#666;background:#f5f5f5;}
+
+.evm-box{
+  background:linear-gradient(135deg,#2d2d2d,#1a1a1a);border-radius:16px;
+  padding:20px;margin-bottom:20px;box-shadow:0 8px 30px rgba(0,0,0,.3);
+  border:3px solid #444;
+}
+.evm-title{color:#f9d71c;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
+  text-align:center;margin-bottom:14px;font-weight:600;}
+.evm-display{
+  background:#000;border:2px solid #333;border-radius:8px;padding:12px;
+  font-family:'Courier New',monospace;font-size:.85rem;color:#00ff41;
+  text-align:center;margin-bottom:14px;min-height:50px;line-height:1.6;
+}
+.evm-selected{color:#f9d71c;font-weight:bold;}
+.btn-vote{
+  width:100%;padding:14px;background:linear-gradient(135deg,#c0392b,#e74c3c);
+  color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;
+  font-family:'Rajdhani',sans-serif;letter-spacing:.2em;cursor:pointer;
+  transition:all .2s;box-shadow:0 4px 14px rgba(231,76,60,.35);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-vote:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(231,76,60,.5);}
+.btn-vote:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.evm-light{width:10px;height:10px;border-radius:50%;background:#333;display:inline-block;margin:0 3px;}
+.evm-light.on{background:#00ff41;box-shadow:0 0 6px #00ff41;animation:blink2 1s infinite;}
+@keyframes blink2{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* CONFIRMATION MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(3px);
+}
+.modal-overlay.show{display:flex;}
+.modal{
+  background:#fff;border-radius:16px;padding:28px;max-width:400px;width:100%;
+  text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);
+  animation:modalIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes modalIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.modal .modal-icon{font-size:3rem;margin-bottom:12px;}
+.modal h3{font-size:1.2rem;font-weight:700;margin-bottom:8px;color:var(--navy);}
+.modal p{font-size:.85rem;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.modal-cand-preview{
+  background:#f0fff4;border:2px solid var(--green);border-radius:10px;
+  padding:14px;margin-bottom:20px;display:flex;align-items:center;gap:12px;
+}
+.modal-cand-preview .prev-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;}
+.modal-cand-preview .prev-info h4{font-size:1rem;font-weight:700;}
+.modal-cand-preview .prev-info p{font-size:.75rem;color:var(--muted);}
+.modal-btns{display:flex;gap:10px;}
+.btn-cancel{flex:1;padding:12px;background:#f5f5f5;border:2px solid #ddd;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif;transition:all .2s;}
+.btn-cancel:hover{background:#e8e8e8;}
+.btn-confirm{flex:1;padding:12px;background:linear-gradient(135deg,var(--green),#0e6b06);color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif;transition:all .2s;}
+.btn-confirm:hover{transform:translateY(-1px);}
+
+/* SUCCESS */
+.voted-banner{
+  background:linear-gradient(135deg,var(--green),#0e6b06);
+  color:#fff;border-radius:12px;padding:20px;text-align:center;
+  margin-bottom:20px;animation:bannerIn .5s ease;
+}
+@keyframes bannerIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.voted-banner h2{font-size:1.6rem;font-weight:700;margin-bottom:4px;}
+.voted-banner p{font-size:.85rem;opacity:.9;}
+.ink-finger{font-size:2.5rem;animation:wiggle .5s ease 3;}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+
+/* RESULTS */
+.results-header{
+  background:linear-gradient(135deg,var(--navy),#0a0a5e);color:#fff;
+  border-radius:16px;padding:20px 24px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.results-header h2{font-size:1.3rem;font-weight:700;}
+.results-header .total-pill{background:rgba(255,255,255,.15);border-radius:20px;padding:6px 16px;font-size:.85rem;font-weight:600;}
+.result-bar-card{background:var(--card);border-radius:12px;padding:16px 20px;margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);border:1px solid #eee;transition:all .3s;}
+.result-bar-card.winner{border-color:var(--green);box-shadow:0 4px 16px rgba(19,136,8,.2);}
+.rb-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.rb-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;flex-shrink:0;}
+.rb-info{flex:1;}
+.rb-info h3{font-size:1rem;font-weight:700;}
+.rb-info p{font-size:.75rem;color:var(--muted);}
+.rb-votes{text-align:right;}
+.rb-votes .vote-num{font-size:1.3rem;font-weight:700;color:var(--navy);}
+.rb-votes .vote-pct{font-size:.75rem;color:var(--muted);}
+.bar-wrap{background:#f0f0f0;border-radius:4px;height:10px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width 1s ease;width:0;}
+.winner-crown{font-size:1.2rem;margin-left:6px;}
+.result-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.btn-new-vote{padding:12px 28px;background:linear-gradient(135deg,var(--saffron),#e07800);color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;transition:all .2s;}
+.btn-new-vote:hover{transform:translateY(-2px);}
+.btn-reset{padding:12px 28px;background:transparent;border:2px solid var(--navy);color:var(--navy);border-radius:8px;font-size:.95rem;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;transition:all .2s;}
+.btn-reset:hover{background:var(--navy);color:#fff;}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{background:var(--card);border-radius:10px;padding:14px;text-align:center;border:1px solid #eee;}
+.stat-card .sv{font-size:1.6rem;font-weight:700;color:var(--navy);}
+.stat-card .sl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:2px;}
+
+/* NOTICE */
+.notice{background:#fff8e1;border-left:4px solid var(--saffron);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.78rem;color:#7c5700;margin-bottom:16px;line-height:1.5;}
+
+/* RESPONSIVE */
+@media(max-width:500px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .modal-btns{flex-direction:column;}
+  .result-actions{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="flag-stripe"><div class="fs1"></div><div class="fs2"></div><div class="fs3"></div></div>
+  <div class="topbar-inner">
+    <div class="emblem">🇮🇳</div>
+    <div class="topbar-text">
+      <h1>भारत निर्वाचन आयोग</h1>
+      <p>Election Commission of India — Digital Voting System</p>
+    </div>
+    <div class="eci-badge">
+      <div class="eci-t">Voters Participated</div>
+      <div class="eci-v" id="total-count">0</div>
+    </div>
+  </div>
+  <div class="flag-stripe"><div class="fs1"></div><div class="fs2"></div><div class="fs3"></div></div>
+</div>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="screen-login" class="active">
+  <div class="container">
+    <div style="text-align:center;margin:24px 0 20px;">
+      <div style="font-size:2.5rem;margin-bottom:8px;">🗳️</div>
+      <h2 style="font-size:1.3rem;font-weight:700;color:var(--navy)">Voter Authentication</h2>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:4px;">Enter your Voter ID & Aadhaar to proceed</p>
+    </div>
+
+    <div class="voter-card">
+      <div class="vc-header">
+        <div class="emblem-sm">🏛️</div>
+        <div class="vc-header-text">
+          <h2>VOTER ID VERIFICATION</h2>
+          <p>मतदाता पहचान पत्र सत्यापन</p>
+        </div>
+      </div>
+      <div class="vc-body">
+        <div class="notice">⚠️ This is a simulation. Use demo credentials below to log in.</div>
+
+        <div class="input-group">
+          <label>Voter ID Number / मतदाता क्रमांक</label>
+          <input class="inp" id="inp-vid" placeholder="e.g. MH/14/001/234567" maxlength="20">
+          <div class="err-msg" id="err-vid">Invalid Voter ID format</div>
+        </div>
+        <div class="input-group">
+          <label>Aadhaar Number / आधार नंबर</label>
+          <input class="inp" id="inp-aadhar" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="fmtAadhar(this)">
+          <div class="err-msg" id="err-aadhar">Invalid Aadhaar number</div>
+        </div>
+        <div class="input-group">
+          <label>Full Name / पूरा नाम</label>
+          <input class="inp" id="inp-name" placeholder="Your full name">
+          <div class="err-msg" id="err-name">Name is required</div>
+        </div>
+
+        <button class="btn-login" id="btn-login">🔐 VERIFY & PROCEED TO VOTE</button>
+
+        <div class="demo-hint">
+          <strong>📋 Demo Credentials (use any):</strong>
+          Voter ID: <b>MH/14/001/234567</b> &nbsp;|&nbsp; Aadhaar: <b>1234 5678 9012</b> &nbsp;|&nbsp; Name: <b>Rahul Sharma</b>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VOTING SCREEN ═══ -->
+<div id="screen-vote">
+  <div class="container">
+    <div class="vote-header">
+      <h2>🗳️ Cast Your Vote</h2>
+      <div class="voter-info-pill" id="voter-pill">👤 Voter</div>
+    </div>
+
+    <div class="constituency-box">
+      <div class="icon">🏛️</div>
+      <div>
+        <h3>Lok Sabha Constituency — Central Delhi</h3>
+        <p>लोक सभा निर्वाचन क्षेत्र — मध्य दिल्ली &nbsp;|&nbsp; General Election 2024</p>
+      </div>
+    </div>
+
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;">Select ONE candidate and press the blue button on the EVM:</p>
+
+    <div class="candidates-grid" id="candidates-grid"></div>
+
+    <!-- EVM Machine -->
+    <div class="evm-box">
+      <div class="evm-title">
+        <span class="evm-light on" id="evm-light1"></span>
+        Electronic Voting Machine (EVM)
+        <span class="evm-light on" id="evm-light2"></span>
+      </div>
+      <div class="evm-display" id="evm-display">
+        &gt; EVM READY...<br>&gt; SELECT CANDIDATE TO VOTE
+      </div>
+      <button class="btn-vote" id="btn-cast" disabled>
+        🔵 PRESS TO VOTE — मतदान करें
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RESULT SCREEN ═══ -->
+<div id="screen-result">
+  <div class="container">
+    <div id="success-banner" style="display:none">
+      <div class="voted-banner">
+        <div class="ink-finger">🖊️</div>
+        <h2>Vote Cast Successfully!</h2>
+        <p>आपका मत सफलतापूर्वक डाला गया। धन्यवाद!</p>
+      </div>
+    </div>
+
+    <div class="results-header">
+      <div>
+        <h2>📊 Live Vote Count</h2>
+        <p style="font-size:.78rem;opacity:.8;margin-top:3px;">Central Delhi Constituency Results</p>
+      </div>
+      <div class="total-pill" id="total-pill">Total Votes: 0</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="sv" id="st-total">0</div><div class="sl">Total Votes</div></div>
+      <div class="stat-card"><div class="sv" id="st-turnout">0%</div><div class="sl">Turnout</div></div>
+      <div class="stat-card"><div class="sv" id="st-leading">—</div><div class="sl">Leading</div></div>
+    </div>
+
+    <div id="results-list"></div>
+
+    <div class="result-actions">
+      <button class="btn-new-vote" id="btn-another">🗳️ Vote Again (New Voter)</button>
+      <button class="btn-reset" id="btn-full-reset">🔄 Full Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-icon">⚠️</div>
+    <h3>Confirm Your Vote</h3>
+    <p>Once submitted, your vote <strong>cannot be changed</strong>. Are you sure?</p>
+    <div class="modal-cand-preview" id="modal-preview"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="btn-cancel-vote">✗ Go Back</button>
+      <button class="btn-confirm" id="btn-confirm-vote">✓ CONFIRM VOTE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════
+const CANDIDATES = [
+  { id:1, name:'Arvind Kejriwal',  party:'Aam Aadmi Party',  abbr:'AAP', symbol:'🧹', color:'#0078bd', bg:'#e8f4fc', votes:0 },
+  { id:2, name:'Manoj Tiwari',     party:'Bharatiya Janata Party', abbr:'BJP', symbol:'🪷', color:'#FF6600', bg:'#fff3ea', votes:0 },
+  { id:3, name:'Ajay Maken',       party:'Indian National Congress', abbr:'INC', symbol:'✋', color:'#138808', bg:'#f0fff4', votes:0 },
+  { id:4, name:'Prem Lata',        party:'Bahujan Samaj Party', abbr:'BSP', symbol:'🐘', color:'#1a1a6e', bg:'#eeeeff', votes:0 },
+  { id:5, name:'Ramesh Kumar',     party:'Communist Party of India', abbr:'CPI', symbol:'☭',  color:'#cc0000', bg:'#fff0f0', votes:0 },
+  { id:6, name:'NOTA',             party:'None of the Above', abbr:'NOTA', symbol:'🚫', color:'#666', bg:'#f5f5f5', votes:0 },
+];
+
+const REGISTERED = 1200; // simulated registered voters
+let totalVotes = 0;
+let selectedId  = null;
+let currentVoter = '';
+let votedVoters  = new Set(); // track who voted
+
+// ══════════════════════════════════════════════
+//  SCREEN SWITCH
+// ══════════════════════════════════════════════
+function showScreen(id) {
+  ['screen-login','screen-vote','screen-result'].forEach(s => {
+    document.getElementById(s).classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+//  AADHAAR FORMATTING
+// ══════════════════════════════════════════════
+function fmtAadhar(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,12);
+  el.value = v.replace(/(\d{4})(?=\d)/g,'$1 ').trim();
+}
+
+// ══════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════
+document.getElementById('btn-login').addEventListener('click', () => {
+  const vid    = document.getElementById('inp-vid').value.trim();
+  const aadhar = document.getElementById('inp-aadhar').value.replace(/\s/g,'');
+  const name   = document.getElementById('inp-name').value.trim();
+  let valid = true;
+
+  // Validate Voter ID
+  const vidOk = /^[A-Z]{2}\/\d{2}\/\d{3}\/\d{6}$/.test(vid);
+  document.getElementById('err-vid').classList.toggle('show', !vidOk);
+  document.getElementById('inp-vid').classList.toggle('err', !vidOk);
+  if(!vidOk) valid=false;
+
+  // Validate Aadhaar (12 digits)
+  const aadOk = /^\d{12}$/.test(aadhar);
+  document.getElementById('err-aadhar').classList.toggle('show', !aadOk);
+  document.getElementById('inp-aadhar').classList.toggle('err', !aadOk);
+  if(!aadOk) valid=false;
+
+  // Validate Name
+  const nameOk = name.length >= 2;
+  document.getElementById('err-name').classList.toggle('show', !nameOk);
+  document.getElementById('inp-name').classList.toggle('err', !nameOk);
+  if(!nameOk) valid=false;
+
+  if(!valid) return;
+
+  const key = vid+'-'+aadhar;
+  if(votedVoters.has(key)) {
+    alert('⚠️ This Voter ID has already voted! Each voter can vote only once.');
+    return;
+  }
+
+  currentVoter = { name, vid, aadhar, key };
+  document.getElementById('voter-pill').textContent = '👤 ' + name;
+  selectedId = null;
+  buildCandidates();
+  updateEVM();
+  showScreen('screen-vote');
+});
+
+// ══════════════════════════════════════════════
+//  BUILD CANDIDATE CARDS
+// ══════════════════════════════════════════════
+function buildCandidates() {
+  const grid = document.getElementById('candidates-grid');
+  grid.innerHTML = '';
+  CANDIDATES.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'candidate-card' + (c.id===6?' nota':'');
+    card.id = 'card-'+c.id;
+    card.innerHTML = `
+      <div class="cand-top">
+        <div class="cand-avatar" style="background:${c.bg};color:${c.color};border-color:${c.color}">${c.symbol}</div>
+        <div class="cand-info">
+          <h3>${c.name}</h3>
+          <div class="cand-party" style="color:${c.color}">${c.abbr}</div>
+          <div class="cand-num">Candidate No. ${c.id}</div>
+        </div>
+      </div>
+      <div class="party-symbol"><span>${c.symbol}</span> ${c.party}</div>
+    `;
+    card.addEventListener('click', () => selectCandidate(c.id));
+    grid.appendChild(card);
+  });
+}
+
+function selectCandidate(id) {
+  selectedId = id;
+  document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('card-'+id).classList.add('selected');
+  document.getElementById('btn-cast').disabled = false;
+  updateEVM();
+}
+
+function updateEVM() {
+  const disp = document.getElementById('evm-display');
+  if(!selectedId) {
+    disp.innerHTML = '&gt; EVM READY...<br>&gt; SELECT CANDIDATE TO VOTE';
+  } else {
+    const c = CANDIDATES.find(x=>x.id===selectedId);
+    disp.innerHTML = `&gt; CANDIDATE SELECTED:<br><span class="evm-selected">${c.symbol} ${c.name} — ${c.abbr}</span><br>&gt; PRESS BLUE BUTTON TO CAST`;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  CAST VOTE
+// ══════════════════════════════════════════════
+document.getElementById('btn-cast').addEventListener('click', () => {
+  if(!selectedId) return;
+  const c = CANDIDATES.find(x=>x.id===selectedId);
+
+  // show confirmation modal
+  document.getElementById('modal-preview').innerHTML = `
+    <div class="prev-avatar" style="background:${c.bg};color:${c.color}">${c.symbol}</div>
+    <div class="prev-info">
+      <h4>${c.name}</h4>
+      <p>${c.party}</p>
+    </div>
+  `;
+  document.getElementById('confirm-modal').classList.add('show');
+});
+
+document.getElementById('btn-cancel-vote').addEventListener('click', () => {
+  document.getElementById('confirm-modal').classList.remove('show');
+});
+
+document.getElementById('btn-confirm-vote').addEventListener('click', () => {
+  document.getElementById('confirm-modal').classList.remove('show');
+  castVote();
+});
+
+function castVote() {
+  const c = CANDIDATES.find(x=>x.id===selectedId);
+  c.votes++;
+  totalVotes++;
+  votedVoters.add(currentVoter.key);
+  document.getElementById('total-count').textContent = totalVotes;
+
+  // EVM beep animation
+  document.getElementById('evm-display').innerHTML = `&gt; VOTE RECORDED!<br><span class="evm-selected">✓ ${c.name}</span><br>&gt; THANK YOU!`;
+
+  setTimeout(() => {
+    document.getElementById('success-banner').style.display = 'block';
+    buildResults();
+    showScreen('screen-result');
+
+    // animate bars after render
+    setTimeout(() => animateBars(), 100);
+  }, 600);
+}
+
+// ══════════════════════════════════════════════
+//  RESULTS
+// ══════════════════════════════════════════════
+function buildResults() {
+  const total = totalVotes;
+  document.getElementById('total-pill').textContent = `Total Votes: ${total}`;
+  document.getElementById('st-total').textContent = total;
+  document.getElementById('st-turnout').textContent = total > 0 ? Math.round(total/REGISTERED*100)+'%' : '0%';
+
+  // Sort by votes desc
+  const sorted = [...CANDIDATES].sort((a,b) => b.votes-a.votes);
+  const winner = sorted[0];
+  document.getElementById('st-leading').textContent = winner.votes > 0 ? winner.abbr : '—';
+
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+
+  sorted.forEach((c,i) => {
+    const pct = total > 0 ? Math.round(c.votes/total*100) : 0;
+    const isWinner = i===0 && c.votes>0;
+    const card = document.createElement('div');
+    card.className = 'result-bar-card' + (isWinner?' winner':'');
+    card.innerHTML = `
+      <div class="rb-top">
+        <div class="rb-avatar" style="background:${c.bg};color:${c.color}">${c.symbol}</div>
+        <div class="rb-info">
+          <h3>${c.name} ${isWinner?'<span class="winner-crown">👑</span>':''}</h3>
+          <p>${c.party}</p>
+        </div>
+        <div class="rb-votes">
+          <div class="vote-num">${c.votes}</div>
+          <div class="vote-pct">${pct}%</div>
+        </div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-fill" id="bar-${c.id}" style="background:${c.color};width:0%"></div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function animateBars() {
+  const total = totalVotes;
+  CANDIDATES.forEach(c => {
+    const pct = total > 0 ? (c.votes/total*100) : 0;
+    const el = document.getElementById('bar-'+c.id);
+    if(el) el.style.width = pct+'%';
+  });
+}
+
+// ══════════════════════════════════════════════
+//  BUTTONS
+// ══════════════════════════════════════════════
+document.getElementById('btn-another').addEventListener('click', () => {
+  // Reset form for new voter
+  document.getElementById('inp-vid').value='';
+  document.getElementById('inp-aadhar').value='';
+  document.getElementById('inp-name').value='';
+  document.getElementById('success-banner').style.display='none';
+  selectedId = null;
+  currentVoter = '';
+  showScreen('screen-login');
+});
+
+document.getElementById('btn-full-reset').addEventListener('click', () => {
+  if(!confirm('Reset ALL vote data? This will clear all results.')) return;
+  CANDIDATES.forEach(c=>c.votes=0);
+  totalVotes=0; votedVoters.clear();
+  document.getElementById('total-count').textContent='0';
+  document.getElementById('inp-vid').value='';
+  document.getElementById('inp-aadhar').value='';
+  document.getElementById('inp-name').value='';
+  document.getElementById('success-banner').style.display='none';
+  selectedId=null; currentVoter='';
+  showScreen('screen-login');
+});
+
+// Enter key on login
+document.getElementById('inp-name').addEventListener('keydown', e => {
+  if(e.key==='Enter') document.getElementById('btn-login').click();
+});
+</script>
+</body>
+</html>

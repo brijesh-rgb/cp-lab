@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+ <html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tennis Masters</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: Arial, sans-serif; }
+  #gameCanvas { display: block; border: 2px solid #444; border-radius: 8px; }
+  #controls { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
+  button { background: #7855c8; color: #fff; border: none; padding: 8px 22px; border-radius: 6px; font-size: 14px; cursor: pointer; }
+  button:hover { background: #9370e8; }
+  select { font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid #555; background: #2a2a4a; color: #fff; }
+  #hint { color: #aaa; font-size: 11px; margin-top: 6px; text-align: center; }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="720" height="460"></canvas>
+<div id="controls">
+  <button id="btnStart">Start</button>
+  <button id="btnReset">Reset</button>
+  <select id="selMode">
+    <option value="1p">1 Player vs AI</option>
+    <option value="2p">2 Players</option>
+  </select>
+</div>
+<div id="hint">
+  P1: A/D move | W jump | X hit | Z smash &nbsp;&nbsp; P2: Arrow keys move | Up jump | L hit | K smash
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const GROUND_Y = H - 90;
+const NET_X = W / 2;
+const NET_H = 70;
+const NET_Y = GROUND_Y - NET_H;
+const NET_COL_W = 5;
+const NET_COL_TOP = NET_Y;
+const NET_COL_BOT = NET_Y + 14;
+
+const PAD_W = 36, PAD_H = 64;
+const BALL_R = 11;
+const WIN_SCORE = 7;
+
+let keys = {}, state = 'idle', mode = '1p';
+let scores = [0, 0], rally = 0, winner = -1, particles = [];
+
+/* ─── Ball draw helper: realistic felt tennis ball ─── */
+function drawTennisBall(x, y, r, spin) {
+  // Base yellow-green felt
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = '#ccdd00';
+  ctx.fill();
+
+  // Subtle sphere shading — light top-left
+  const grad = ctx.createRadialGradient(x - r * 0.35, y - r * 0.35, r * 0.05, x, y, r);
+  grad.addColorStop(0, 'rgba(255,255,220,0.55)');
+  grad.addColorStop(0.5, 'rgba(200,210,0,0.0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.28)');
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // White felt seam curves (two curved lines)
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(spin || 0);
+  ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+  ctx.lineWidth = 1.8;
+  ctx.lineCap = 'round';
+
+  // Left seam arc
+  ctx.beginPath();
+  ctx.arc(-r * 0.15, 0, r * 0.72, Math.PI * 0.25, Math.PI * 0.75, false);
+  ctx.stroke();
+
+  // Right seam arc (mirrored)
+  ctx.beginPath();
+  ctx.arc(r * 0.15, 0, r * 0.72, Math.PI * 1.25, Math.PI * 1.75, false);
+  ctx.stroke();
+
+  ctx.restore();
+  ctx.restore();
+}
+
+function mkPlayer(side) {
+  return {
+    x: side === 0 ? 110 : W - 110 - PAD_W,
+    y: GROUND_Y - PAD_H,
+    vy: 0, vx: 0,
+    onGround: true,
+    side,
+    facing: side === 0 ? 1 : -1,
+    hitCooldown: 0,
+    swingAnim: 0,
+    skinColor: side === 0 ? '#c8855a' : '#f0c090',
+    shirtColor: side === 0 ? '#f5f5f5' : '#ffe040',
+    hairColor: side === 0 ? '#1a1a1a' : '#6b3a1f',
+    name: side === 0 ? 'ReRe' : 'Domi',
+  };
+}
+
+function mkBall() {
+  return { x: NET_X, y: GROUND_Y - 120, vx: 0, vy: 0, spinAngle: 0, spinRate: 0, trail: [] };
+}
+
+let p1 = mkPlayer(0), p2 = mkPlayer(1), ball = mkBall();
+
+function resetGame() {
+  p1 = mkPlayer(0); p2 = mkPlayer(1); ball = mkBall();
+  scores = [0, 0]; rally = 0; winner = -1; particles = [];
+  state = 'idle';
+}
+
+function serveBall(dir) {
+  ball.x = dir === 0 ? 160 : W - 160;
+  ball.y = GROUND_Y - 200;
+  ball.vx = dir === 0 ? 6 : -6;
+  ball.vy = -9;
+  ball.spinAngle = 0; ball.spinRate = 0;
+  ball.trail = [];
+  rally = 0;
+}
+
+function spawnParticles(x, y, col, n) {
+  for (let i = 0; i < n; i++) {
+    particles.push({ x, y, vx: (Math.random() - 0.5) * 5, vy: -(Math.random() * 4 + 2), life: 1, col });
+  }
+}
+
+function doHit(p, smash) {
+  const cx = p.x + PAD_W / 2, cy = p.y + PAD_H / 2;
+  const dist = Math.hypot(ball.x - cx, ball.y - cy);
+  if (dist > 85) return;
+  const spd = smash ? 17 : (10 + Math.min(rally * 0.3, 4));
+  const dir = p.side === 0 ? 1 : -1;
+  ball.vx = dir * spd * (0.85 + Math.random() * 0.3);
+  ball.vy = smash ? -15 : -(5 + Math.random() * 5);
+  ball.spinRate = dir * (Math.random() * 0.18 + 0.06);
+  rally++;
+  p.swingAnim = 8;
+  p.hitCooldown = smash ? 30 : 18;
+  spawnParticles(ball.x, ball.y, '#fff', 7);
+}
+
+function aiUpdate(p) {
+  const speed = 3.2 + Math.min(rally * 0.05, 1.8);
+  const err = (Math.random() - 0.5) * 16;
+  if (ball.x > NET_X) {
+    const tx = ball.x - 55 + err;
+    if (p.x < tx - 4) { p.vx = speed; p.facing = 1; }
+    else if (p.x > tx + 4) { p.vx = -speed; p.facing = -1; }
+    else p.vx = 0;
+    if (p.onGround && ball.vy < 0 && Math.abs(ball.y - p.y) < 160 && Math.random() < 0.012) {
+      p.vy = -14; p.onGround = false;
+    }
+    const dist = Math.hypot(ball.x - (p.x + PAD_W / 2), ball.y - (p.y + PAD_H / 2));
+    if (dist < 60 && p.hitCooldown <= 0) doHit(p, Math.random() < 0.15);
+  } else {
+    const home = W - 110 - PAD_W;
+    if (p.x < home - 4) { p.vx = speed; p.facing = 1; }
+    else if (p.x > home + 4) { p.vx = -speed; p.facing = -1; }
+    else p.vx = 0;
+  }
+}
+
+function update() {
+  if (state !== 'playing') return;
+  const GRAV = 0.58, FRIC = 0.82, SPEED = 4.5;
+
+  [p1, p2].forEach((p, i) => {
+    if (p.hitCooldown > 0) p.hitCooldown--;
+    if (p.swingAnim > 0) p.swingAnim--;
+
+    if (i === 1 && mode === '1p') {
+      aiUpdate(p);
+    } else {
+      const L = i === 0 ? 'a' : 'ArrowLeft';
+      const R = i === 0 ? 'd' : 'ArrowRight';
+      const U = i === 0 ? 'w' : 'ArrowUp';
+      const HK = i === 0 ? 'x' : 'l';
+      const SK = i === 0 ? 'z' : 'k';
+      if (keys[L]) { p.vx = -SPEED; p.facing = -1; }
+      else if (keys[R]) { p.vx = SPEED; p.facing = 1; }
+      else p.vx *= FRIC;
+      if (keys[U] && p.onGround) { p.vy = -14; p.onGround = false; }
+      if (keys[HK] && p.hitCooldown <= 0) doHit(p, false);
+      if (keys[SK] && p.hitCooldown <= 0) doHit(p, true);
+    }
+
+    p.vy += GRAV;
+    p.x += p.vx;
+    p.y += p.vy;
+
+    const minX = i === 0 ? 20 : NET_X + 8;
+    const maxX = i === 0 ? NET_X - PAD_W - 8 : W - PAD_W - 20;
+    if (p.x < minX) p.x = minX;
+    if (p.x > maxX) p.x = maxX;
+    if (p.y >= GROUND_Y - PAD_H) { p.y = GROUND_Y - PAD_H; p.vy = 0; p.onGround = true; }
+  });
+
+  // Ball physics
+  ball.trail.push({ x: ball.x, y: ball.y });
+  if (ball.trail.length > 10) ball.trail.shift();
+
+  ball.vy += GRAV;
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+  ball.spinAngle += ball.spinRate;
+
+  // Ground
+  if (ball.y + BALL_R >= GROUND_Y) {
+    ball.y = GROUND_Y - BALL_R;
+    ball.vy *= -0.52;
+    ball.vx *= 0.83;
+    ball.spinRate *= 0.7;
+    spawnParticles(ball.x, ball.y, '#c8f060', 5);
+    if (Math.abs(ball.vy) < 1) ball.vy = 0;
+  }
+  if (ball.y - BALL_R < 30) { ball.y = 30 + BALL_R; ball.vy = Math.abs(ball.vy); }
+
+  // Net top collision only
+  const netL = NET_X - NET_COL_W, netR = NET_X + NET_COL_W;
+  if (ball.x + BALL_R > netL && ball.x - BALL_R < netR &&
+      ball.y + BALL_R > NET_COL_TOP && ball.y - BALL_R < NET_COL_BOT) {
+    ball.vx *= -0.6;
+    ball.x = ball.vx > 0 ? netR + BALL_R + 1 : netL - BALL_R - 1;
+    ball.vy -= 2;
+    spawnParticles(NET_X, NET_COL_TOP, '#fff', 4);
+  }
+
+  if (ball.x < -30) { point(1); return; }
+  if (ball.x > W + 30) { point(0); return; }
+
+  particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.15; p.life -= 0.04; });
+  particles = particles.filter(p => p.life > 0);
+}
+
+function point(ws) {
+  scores[ws]++;
+  spawnParticles(ws === 0 ? 100 : W - 100, GROUND_Y - 100, ws === 0 ? '#5ecfef' : '#ffcc00', 20);
+  if (scores[0] >= WIN_SCORE || scores[1] >= WIN_SCORE) {
+    winner = scores[0] >= WIN_SCORE ? 0 : 1; state = 'won';
+  } else {
+    state = 'point';
+    setTimeout(() => { if (state === 'point') { serveBall(ws); state = 'playing'; } }, 1200);
+  }
+}
+
+/* ─── Drawing ─── */
+function drawBg() {
+  // Sky
+  ctx.fillStyle = '#5ecfef'; ctx.fillRect(0, 0, W, GROUND_Y - 30);
+
+  // City
+  ctx.fillStyle = '#4ab5d4';
+  [[60,80,120],[170,60,100],[260,70,140],[400,90,90],[510,65,120],[620,80,100]].forEach(([x,w,h]) => {
+    const by = GROUND_Y - 30;
+    ctx.fillStyle = '#4ab5d4'; ctx.fillRect(x, by - h, w, h);
+    ctx.fillStyle = 'rgba(100,180,210,0.4)';
+    for (let wy = by - h + 10; wy < by - 10; wy += 20)
+      for (let wx = x + 8; wx < x + w - 8; wx += 18) ctx.fillRect(wx, wy, 10, 12);
+  });
+
+  // Stand
+  ctx.fillStyle = '#7b9bb5'; ctx.fillRect(0, GROUND_Y - 30, W, 55);
+  for (let cx = 30; cx < W; cx += 22) {
+    ctx.fillStyle = Math.random() > 0.5 ? 'rgba(200,160,180,0.5)' : 'rgba(160,190,220,0.5)';
+    ctx.beginPath(); ctx.arc(cx, GROUND_Y - 20, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, GROUND_Y - 5, 7, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Ground
+  ctx.fillStyle = '#4a6e2a'; ctx.fillRect(0, GROUND_Y + 20, W, H - GROUND_Y - 20);
+
+  // Court stripes
+  ctx.fillStyle = '#a8d46b'; ctx.fillRect(60, GROUND_Y + 18, W - 120, 30);
+  ctx.fillStyle = '#5ab528';
+  for (let sx = 60; sx < W - 60; sx += 40) ctx.fillRect(sx, GROUND_Y + 18, 20, 30);
+
+  // Court lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2;
+  ctx.strokeRect(60, GROUND_Y + 18, W - 120, 28);
+  ctx.beginPath(); ctx.moveTo(W/2, GROUND_Y+18); ctx.lineTo(W/2, GROUND_Y+46); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(200, GROUND_Y+18); ctx.lineTo(200, GROUND_Y+46); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W-200, GROUND_Y+18); ctx.lineTo(W-200, GROUND_Y+46); ctx.stroke();
+
+  // Net post
+  ctx.fillStyle = '#888'; ctx.fillRect(NET_X - 3, NET_Y - 8, 6, 8);
+  ctx.fillStyle = '#bbb'; ctx.fillRect(NET_X - 4, NET_Y, 8, NET_H);
+  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  for (let ny = NET_Y + 2; ny < GROUND_Y; ny += 8) ctx.fillRect(NET_X - 3, ny, 6, 4);
+}
+
+function drawPlayer(p) {
+  const x = p.x, y = p.y, f = p.facing;
+  const sw = p.swingAnim > 0 ? p.swingAnim / 8 : 0;
+
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.18)';
+  ctx.beginPath(); ctx.ellipse(x + PAD_W/2, GROUND_Y + 2, 20, 5, 0, 0, Math.PI*2); ctx.fill();
+
+  // Head
+  ctx.fillStyle = p.skinColor;
+  ctx.beginPath(); ctx.arc(x + PAD_W/2, y + 14, 12, 0, Math.PI * 2); ctx.fill();
+
+  // Hair
+  ctx.fillStyle = p.hairColor;
+  ctx.beginPath(); ctx.arc(x + PAD_W/2, y + 8, 9, Math.PI, 0); ctx.fill();
+  if (p.side === 0) {
+    ctx.fillStyle = '#ffe040';
+    ctx.beginPath(); ctx.arc(x + PAD_W/2 + f*2, y + 8, 5, Math.PI, 0); ctx.fill();
+  }
+
+  // Body/shirt
+  ctx.fillStyle = p.shirtColor;
+  ctx.fillRect(x + 4, y + 24, PAD_W - 8, 22);
+
+  // Arms
+  ctx.fillStyle = p.skinColor;
+  ctx.fillRect(x + 4, y + 44, 10, 12);
+  ctx.fillRect(x + PAD_W - 14, y + 44, 10, 12);
+
+  // Shoes
+  ctx.fillStyle = '#333';
+  ctx.fillRect(x + 5, y + 56, 11, 8);
+  ctx.fillRect(x + PAD_W - 16, y + 56, 11, 8);
+
+  // Racket
+  const rx = x + (f > 0 ? PAD_W + 2 : -18) + sw * f * 14;
+  const ry = y + 28 - sw * 10;
+  ctx.strokeStyle = '#8B4513'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(x + PAD_W/2, y + 36); ctx.lineTo(rx + 8, ry + 12); ctx.stroke();
+  ctx.strokeStyle = p.side === 0 ? '#ddd' : '#e84'; ctx.lineWidth = 2;
+  ctx.strokeRect(rx, ry, 16, 22);
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1;
+  [5,11].forEach(ox => { ctx.beginPath(); ctx.moveTo(rx+ox,ry); ctx.lineTo(rx+ox,ry+22); ctx.stroke(); });
+  [7,14].forEach(oy => { ctx.beginPath(); ctx.moveTo(rx,ry+oy); ctx.lineTo(rx+16,ry+oy); ctx.stroke(); });
+}
+
+function drawBallFull() {
+  // Trail
+  ball.trail.forEach((t, i) => {
+    const a = (i / ball.trail.length) * 0.3;
+    const r = BALL_R * (0.3 + (i / ball.trail.length) * 0.55);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = '#ccdd00';
+    ctx.beginPath(); ctx.arc(t.x, t.y, r, 0, Math.PI * 2); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  // Ball shadow on ground
+  const shadowScale = Math.max(0.3, 1 - (GROUND_Y - ball.y) / 300);
+  ctx.fillStyle = 'rgba(0,0,0,0.18)';
+  ctx.beginPath();
+  ctx.ellipse(ball.x, GROUND_Y + 2, BALL_R * shadowScale, 4 * shadowScale, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // The realistic tennis ball
+  drawTennisBall(ball.x, ball.y, BALL_R, ball.spinAngle);
+}
+
+function drawParticles() {
+  particles.forEach(p => {
+    ctx.globalAlpha = p.life * 0.85;
+    ctx.fillStyle = p.col;
+    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function drawScoreboard() {
+  const sw = 200, sh = 68, sx = (W - sw)/2, sy = H - 82;
+  ctx.fillStyle = '#7855c8';
+  ctx.beginPath(); ctx.roundRect(sx, sy, sw, sh, 8); ctx.fill();
+  [0,1].forEach(i => {
+    ctx.fillStyle = '#ffeedd'; ctx.font = '500 13px Arial'; ctx.textAlign = 'left';
+    ctx.fillText([p1.name, p2.name][i], sx + 10, sy + 22 + i * 30);
+    ctx.fillStyle = '#ffee55';
+    ctx.fillText(scores[i], sx + sw - 36, sy + 22 + i * 30);
+    for (let pi = 0; pi < Math.min(scores[i], 5); pi++) {
+      ctx.fillStyle = '#ffcc00';
+      ctx.beginPath(); ctx.arc(sx + 110 + pi*14, sy + 14 + i*30, 5, 0, Math.PI*2); ctx.fill();
+    }
+  });
+}
+
+function drawHUD() {
+  const bw = 160, bh = 58;
+  [[10,10,[['W','X','hit'],['A D','Z','smash']]],[W-bw-10,10,[['↑','L','hit'],['← →','K','smash']]]].forEach(([bx,by,rows]) => {
+    ctx.fillStyle = '#7855c8';
+    ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,6); ctx.fill();
+    rows.forEach(([k1,k2,lbl],ri) => {
+      ctx.font = '11px monospace'; ctx.textAlign = 'left';
+      ctx.fillStyle = '#fff'; ctx.fillText(k1, bx+8, by+16+ri*20);
+      ctx.fillStyle = '#ffd'; ctx.fillText(k2, bx+50, by+16+ri*20);
+      ctx.fillStyle = 'rgba(255,255,255,0.65)'; ctx.fillText('- '+lbl, bx+80, by+16+ri*20);
+    });
+  });
+}
+
+function drawOverlay(msg, sub) {
+  ctx.fillStyle = 'rgba(0,0,0,0.52)'; ctx.fillRect(0,0,W,H);
+  ctx.textAlign = 'center';
+  ctx.font = '500 30px Arial'; ctx.fillStyle = '#fff';
+  ctx.fillText(msg, W/2, H/2 - 12);
+  ctx.font = '15px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.fillText(sub, W/2, H/2 + 18);
+}
+
+function draw() {
+  ctx.clearRect(0,0,W,H);
+  drawBg();
+  drawParticles();
+  drawPlayer(p1);
+  drawPlayer(p2);
+  drawBallFull();
+  drawScoreboard();
+  drawHUD();
+  if (state === 'idle') drawOverlay('Tennis Masters', 'Press Start to play');
+  else if (state === 'won') drawOverlay((winner===0?p1.name:p2.name)+' wins!', 'Press Reset to play again');
+  else if (state === 'point') {
+    ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(0,0,W,H);
+    ctx.textAlign = 'center'; ctx.font = '500 22px Arial';
+    ctx.fillStyle = '#ffe'; ctx.fillText('Point!', W/2, H/2);
+  }
+}
+
+function loop() { update(); draw(); requestAnimationFrame(loop); }
+
+document.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+});
+document.addEventListener('keyup', e => { keys[e.key] = false; });
+
+document.getElementById('btnStart').addEventListener('click', () => {
+  if (state === 'idle') { mode = document.getElementById('selMode').value; state = 'playing'; serveBall(0); }
+});
+document.getElementById('btnReset').addEventListener('click', resetGame);
+
+resetGame();
+loop();
+</script>
+</body>
+</html>

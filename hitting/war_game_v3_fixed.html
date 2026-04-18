@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>War Battle Game v3 — Fixed</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:10px;}
+#wg{font-family:'Segoe UI',sans-serif;background:#111;border-radius:12px;overflow:hidden;width:100%;max-width:820px;}
+#bf{position:relative;width:100%;height:360px;overflow:hidden;}
+#sky{position:absolute;top:0;left:0;width:100%;height:45%;background:linear-gradient(180deg,#0d1f35 0%,#1a3a5c 50%,#2d6a9f 100%);z-index:1;}
+#sun{position:absolute;top:16px;right:55px;width:34px;height:34px;background:#f9d71c;border-radius:50%;}
+.cloud{position:absolute;background:rgba(255,255,255,0.55);border-radius:40px;}
+#mtn{position:absolute;bottom:55%;left:0;width:100%;height:85px;z-index:2;}
+#trees{position:absolute;bottom:55%;left:0;width:100%;height:50px;z-index:3;}
+#gnd{position:absolute;bottom:0;left:0;width:100%;height:55%;background:linear-gradient(180deg,#3a5c1a 0%,#2a4410 60%,#1a2e08 100%);z-index:4;}
+#road{position:absolute;bottom:10%;left:22%;width:56%;height:8px;background:rgba(120,90,40,0.4);border-radius:2px;z-index:5;}
+
+/* FIX: z-index:6 so armies appear ABOVE ground */
+#az{position:absolute;bottom:6%;left:1%;width:33%;height:46%;display:flex;flex-wrap:wrap;align-content:flex-end;gap:2px;padding:4px;z-index:6;}
+#bz{position:absolute;bottom:6%;right:1%;width:33%;height:46%;display:flex;flex-wrap:wrap-reverse;justify-content:flex-end;align-content:flex-end;gap:2px;padding:4px;z-index:6;}
+
+.soldier{width:13px;height:24px;display:inline-flex;flex-direction:column;align-items:center;transition:opacity .4s;}
+.soldier.dead{opacity:.09;filter:grayscale(1);}
+.sh{width:10px;height:5px;border-radius:5px 5px 0 0;}
+.sd{width:7px;height:7px;border-radius:50%;}
+.sb{width:9px;height:8px;border-radius:2px;}
+.sg{width:12px;height:2px;border-radius:1px;margin-top:-6px;align-self:flex-end;}
+.sl{width:8px;height:4px;display:flex;gap:1px;}
+.sl div{flex:1;border-radius:1px;}
+.soldier.blue .sh{background:#1e3a8a;}.soldier.blue .sd{background:#fcd5a8;}.soldier.blue .sb{background:#1e40af;}.soldier.blue .sg{background:#374151;}.soldier.blue .sl div{background:#1e3a8a;}
+.soldier.red .sh{background:#7f1d1d;}.soldier.red .sd{background:#fcd5a8;}.soldier.red .sb{background:#991b1b;}.soldier.red .sg{background:#374151;}.soldier.red .sl div{background:#7f1d1d;}
+.tank{width:50px;height:26px;position:relative;display:inline-block;margin:2px;}
+.tank.dead{opacity:.09;filter:grayscale(1);}
+.tk-tr{position:absolute;bottom:0;width:50px;height:8px;border-radius:3px;background:#2d3748;border:1px solid #1a202c;}
+.tk-bd{position:absolute;bottom:6px;left:2px;width:46px;height:13px;border-radius:3px;}
+.tk-tu{position:absolute;bottom:17px;width:19px;height:9px;border-radius:3px;}
+.tk-ba{position:absolute;bottom:20px;height:3px;width:24px;border-radius:2px;}
+.tank.blue .tk-bd{background:#1e40af;}.tank.blue .tk-tu{background:#2563eb;left:13px;}.tank.blue .tk-ba{background:#1e3a8a;left:30px;}
+.tank.red .tk-bd{background:#991b1b;}.tank.red .tk-tu{background:#dc2626;right:13px;}.tank.red .tk-ba{background:#7f1d1d;right:30px;}
+.jet{position:absolute;width:52px;height:20px;z-index:7;}
+.jb{position:absolute;top:6px;width:52px;height:9px;border-radius:5px;}
+.jc{position:absolute;top:2px;width:17px;height:13px;border-radius:9px 9px 0 0;}
+.jw{position:absolute;top:8px;width:24px;height:6px;border-radius:2px;}
+.jt{position:absolute;top:1px;width:11px;height:11px;border-radius:2px;}
+.jx{position:absolute;top:8px;width:9px;height:4px;background:rgba(255,140,40,.7);border-radius:0 2px 2px 0;}
+.jet.blue .jb{background:#1d4ed8;}.jet.blue .jc{background:#60a5fa;left:5px;}.jet.blue .jw{background:#2563eb;left:14px;}.jet.blue .jt{background:#1e40af;right:0;}.jet.blue .jx{left:-7px;}
+.jet.red .jb{background:#b91c1c;}.jet.red .jc{background:#f87171;right:5px;}.jet.red .jw{background:#dc2626;right:14px;}.jet.red .jt{background:#991b1b;left:0;}.jet.red .jx{right:-7px;}
+#ja{top:7%;left:4%;animation:fja 13s ease-in-out infinite;}
+#jb{top:13%;right:4%;animation:fjb 13s ease-in-out infinite;transform:scaleX(-1);}
+@keyframes fja{0%,100%{left:4%;top:7%;}45%{left:30%;top:16%;}70%{left:18%;top:9%;}}
+@keyframes fjb{0%,100%{right:4%;top:13%;}45%{right:30%;top:6%;}70%{right:18%;top:15%;}}
+#xl{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:60;}
+.expl{position:absolute;border-radius:50%;pointer-events:none;animation:xpl .5s ease-out forwards;}
+@keyframes xpl{0%{transform:scale(.1);opacity:1;}100%{transform:scale(1);opacity:0;}}
+.smk{position:absolute;border-radius:50%;background:rgba(100,100,100,.5);pointer-events:none;animation:smk 1.1s ease-out forwards;}
+@keyframes smk{0%{transform:scale(.2);opacity:.7;}100%{transform:scale(2.5);opacity:0;}}
+.blt{position:absolute;width:6px;height:3px;background:#f9d71c;border-radius:2px;pointer-events:none;z-index:55;}
+.blt.tracer{background:#ff6600;box-shadow:0 0 4px #ff6600;}
+.shell{position:absolute;width:10px;height:5px;background:#c0c0c0;border-radius:2px 4px 4px 2px;pointer-events:none;z-index:55;}
+.mssl{position:absolute;width:16px;height:6px;background:#888;border-radius:2px 5px 5px 2px;pointer-events:none;z-index:55;}
+.mssl::after{content:'';position:absolute;right:-6px;top:1px;border:4px solid transparent;border-left:6px solid #ff8800;}
+#win-ov{display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.78);z-index:200;align-items:center;justify-content:center;}
+#win-ov.show{display:flex;}
+#win-bx{background:#111;border-radius:14px;padding:26px 38px;text-align:center;border:2px solid #f9d71c;max-width:300px;}
+#win-bx h2{color:#f9d71c;font-size:24px;margin-bottom:8px;}
+#win-bx p{color:#aaa;font-size:13px;margin-bottom:16px;}
+#win-bx button{padding:10px 22px;background:#f9d71c;border:none;border-radius:6px;color:#111;font-weight:700;cursor:pointer;font-size:14px;}
+#tbar{background:#0d0d0d;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #1a1a1a;}
+#tmsg{color:#f9d71c;font-weight:700;font-size:14px;}
+#cdb{color:#aaa;font-size:13px;display:none;padding:4px 12px;background:#1a1a00;border-radius:5px;border:1px solid #f9d71c44;}
+#cdn{color:#f9d71c;font-weight:700;font-size:18px;}
+#nbtn{padding:6px 13px;background:#222;border:1px solid #333;border-radius:5px;color:#aaa;cursor:pointer;font-size:12px;}
+#nbtn:hover{background:#333;color:#fff;}
+#ctrl{background:#111;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#1a1a1a;}
+.tctrl{background:#111;padding:14px 16px;}
+.tctrl.blue{border-left:4px solid #2563eb;}
+.tctrl.red{border-left:4px solid #dc2626;}
+.ttl{font-size:15px;font-weight:700;margin-bottom:8px;}
+.ttl.blue{color:#60a5fa;}.ttl.red{color:#f87171;}
+.sr{display:flex;gap:8px;margin-bottom:8px;}
+.sc{background:#1a1a1a;border-radius:5px;padding:5px 8px;font-size:11px;color:#888;flex:1;text-align:center;}
+.sc span{display:block;font-size:17px;font-weight:700;color:#fff;margin-top:1px;}
+.hpb{height:6px;background:#222;border-radius:3px;overflow:hidden;margin:6px 0 10px;}
+.hpf{height:100%;border-radius:3px;transition:width .35s;}
+.hpf.blue{background:#2563eb;}.hpf.red{background:#dc2626;}
+.hpf.low{background:#ef4444;animation:lp .8s infinite alternate;}
+@keyframes lp{to{opacity:.45;}}
+.wps{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.wbtn{padding:5px 10px;border:1px solid #2a2a2a;border-radius:5px;background:#181818;color:#777;cursor:pointer;font-size:11px;font-weight:600;transition:all .15s;}
+.wbtn:hover:not(:disabled){background:#252525;color:#ccc;}
+.wbtn.sel{border-color:#f9d71c88;color:#f9d71c;background:#1a1a00;}
+.wbtn:disabled{opacity:.3;cursor:default;}
+.abtn{width:100%;padding:10px;border:none;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.3px;}
+.abtn.blue{background:#2563eb;color:#fff;}.abtn.blue:hover:not(:disabled){background:#1d4ed8;}
+.abtn.red{background:#dc2626;color:#fff;}.abtn.red:hover:not(:disabled){background:#b91c1c;}
+.abtn:disabled{opacity:.3;cursor:default;}
+#lg{background:#0a0a0a;padding:8px 16px;max-height:72px;overflow-y:auto;font-size:11px;border-top:1px solid #111;}
+#lg::-webkit-scrollbar{width:3px;}
+#lg::-webkit-scrollbar-thumb{background:#222;}
+.le{color:#555;padding:2px 0;border-bottom:1px solid #111;}
+.le.d{color:#f87171;}.le.w{color:#4ade80;font-weight:700;}.le.s{color:#666;}
+</style>
+</head>
+<body>
+<div id="wg">
+<div id="bf">
+  <div id="sky">
+    <div id="sun"></div>
+    <div class="cloud" style="width:76px;height:22px;top:20px;left:15%;"></div>
+    <div class="cloud" style="width:52px;height:15px;top:28px;left:18%;"></div>
+    <div class="cloud" style="width:96px;height:25px;top:14px;left:54%;"></div>
+    <div class="cloud" style="width:58px;height:17px;top:32px;left:58%;"></div>
+  </div>
+  <svg id="mtn" viewBox="0 0 700 85" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="0,85 120,8 220,85" fill="#243b16"/>
+    <polygon points="80,85 230,0 360,85" fill="#1a2e10"/>
+    <polygon points="310,85 440,12 550,85" fill="#243b16"/>
+    <polygon points="480,85 590,4 690,85" fill="#1a2e10"/>
+    <polygon points="630,85 730,10 820,85" fill="#243b16"/>
+  </svg>
+  <svg id="trees" viewBox="0 0 700 50" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="700" height="50" fill="#1a2e10"/>
+    <polygon points="18,50 38,8 58,50" fill="#2d5a14"/><polygon points="50,50 70,16 90,50" fill="#3a6e1a"/>
+    <polygon points="84,50 108,4 132,50" fill="#2d5a14"/><polygon points="140,50 160,12 180,50" fill="#3a6e1a"/>
+    <polygon points="200,50 222,2 244,50" fill="#2d5a14"/><polygon points="260,50 280,16 300,50" fill="#3a6e1a"/>
+    <polygon points="328,50 352,6 376,50" fill="#2d5a14"/><polygon points="400,50 420,14 440,50" fill="#3a6e1a"/>
+    <polygon points="460,50 482,2 504,50" fill="#2d5a14"/><polygon points="526,50 548,16 570,50" fill="#3a6e1a"/>
+    <polygon points="594,50 616,8 638,50" fill="#2d5a14"/><polygon points="654,50 676,14 698,50" fill="#3a6e1a"/>
+  </svg>
+  <div id="gnd"></div>
+  <div id="road"></div>
+  <div id="az"></div>
+  <div id="bz"></div>
+  <div class="jet blue" id="ja"><div class="jx"></div><div class="jb"></div><div class="jc"></div><div class="jw"></div><div class="jt"></div></div>
+  <div class="jet red" id="jb"><div class="jx"></div><div class="jb"></div><div class="jc"></div><div class="jw"></div><div class="jt"></div></div>
+  <div id="xl"></div>
+  <div id="win-ov"><div id="win-bx"><h2 id="wt">Victory!</h2><p id="wd"></p><button onclick="reset()">Play Again</button></div></div>
+</div>
+<div id="tbar">
+  <div id="tmsg">Team A — choose weapon &amp; attack!</div>
+  <div id="cdb">Next turn: <span id="cdn">5</span>s</div>
+  <button id="nbtn" onclick="reset()">New Battle</button>
+</div>
+<div id="ctrl">
+  <div class="tctrl blue">
+    <div class="ttl blue">🛡 Team A — Blue Army</div>
+    <div class="sr">
+      <div class="sc">Soldiers<span id="as">20</span></div>
+      <div class="sc">Tanks<span id="at">3</span></div>
+      <div class="sc">Jets<span id="aj">2</span></div>
+    </div>
+    <div class="hpb"><div class="hpf blue" id="ha" style="width:100%"></div></div>
+    <div class="wps">
+      <button class="wbtn sel" id="wa1" onclick="sw('A','rifle')">🔫 Rifle</button>
+      <button class="wbtn" id="wa2" onclick="sw('A','tank')">🚜 Tank</button>
+      <button class="wbtn" id="wa3" onclick="sw('A','air')">✈ Airstrike</button>
+    </div>
+    <button class="abtn blue" id="ba" onclick="attack('A')">⚔ ATTACK TEAM B!</button>
+  </div>
+  <div class="tctrl red">
+    <div class="ttl red">⚔ Team B — Red Army</div>
+    <div class="sr">
+      <div class="sc">Soldiers<span id="bs">20</span></div>
+      <div class="sc">Tanks<span id="bt">3</span></div>
+      <div class="sc">Jets<span id="bj">2</span></div>
+    </div>
+    <div class="hpb"><div class="hpf red" id="hb" style="width:100%"></div></div>
+    <div class="wps">
+      <button class="wbtn sel" id="wb1" onclick="sw('B','rifle')">🔫 Rifle</button>
+      <button class="wbtn" id="wb2" onclick="sw('B','tank')">🚜 Tank</button>
+      <button class="wbtn" id="wb3" onclick="sw('B','air')">✈ Airstrike</button>
+    </div>
+    <button class="abtn red" id="bb" onclick="attack('B')" style="display:none">⚔ ATTACK TEAM A!</button>
+  </div>
+</div>
+<div id="lg"></div>
+</div>
+
+<script>
+const MS=20,MT=3,MJ=2;
+let G={A:{s:MS,t:MT,j:MJ,w:'rifle'},B:{s:MS,t:MT,j:MJ,w:'rifle'},turn:'A',active:true,busy:false};
+
+function mkSoldier(team){
+  const d=document.createElement('div');
+  d.className='soldier '+team;
+  d.innerHTML='<div class="sh"></div><div class="sd"></div><div class="sb"></div><div class="sg"></div><div class="sl"><div></div><div></div></div>';
+  return d;
+}
+function mkTank(team){
+  const d=document.createElement('div');
+  d.className='tank '+team;
+  d.innerHTML='<div class="tk-tr"></div><div class="tk-bd"></div><div class="tk-tu"></div><div class="tk-ba"></div>';
+  return d;
+}
+function renderArmies(){
+  const az=document.getElementById('az'),bz=document.getElementById('bz');
+  az.innerHTML='';bz.innerHTML='';
+  for(let i=0;i<MS;i++){const s=mkSoldier('blue');if(i>=G.A.s)s.classList.add('dead');az.appendChild(s);}
+  for(let i=0;i<MT;i++){const t=mkTank('blue');if(i>=G.A.t)t.classList.add('dead');az.appendChild(t);}
+  for(let i=0;i<MS;i++){const s=mkSoldier('red');if(i>=G.B.s)s.classList.add('dead');bz.appendChild(s);}
+  for(let i=0;i<MT;i++){const t=mkTank('red');if(i>=G.B.t)t.classList.add('dead');bz.appendChild(t);}
+}
+function hud(){
+  ['A','B'].forEach(t=>{
+    const p=t.toLowerCase();
+    document.getElementById(p+'s').textContent=Math.max(0,G[t].s);
+    document.getElementById(p+'t').textContent=Math.max(0,G[t].t);
+    document.getElementById(p+'j').textContent=Math.max(0,G[t].j);
+    const hp=Math.max(0,G[t].s/MS*100);
+    const hel=document.getElementById('h'+p);
+    hel.style.width=hp+'%';
+    hel.className='hpf '+(t==='A'?'blue':'red')+(hp<=30?' low':'');
+  });
+  const isA=G.turn==='A';
+  document.getElementById('ba').style.display=isA?'block':'none';
+  document.getElementById('bb').style.display=isA?'none':'block';
+  document.getElementById('ba').disabled=!G.active;
+  document.getElementById('bb').disabled=!G.active;
+  document.getElementById('tmsg').textContent=`Team ${G.turn} — choose weapon & attack!`;
+  ['wa1','wa2','wa3'].forEach(id=>document.getElementById(id).disabled=!G.active||G.turn!=='A');
+  ['wb1','wb2','wb3'].forEach(id=>document.getElementById(id).disabled=!G.active||G.turn!=='B');
+}
+function sw(team,w){
+  if(G.turn!==team||!G.active)return;
+  G[team].w=w;
+  const p=team==='A'?'wa':'wb';
+  ['rifle','tank','air'].forEach((ww,i)=>document.getElementById(p+(i+1)).classList.toggle('sel',ww===w));
+}
+function log(msg,type){
+  const el=document.getElementById('lg');
+  const d=document.createElement('div');
+  d.className='le '+(type||'s');
+  d.textContent=msg;
+  el.prepend(d);
+}
+function getBFRect(){return document.getElementById('bf').getBoundingClientRect();}
+function fireRifle(attacker,count,onDone){
+  const xl=document.getElementById('xl');
+  const bfW=document.getElementById('bf').offsetWidth;
+  const bfH=document.getElementById('bf').offsetHeight;
+  const total=Math.min(count*3+4,18);
+  function fireSingle(i){
+    if(i>=total){setTimeout(onDone,200);return;}
+    setTimeout(()=>{
+      const b=document.createElement('div');
+      b.className='blt'+(Math.random()<0.4?' tracer':'');
+      const fromRight=attacker==='B';
+      const startX=fromRight?bfW*0.68:bfW*0.28;
+      const endX=fromRight?bfW*0.27:bfW*0.69;
+      const y=bfH*0.38+Math.random()*bfH*0.3;
+      b.style.cssText=`left:${startX}px;top:${y}px;`;
+      xl.appendChild(b);
+      const dist=endX-startX,dur=320+Math.random()*120;
+      let start=null;
+      function anim(ts){
+        if(!start)start=ts;
+        const prog=Math.min((ts-start)/dur,1);
+        const ease=prog<0.5?2*prog*prog:1-Math.pow(-2*prog+2,2)/2;
+        b.style.left=(startX+dist*ease)+'px';
+        b.style.top=(y+Math.sin(prog*Math.PI)*(-8))+'px';
+        if(prog<1)requestAnimationFrame(anim);
+        else{spawnExpl(parseFloat(b.style.left),parseFloat(b.style.top),10,'#f97316',0);b.remove();}
+      }
+      requestAnimationFrame(anim);
+      fireSingle(i+1);
+    },i*55);
+  }
+  fireSingle(0);
+}
+function fireTankShell(attacker,count,onDone){
+  const xl=document.getElementById('xl');
+  const bfW=document.getElementById('bf').offsetWidth;
+  const bfH=document.getElementById('bf').offsetHeight;
+  const shots=Math.min(count+1,4);let done=0;
+  for(let i=0;i<shots;i++){
+    setTimeout(()=>{
+      const sh=document.createElement('div');sh.className='shell';
+      const fromRight=attacker==='B';
+      const startX=fromRight?bfW*0.66:bfW*0.30;
+      const endX=fromRight?bfW*0.29:bfW*0.67;
+      const y=bfH*0.55+Math.random()*bfH*0.15;
+      sh.style.cssText=`left:${startX}px;top:${y}px;transform:scaleX(${fromRight?-1:1});`;
+      xl.appendChild(sh);
+      const dist=endX-startX,dur=450+Math.random()*100;let start=null;
+      function anim(ts){
+        if(!start)start=ts;
+        const p=Math.min((ts-start)/dur,1);
+        sh.style.left=(startX+dist*p)+'px';
+        sh.style.top=(y-Math.sin(p*Math.PI)*40)+'px';
+        if(p<1)requestAnimationFrame(anim);
+        else{
+          const ex=parseFloat(sh.style.left),ey=parseFloat(sh.style.top);
+          sh.remove();
+          spawnExpl(ex,ey,44,'#f97316',0);spawnExpl(ex+8,ey-8,22,'#fff',80);spawnExpl(ex-6,ey+4,18,'#fbbf24',120);
+          done++;if(done===shots)setTimeout(onDone,500);
+        }
+      }
+      requestAnimationFrame(anim);
+    },i*280);
+  }
+}
+function fireAirstrike(attacker,count,onDone){
+  const xl=document.getElementById('xl');
+  const bfW=document.getElementById('bf').offsetWidth;
+  const bfH=document.getElementById('bf').offsetHeight;
+  const drops=Math.min(count+2,8);let done=0;
+  for(let i=0;i<drops;i++){
+    setTimeout(()=>{
+      const m=document.createElement('div');m.className='mssl';
+      const targetX=attacker==='A'?bfW*0.65:bfW*0.3;
+      const x=targetX+(Math.random()-0.5)*bfW*0.18;
+      const startY=bfH*0.05,endY=bfH*0.52+Math.random()*bfH*0.2;
+      m.style.cssText=`left:${x}px;top:${startY}px;transform:rotate(90deg);`;
+      xl.appendChild(m);
+      const dur=500+Math.random()*200;let start=null;
+      function anim(ts){
+        if(!start)start=ts;
+        const p=Math.min((ts-start)/dur,1);
+        m.style.top=(startY+(endY-startY)*p)+'px';
+        if(p<1)requestAnimationFrame(anim);
+        else{
+          const ey=parseFloat(m.style.top),ex=parseFloat(m.style.left);m.remove();
+          spawnExpl(ex,ey,60,'#ef4444',0);spawnExpl(ex+12,ey-12,35,'#f97316',60);
+          spawnExpl(ex-10,ey+8,28,'#fff',100);spawnExpl(ex+5,ey-20,20,'#fbbf24',150);
+          done++;if(done===drops)setTimeout(onDone,600);
+        }
+      }
+      requestAnimationFrame(anim);
+    },i*200);
+  }
+}
+function spawnExpl(x,y,size,color,delay){
+  setTimeout(()=>{
+    const xl=document.getElementById('xl');
+    const d=document.createElement('div');d.className='expl';
+    d.style.cssText=`left:${x-size/2}px;top:${y-size/2}px;width:${size}px;height:${size}px;background:${color};`;
+    xl.appendChild(d);
+    const sm=document.createElement('div');sm.className='smk';
+    sm.style.cssText=`left:${x-size/3}px;top:${y-size*0.6}px;width:${size*.7}px;height:${size*.7}px;`;
+    xl.appendChild(sm);
+    setTimeout(()=>{d.remove();sm.remove();},1300);
+  },delay);
+}
+function attack(attacker){
+  if(!G.active||G.turn!==attacker||G.busy)return;
+  G.busy=true;
+  document.getElementById('ba').disabled=true;
+  document.getElementById('bb').disabled=true;
+  const def=attacker==='A'?'B':'A';
+  const w=G[attacker].w;
+  const killRange={rifle:[1,4],tank:[2,7],air:[4,12]};
+  const [mn,mx]=killRange[w];
+  const kills=mn+Math.floor(Math.random()*(mx-mn+1));
+  const actual=Math.min(kills,G[def].s);
+  function applyDamage(){
+    G[def].s=Math.max(0,G[def].s-actual);
+    if(w==='tank'||w==='air')G[def].t=Math.max(0,G[def].t-1);
+    if(w==='air')G[def].j=Math.max(0,G[def].j-1);
+    renderArmies();hud();
+    const wn={rifle:'Rifle Fire',tank:'Tank Shell',air:'Airstrike'};
+    log(`Team ${attacker} uses ${wn[w]}! ${actual} enemy soldiers killed!`,'d');
+    if(G[def].s<=0){endGame(attacker);G.busy=false;return;}
+    G.turn=def;G.active=false;hud();countdown();G.busy=false;
+  }
+  if(w==='rifle')fireRifle(attacker,actual,applyDamage);
+  else if(w==='tank')fireTankShell(attacker,actual,applyDamage);
+  else fireAirstrike(attacker,actual,applyDamage);
+}
+function countdown(){
+  const cd=document.getElementById('cdb');cd.style.display='block';let n=5;
+  document.getElementById('cdn').textContent=n;
+  const iv=setInterval(()=>{n--;document.getElementById('cdn').textContent=n;
+    if(n<=0){clearInterval(iv);cd.style.display='none';G.active=true;hud();}
+  },1000);
+}
+function endGame(winner){
+  G.active=false;const loser=winner==='A'?'B':'A';
+  document.getElementById('wt').textContent=`Team ${winner} Wins the War!`;
+  document.getElementById('wd').textContent=`Team ${loser} army has been completely destroyed!`;
+  document.getElementById('win-ov').classList.add('show');
+  log(`VICTORY! Team ${winner} wins!`,'w');
+}
+function reset(){
+  G={A:{s:MS,t:MT,j:MJ,w:'rifle'},B:{s:MS,t:MT,j:MJ,w:'rifle'},turn:'A',active:true,busy:false};
+  document.getElementById('win-ov').classList.remove('show');
+  document.getElementById('cdb').style.display='none';
+  document.getElementById('lg').innerHTML='';
+  document.getElementById('xl').innerHTML='';
+  document.querySelectorAll('.wbtn').forEach(b=>{b.classList.remove('sel');b.disabled=false;});
+  document.getElementById('wa1').classList.add('sel');
+  document.getElementById('wb1').classList.add('sel');
+  renderArmies();hud();
+  log('Battle begins! Blue Army vs Red Army!','s');
+}
+reset();
+</script>
+</body>
+</html>

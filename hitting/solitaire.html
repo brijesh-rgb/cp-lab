@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klondike Solitaire</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;user-select:none;}
+body{background:#1a6b2a;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding:16px;}
+#game{max-width:600px;margin:0 auto;}
+#top-row{display:flex;gap:10px;margin-bottom:14px;align-items:flex-start;}
+#tableau-row{display:flex;gap:7px;justify-content:center;}
+.card-slot{width:72px;height:100px;border:2px dashed rgba(255,255,255,0.3);border-radius:8px;position:relative;flex-shrink:0;}
+.card{width:72px;height:100px;border-radius:8px;border:1px solid #bbb;background:#fff;position:absolute;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:4px;font-size:13px;font-weight:600;box-shadow:1px 2px 4px rgba(0,0,0,0.28);transition:box-shadow 0.1s;}
+.card:hover{box-shadow:2px 4px 8px rgba(0,0,0,0.35);}
+.card.red{color:#c00;}
+.card.black{color:#111;}
+.card.face-down{background:repeating-linear-gradient(135deg,#1a3a8a 0px,#1a3a8a 6px,#2452b8 6px,#2452b8 12px);border:2px solid #3060d0;cursor:pointer;}
+.card.face-down .rank,.card.face-down .suit,.card.face-down .center{display:none;}
+.card .top-left{text-align:left;line-height:1.1;}
+.card .bottom-right{text-align:right;line-height:1.1;transform:rotate(180deg);}
+.card .center{text-align:center;font-size:22px;line-height:1;}
+.card.selected{box-shadow:0 0 0 3px #ffe033,1px 2px 4px rgba(0,0,0,0.28);}
+.card.hint-from{box-shadow:0 0 0 3px #00e5ff,1px 2px 4px rgba(0,0,0,0.28);animation:pulse 0.7s infinite alternate;}
+.card.hint-to{box-shadow:0 0 0 3px #00ff99,1px 2px 4px rgba(0,0,0,0.28);animation:pulse2 0.7s infinite alternate;}
+@keyframes pulse{from{box-shadow:0 0 0 3px #00e5ff,0 0 8px #00e5ff;}to{box-shadow:0 0 0 4px #00e5ff,0 0 16px #00e5ff;}}
+@keyframes pulse2{from{box-shadow:0 0 0 3px #00ff99,0 0 8px #00ff99;}to{box-shadow:0 0 0 4px #00ff99,0 0 16px #00ff99;}}
+.col{position:relative;width:72px;min-height:120px;}
+.stock-pile{width:72px;height:100px;border-radius:8px;border:2px dashed rgba(255,255,255,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:32px;flex-shrink:0;transition:background 0.2s;}
+.stock-pile.has-cards{background:repeating-linear-gradient(135deg,#1a3a8a 0px,#1a3a8a 6px,#2452b8 6px,#2452b8 12px);border:2px solid #3060d0;}
+.stock-pile:hover{background:rgba(255,255,255,0.1);}
+.stock-pile.has-cards:hover{filter:brightness(1.15);}
+.foundation{width:72px;height:100px;border-radius:8px;border:2px dashed rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;flex-shrink:0;transition:border-color 0.2s;}
+.foundation.hint-to{border-color:#00ff99;box-shadow:0 0 0 3px #00ff99;animation:pulse2 0.7s infinite alternate;}
+#controls{display:flex;flex-direction:column;gap:6px;align-items:flex-end;margin-left:auto;}
+#score-disp{color:#fff;font-size:17px;font-weight:600;}
+#time-disp{color:rgba(255,255,255,0.8);font-size:13px;}
+.btn{border:1px solid rgba(255,255,255,0.45);color:#fff;border-radius:6px;padding:6px 13px;cursor:pointer;font-size:13px;font-weight:500;transition:background 0.15s;}
+.btn:hover{background:rgba(255,255,255,0.2);}
+#new-btn{background:rgba(255,255,255,0.15);}
+#hint-btn{background:rgba(255,220,0,0.18);border-color:rgba(255,220,0,0.6);color:#ffe033;}
+#hint-btn:hover{background:rgba(255,220,0,0.3);}
+#hint-msg{color:#ffe033;font-size:12px;text-align:right;min-height:16px;transition:opacity 0.3s;}
+#win-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center;}
+#win-overlay.show{display:flex;}
+#win-box{background:#fff;border-radius:14px;padding:36px 44px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+#win-box h2{font-size:30px;color:#1a6b2a;margin-bottom:8px;}
+#win-box p{color:#555;margin-bottom:20px;font-size:15px;}
+#win-box button{background:#1a6b2a;color:#fff;border:none;border-radius:8px;padding:11px 28px;cursor:pointer;font-size:15px;font-weight:600;}
+#win-box button:hover{background:#155620;}
+</style>
+</head>
+<body>
+<div id="game">
+  <div id="top-row">
+    <div id="stock" class="stock-pile" title="Click to draw"></div>
+    <div id="waste" class="card-slot" style="margin-right:10px;"></div>
+    <div style="display:flex;gap:7px;">
+      <div class="foundation" id="f0" data-suit="♠">♠</div>
+      <div class="foundation" id="f1" data-suit="♥" style="color:#c44;">♥</div>
+      <div class="foundation" id="f2" data-suit="♦" style="color:#c44;">♦</div>
+      <div class="foundation" id="f3" data-suit="♣">♣</div>
+    </div>
+    <div id="controls">
+      <div id="score-disp">Score: 0</div>
+      <div id="time-disp">Time: 0:00</div>
+      <button class="btn" id="new-btn">New Game</button>
+      <button class="btn" id="hint-btn">💡 Hint</button>
+      <div id="hint-msg"></div>
+    </div>
+  </div>
+  <div id="tableau-row">
+    <div class="col" id="col0"></div>
+    <div class="col" id="col1"></div>
+    <div class="col" id="col2"></div>
+    <div class="col" id="col3"></div>
+    <div class="col" id="col4"></div>
+    <div class="col" id="col5"></div>
+    <div class="col" id="col6"></div>
+  </div>
+</div>
+<div id="win-overlay">
+  <div id="win-box">
+    <h2>🎉 You Win!</h2>
+    <p id="win-score">Score: 0 — Time: 0:00</p>
+    <button onclick="initGame()">Play Again</button>
+  </div>
+</div>
+
+<script>
+const SUITS=['♠','♥','♦','♣'];
+const RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const RED=['♥','♦'];
+let stock=[],waste=[],foundations=[[],[],[],[]],tableau=[[],[],[],[],[],[],[]];
+let score=0,seconds=0,timer=null,selected=null;
+let hintTimer=null,hintActive=false;
+
+function isRed(s){return RED.includes(s);}
+function rv(r){return RANKS.indexOf(r);}
+
+function buildDeck(){
+  let d=[];
+  for(let s of SUITS)for(let r of RANKS)d.push({suit:s,rank:r,faceUp:false});
+  for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}
+  return d;
+}
+
+function initGame(){
+  clearInterval(timer);clearTimeout(hintTimer);
+  seconds=0;score=0;selected=null;hintActive=false;
+  let deck=buildDeck();
+  tableau=[[],[],[],[],[],[],[]];
+  for(let i=0;i<7;i++)for(let j=0;j<=i;j++){let c=deck.pop();c.faceUp=(j===i);tableau[i].push(c);}
+  stock=deck.map(c=>({...c,faceUp:false}));
+  waste=[];foundations=[[],[],[],[]];
+  updateScore(0);startTimer();render();
+  document.getElementById('win-overlay').classList.remove('show');
+  document.getElementById('hint-msg').textContent='';
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timer=setInterval(()=>{seconds++;document.getElementById('time-disp').textContent='Time: '+fmt(seconds);},1000);
+}
+function fmt(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;}
+function updateScore(d){score=Math.max(0,score+d);document.getElementById('score-disp').textContent='Score: '+score;}
+
+function makeCardEl(card){
+  let d=document.createElement('div');
+  d.className='card '+(card.faceUp?(isRed(card.suit)?'red':'black'):'face-down');
+  if(card.faceUp){
+    d.innerHTML=`<div class="top-left"><div class="rank">${card.rank}</div><div class="suit">${card.suit}</div></div><div class="center">${card.suit}</div><div class="bottom-right"><div class="rank">${card.rank}</div><div class="suit">${card.suit}</div></div>`;
+  }
+  return d;
+}
+
+function canTab(card,col){
+  if(tableau[col].length===0)return card.rank==='K';
+  let top=tableau[col][tableau[col].length-1];
+  return top.faceUp&&isRed(card.suit)!==isRed(top.suit)&&rv(card.rank)===rv(top.rank)-1;
+}
+function canFnd(card,fi){
+  let f=foundations[fi];
+  if(f.length===0)return card.rank==='A';
+  let top=f[f.length-1];
+  return card.suit===top.suit&&rv(card.rank)===rv(top.rank)+1;
+}
+
+function autoFoundation(card,source,colIdx,cardIdx){
+  for(let fi=0;fi<4;fi++){
+    if(canFnd(card,fi)){
+      foundations[fi].push(card);
+      if(source==='waste')waste.pop();
+      else if(source==='tableau'){tableau[colIdx].splice(cardIdx,1);flipTop(colIdx);}
+      updateScore(source==='waste'?10:15);
+      selected=null;render();checkWin();return true;
+    }
+  }
+  return false;
+}
+
+function flipTop(ci){if(tableau[ci].length>0&&!tableau[ci][tableau[ci].length-1].faceUp){tableau[ci][tableau[ci].length-1].faceUp=true;updateScore(5);}}
+
+function handleStockClick(){
+  selected=null;clearHint();
+  if(stock.length===0){stock=waste.slice().reverse().map(c=>({...c,faceUp:false}));waste=[];updateScore(-100);}
+  else{let c=stock.pop();c.faceUp=true;waste.push(c);updateScore(5);}
+  render();
+}
+
+function handleWasteClick(){
+  if(waste.length===0)return;
+  clearHint();
+  let card=waste[waste.length-1];
+  if(selected&&selected.source==='waste'){selected=null;render();return;}
+  if(!autoFoundation(card,'waste',-1,-1)){selected={source:'waste',card};render();}
+}
+
+function handleFoundationClick(fi){
+  if(!selected)return;
+  clearHint();
+  let card,cards=[];
+  if(selected.source==='waste'){card=waste[waste.length-1];}
+  else if(selected.source==='tableau'){cards=tableau[selected.colIdx].slice(selected.cardIdx);card=cards[0];if(cards.length>1){selected=null;render();return;}}
+  if(canFnd(card,fi)){
+    foundations[fi].push(card);
+    if(selected.source==='waste')waste.pop();
+    else{tableau[selected.colIdx].splice(selected.cardIdx);flipTop(selected.colIdx);}
+    updateScore(selected.source==='waste'?10:15);
+    selected=null;render();checkWin();
+  } else {selected=null;render();}
+}
+
+function handleTableauClick(colIdx,cardIdx){
+  clearHint();
+  let col=tableau[colIdx];
+  let card=col[cardIdx];
+  if(!card.faceUp){if(cardIdx===col.length-1){card.faceUp=true;updateScore(5);render();}return;}
+  if(selected){
+    let srcCards=[];
+    if(selected.source==='waste'){srcCards=[waste[waste.length-1]];}
+    else if(selected.source==='tableau'){srcCards=tableau[selected.colIdx].slice(selected.cardIdx);}
+    if(srcCards.length>0&&canTab(srcCards[0],colIdx)){
+      for(let c of srcCards)tableau[colIdx].push(c);
+      if(selected.source==='waste')waste.pop();
+      else{tableau[selected.colIdx].splice(selected.cardIdx);flipTop(selected.colIdx);}
+      updateScore(5);selected=null;render();return;
+    }
+    if(selected.source==='tableau'&&selected.colIdx===colIdx&&selected.cardIdx===cardIdx){selected=null;render();return;}
+  }
+  selected={source:'tableau',colIdx,cardIdx,card};render();
+}
+
+function handleEmptyColClick(colIdx){
+  clearHint();
+  if(!selected)return;
+  let srcCards=[];
+  if(selected.source==='waste'){srcCards=[waste[waste.length-1]];}
+  else if(selected.source==='tableau'){srcCards=tableau[selected.colIdx].slice(selected.cardIdx);}
+  if(srcCards.length>0&&srcCards[0].rank==='K'){
+    for(let c of srcCards)tableau[colIdx].push(c);
+    if(selected.source==='waste')waste.pop();
+    else{tableau[selected.colIdx].splice(selected.cardIdx);flipTop(selected.colIdx);}
+    updateScore(5);selected=null;render();
+  } else {selected=null;render();}
+}
+
+// ── HINT ENGINE ──────────────────────────────────────────────────
+function findHint(){
+  // Priority 1: Move to foundation
+  for(let fi=0;fi<4;fi++){
+    // from waste
+    if(waste.length>0&&canFnd(waste[waste.length-1],fi))
+      return {type:'foundation',fromSource:'waste',fromCol:-1,fromIdx:waste.length-1,toFi:fi,
+              msg:'Move '+waste[waste.length-1].rank+waste[waste.length-1].suit+' to foundation'};
+    // from tableau top
+    for(let ci=0;ci<7;ci++){
+      let col=tableau[ci];
+      if(col.length>0){let c=col[col.length-1];if(c.faceUp&&canFnd(c,fi))
+        return {type:'foundation',fromSource:'tableau',fromCol:ci,fromIdx:col.length-1,toFi:fi,
+                msg:'Move '+c.rank+c.suit+' to foundation'};}
+    }
+  }
+  // Priority 2: Flip face-down card (expose by moving stack)
+  // Priority 3: Tableau to tableau moves
+  for(let src=0;src<7;src++){
+    let col=tableau[src];
+    for(let si=0;si<col.length;si++){
+      if(!col[si].faceUp)continue;
+      let card=col[si];
+      for(let dst=0;dst<7;dst++){
+        if(dst===src)continue;
+        if(canTab(card,dst)){
+          // Only suggest if it reveals a face-down card or empties a column for a King
+          let revealsDown=si>0&&!col[si-1].faceUp;
+          let emptiesForKing=si===0&&card.rank!=='K';
+          if(revealsDown||si===0){
+            return {type:'tableau',fromSource:'tableau',fromCol:src,fromIdx:si,toCol:dst,
+                    msg:'Move '+card.rank+card.suit+' to column '+(dst+1)};
+          }
+        }
+      }
+    }
+  }
+  // Priority 4: Any tableau move
+  for(let src=0;src<7;src++){
+    let col=tableau[src];
+    for(let si=0;si<col.length;si++){
+      if(!col[si].faceUp)continue;
+      let card=col[si];
+      for(let dst=0;dst<7;dst++){
+        if(dst===src)continue;
+        if(canTab(card,dst))
+          return {type:'tableau',fromSource:'tableau',fromCol:src,fromIdx:si,toCol:dst,
+                  msg:'Move '+card.rank+card.suit+' to column '+(dst+1)};
+      }
+    }
+  }
+  // Priority 5: Waste to tableau
+  if(waste.length>0){
+    let wc=waste[waste.length-1];
+    for(let dst=0;dst<7;dst++){
+      if(canTab(wc,dst))
+        return {type:'tableau',fromSource:'waste',fromCol:-1,fromIdx:-1,toCol:dst,
+                msg:'Move '+wc.rank+wc.suit+' from waste to column '+(dst+1)};
+    }
+  }
+  // Priority 6: Draw from stock
+  if(stock.length>0)return {type:'stock',msg:'Draw a card from the stock pile'};
+  if(waste.length>0)return {type:'stock',msg:'Recycle the waste pile'};
+  return null;
+}
+
+function clearHint(){
+  hintActive=false;
+  clearTimeout(hintTimer);
+  document.getElementById('hint-msg').textContent='';
+  render();
+}
+
+function showHint(){
+  clearHint();
+  let hint=findHint();
+  if(!hint){
+    document.getElementById('hint-msg').textContent='No moves found!';
+    return;
+  }
+  hintActive=true;
+  window._hint=hint;
+  document.getElementById('hint-msg').textContent=hint.msg;
+  render();
+  hintTimer=setTimeout(clearHint,3000);
+}
+// ─────────────────────────────────────────────────────────────────
+
+function checkWin(){
+  if(foundations.every(f=>f.length===13)){
+    clearInterval(timer);
+    document.getElementById('win-score').textContent='Score: '+score+' — Time: '+fmt(seconds);
+    document.getElementById('win-overlay').classList.add('show');
+  }
+}
+
+function render(){
+  let hint=hintActive?window._hint:null;
+
+  // Stock
+  let stockEl=document.getElementById('stock');
+  stockEl.className='stock-pile'+(stock.length>0?' has-cards':'');
+  stockEl.textContent=stock.length>0?'':'↺';
+  stockEl.onclick=handleStockClick;
+  if(hint&&hint.type==='stock')stockEl.style.boxShadow='0 0 0 3px #00e5ff, 0 0 14px #00e5ff';
+  else stockEl.style.boxShadow='';
+
+  // Waste
+  let wasteEl=document.getElementById('waste');
+  wasteEl.innerHTML='';
+  if(waste.length>0){
+    let card=waste[waste.length-1];
+    let el=makeCardEl(card);
+    if(selected&&selected.source==='waste')el.classList.add('selected');
+    if(hint&&hint.fromSource==='waste')el.classList.add('hint-from');
+    el.onclick=handleWasteClick;
+    el.ondblclick=()=>{selected={source:'waste',card};autoFoundation(card,'waste',-1,-1);};
+    wasteEl.appendChild(el);
+  }
+
+  // Foundations
+  for(let fi=0;fi<4;fi++){
+    let fEl=document.getElementById('f'+fi);
+    fEl.innerHTML='';
+    let f=foundations[fi];
+    if(f.length>0){let el=makeCardEl(f[f.length-1]);fEl.appendChild(el);}
+    else{fEl.style.color=isRed(SUITS[fi])?'rgba(200,80,80,0.5)':'rgba(255,255,255,0.4)';fEl.textContent=SUITS[fi];}
+    fEl.className='foundation'+(hint&&hint.type==='foundation'&&hint.toFi===fi?' hint-to':'');
+    fEl.onclick=()=>handleFoundationClick(fi);
+  }
+
+  // Tableau
+  for(let ci=0;ci<7;ci++){
+    let colEl=document.getElementById('col'+ci);
+    colEl.innerHTML='';
+    let col=tableau[ci];
+    if(col.length===0){
+      colEl.style.cssText='width:72px;min-height:100px;border:2px dashed rgba(255,255,255,0.3);border-radius:8px;position:relative;';
+      colEl.onclick=()=>handleEmptyColClick(ci);
+      continue;
+    }
+    colEl.style.cssText='position:relative;width:72px;min-height:'+(100+(col.length-1)*28+100)+'px;';
+    for(let ri=0;ri<col.length;ri++){
+      let card=col[ri];
+      let el=makeCardEl(card);
+      el.style.top=(ri*28)+'px';
+      el.style.zIndex=ri;
+      if(selected&&selected.source==='tableau'&&selected.colIdx===ci&&ri>=selected.cardIdx)el.classList.add('selected');
+      if(hint){
+        if(hint.fromSource==='tableau'&&hint.fromCol===ci&&ri>=hint.fromIdx)el.classList.add('hint-from');
+        if(hint.type==='tableau'&&hint.toCol===ci&&ri===col.length-1)el.classList.add('hint-to');
+      }
+      let idx=ri;
+      el.onclick=(e)=>{e.stopPropagation();handleTableauClick(ci,idx);};
+      el.ondblclick=(e)=>{e.stopPropagation();if(card.faceUp&&ri===col.length-1){selected={source:'tableau',colIdx:ci,cardIdx:ri,card};autoFoundation(card,'tableau',ci,ri);}};
+      colEl.appendChild(el);
+    }
+    colEl.onclick=()=>handleEmptyColClick(ci);
+  }
+}
+
+document.getElementById('new-btn').onclick=initGame;
+document.getElementById('hint-btn').onclick=showHint;
+initGame();
+</script>
+</body>
+</html>

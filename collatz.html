@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3n+1 / Collatz Solver</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: min(1000px, 95vw);
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .input-box {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 12px 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      width: 220px;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #2ecc71;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #27ae60;
+      transform: translateY(-2px);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.15);
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .sequence {
+      background: rgba(0,0,0,0.18);
+      padding: 15px;
+      border-radius: 12px;
+      max-height: 180px;
+      overflow: auto;
+      word-break: break-word;
+      margin-bottom: 20px;
+    }
+
+    canvas {
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .error {
+      color: #ffdddd;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>3n+1 / Collatz Solver</h1>
+
+    <div class="input-box">
+      <input id="numInput" type="number" min="1" placeholder="Enter a positive number" />
+      <button onclick="solveCollatz()">Solve</button>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <div class="stats">
+      <div class="card">Start: <span id="startVal">-</span></div>
+      <div class="card">Steps: <span id="steps">-</span></div>
+      <div class="card">Max Value: <span id="maxValue">-</span></div>
+      <div class="card">Reached 1: <span id="reached">-</span></div>
+    </div>
+
+    <div class="sequence">
+      <strong>Sequence:</strong>
+      <div id="sequenceText">-</div>
+    </div>
+
+    <canvas id="collatzChart"></canvas>
+  </div>
+
+  <script>
+    let chartInstance = null;
+
+    function collatzSequence(n) {
+      const seq = [n];
+      let steps = 0;
+      let maxValue = n;
+
+      while (n !== 1) {
+        if (n % 2 === 0) {
+          n = n / 2;
+        } else {
+          n = 3 * n + 1;
+        }
+        seq.push(n);
+        if (n > maxValue) maxValue = n;
+        steps++;
+      }
+
+      return { seq, steps, maxValue };
+    }
+
+    function solveCollatz() {
+      const input = document.getElementById("numInput").value.trim();
+      const errorBox = document.getElementById("error");
+      errorBox.textContent = "";
+
+      const n = Number(input);
+
+      if (!input || !Number.isInteger(n) || n <= 0) {
+        errorBox.textContent = "Please enter a valid positive integer.";
+        return;
+      }
+
+      const result = collatzSequence(n);
+
+      document.getElementById("startVal").textContent = n;
+      document.getElementById("steps").textContent = result.steps;
+      document.getElementById("maxValue").textContent = result.maxValue;
+      document.getElementById("reached").textContent = "Yes";
+      document.getElementById("sequenceText").textContent = result.seq.join(" → ");
+
+      drawChart(result.seq);
+    }
+
+    function drawChart(sequence) {
+      const ctx = document.getElementById("collatzChart").getContext("2d");
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sequence.map((_, i) => i),
+          datasets: [{
+            label: 'Collatz Sequence',
+            data: sequence,
+            borderColor: '#8e44ad',
+            backgroundColor: 'rgba(142, 68, 173, 0.2)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#222'
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Step',
+                color: '#222'
+              },
+              ticks: { color: '#222' }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Value',
+                color: '#222'
+              },
+              ticks: { color: '#222' }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

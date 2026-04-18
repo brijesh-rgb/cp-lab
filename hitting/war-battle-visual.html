@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fighting Game - Single File</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    #game {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      background: #000;
+      border: 2px solid #444;
+    }
+    #hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      color: white;
+      font-size: 18px;
+    }
+    .health-bar {
+      width: 200px;
+      height: 16px;
+      border: 1px solid #666;
+      margin-top: 4px;
+    }
+    .health-fill {
+      height: 100%;
+    }
+    .p1-health {
+      background: #00f;
+    }
+    .p2-health {
+      background: #f00;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <div id="hud">
+      <div>
+        Player 1 (A/D to move, W to punch)
+        <div class="health-bar">
+          <div id="p1hp" class="health-fill p1-health"></div>
+        </div>
+      </div>
+      <div>
+        Player 2 (←/→ to move, ↑ to punch)
+        <div class="health-bar">
+          <div id="p2hp" class="health-fill p2-health"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const game = document.getElementById("game");
+    const p1hp = document.getElementById("p1hp");
+    const p2hp = document.getElementById("p2hp");
+
+    // Create canvas
+    const canvas = document.createElement("canvas");
+    canvas.width = 800;
+    canvas.height = 600;
+    canvas.style.position = "absolute";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    game.appendChild(canvas);
+
+    const ctx = canvas.getContext("2d");
+
+    // Player class
+    class Player {
+      constructor(x, y, color, controls) {
+        this.x = x;
+        this.y = y;
+        this.width = 50;
+        this.height = 80;
+        this.vel = 4;
+        this.color = color;
+        this.controls = controls;
+        this.health = 100;
+        this.isAttacking = false;
+        this.attackTimer = 0;
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        // Optional: show hitbox when attacking
+        if (this.isAttacking) {
+          ctx.strokeStyle = "#ff0";
+          ctx.strokeRect(this.x, this.y, this.width, this.height);
+        }
+      }
+
+      update() {
+        if (this.isAttacking) {
+          this.attackTimer--;
+          if (this.attackTimer <= 0) {
+            this.isAttacking = false;
+          }
+        }
+      }
+
+      move(keys) {
+        if (keys[this.controls.left] && this.x > 0) this.x -= this.vel;
+        if (keys[this.controls.right] && this.x < canvas.width - this.width)
+          this.x += this.vel;
+      }
+
+      attack(keys, other) {
+        if (keys[this.controls.attack] && !this.isAttacking) {
+          this.isAttacking = true;
+          this.attackTimer = 10;
+
+          // Simple overlap hit detection
+          if (
+            this.x + this.width > other.x &&
+            this.x < other.x + other.width &&
+            Math.abs(this.y - other.y) < 20
+          ) {
+            other.health = Math.max(0, other.health - 10);
+          }
+        }
+      }
+    }
+
+    // Players
+    const player1 = new Player(100, 500, "blue", {
+      left: "KeyA",
+      right: "KeyD",
+      attack: "KeyW",
+    });
+    const player2 = new Player(600, 500, "red", {
+      left: "ArrowLeft",
+      right: "ArrowRight",
+      attack: "ArrowUp",
+    });
+
+    // Keyboard state
+    const keys = {};
+
+    window.addEventListener("keydown", (e) => {
+      keys[e.code] = true;
+    });
+    window.addEventListener("keyup", (e) => {
+      keys[e.code] = false;
+    });
+
+    // Game loop
+    function gameLoop() {
+      // Clear canvas
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Update health bars
+      p1hp.style.width = player1.health + "%";
+      p2hp.style.width = player2.health + "%";
+
+      // Update players
+      player1.update();
+      player2.update();
+
+      player1.move(keys);
+      player2.move(keys);
+
+      player1.attack(keys, player2);
+      player2.attack(keys, player1);
+
+      // Draw players
+      player1.draw();
+      player2.draw();
+
+      // Check win
+      if (player1.health <= 0) {
+        ctx.fillStyle = "white";
+        ctx.font = "36px Arial";
+        ctx.fillText("PLAYER 2 WINS!", canvas.width / 2 - 120, canvas.height / 2);
+      } else if (player2.health <= 0) {
+        ctx.fillStyle = "white";
+        ctx.font = "36px Arial";
+        ctx.fillText("PLAYER 1 WINS!", canvas.width / 2 - 120, canvas.height / 2);
+      } else {
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
+    gameLoop();
+  </script>
+</body>
+</html>
