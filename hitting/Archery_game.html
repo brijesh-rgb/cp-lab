@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archery Master</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;user-select:none;}
+body{background:#000;overflow:hidden;height:100vh;display:flex;flex-direction:column;font-family:'Segoe UI',sans-serif;}
+#game{position:relative;flex:1;overflow:hidden;cursor:none;}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+#hud{background:#111;border-top:2px solid #2a2a2a;padding:9px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+#score-box{font-size:24px;font-weight:700;color:#ffd700;}
+.lbl{font-size:9px;color:#555;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+#rnd-num{font-size:20px;font-weight:700;color:#ffd700;}
+#arrows-row{display:flex;gap:4px;}
+.adot{width:9px;height:24px;background:#c04020;border-radius:1px;position:relative;}
+.adot::after{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);border:4px solid transparent;border-bottom:6px solid #f0c040;}
+.adot.used{background:#2a2a2a;}.adot.used::after{border-bottom-color:#2a2a2a;}
+#pbg{width:110px;height:10px;background:#1a1a1a;border-radius:5px;overflow:hidden;border:1px solid #333;}
+#pfill{height:100%;width:0%;background:linear-gradient(90deg,#20c040,#f0c020,#e03010);border-radius:5px;transition:width .04s;}
+#wind-box{font-size:13px;color:#ccc;display:flex;gap:6px;align-items:center;}
+#wind-dir{font-size:20px;transition:color .3s;}
+#timer-ring{position:absolute;bottom:12px;right:12px;pointer-events:none;}
+#t-svg{transform:rotate(-90deg);}
+#msg{position:absolute;top:36%;left:50%;transform:translateX(-50%);font-size:30px;font-weight:700;color:#fff;text-shadow:0 3px 16px rgba(0,0,0,.95);pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap;letter-spacing:2px;}
+.spop{position:absolute;font-weight:700;pointer-events:none;text-shadow:0 2px 10px rgba(0,0,0,.9);animation:sp 1.4s ease-out forwards;z-index:99;}
+@keyframes sp{0%{opacity:1;transform:translateY(0) scale(1);}50%{opacity:1;transform:translateY(-40px) scale(1.12);}100%{opacity:0;transform:translateY(-90px) scale(.9);}}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.87);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;}
+.overlay h1{font-size:36px;color:#ffd700;font-weight:700;letter-spacing:3px;text-shadow:0 0 24px rgba(255,210,0,.4);}
+.overlay p{color:#bbb;font-size:14px;text-align:center;max-width:360px;line-height:1.9;}
+.overlay .sub{color:#555;font-size:11px;letter-spacing:2px;text-transform:uppercase;}
+.overlay button{padding:13px 34px;background:#c04020;border:2px solid #f04020;color:#fff;font-size:16px;font-weight:700;border-radius:8px;cursor:pointer;letter-spacing:1px;margin-top:8px;transition:all .15s;}
+.overlay button:hover{background:#e05030;transform:scale(1.04);}
+#go{display:none;}#go.show{display:flex;}
+</style>
+</head>
+<body>
+<div id="game">
+  <canvas id="bgc"></canvas>
+  <canvas id="mc"></canvas>
+
+  <div id="timer-ring">
+    <svg id="t-svg" width="56" height="56">
+      <circle cx="28" cy="28" r="22" fill="rgba(0,0,0,.6)" stroke="rgba(255,255,255,.12)" stroke-width="3.5"/>
+      <circle id="t-arc" cx="28" cy="28" r="22" fill="none" stroke="#20d040" stroke-width="4.5"
+        stroke-linecap="round" stroke-dasharray="138" stroke-dashoffset="0"/>
+      <text id="t-txt" x="28" y="34" text-anchor="middle" font-size="15" font-weight="700"
+        fill="#fff" font-family="Segoe UI,sans-serif" transform="rotate(90 28 28)">3</text>
+    </svg>
+  </div>
+
+  <div id="msg"></div>
+
+  <!-- INTRO -->
+  <div class="overlay" id="intro">
+    <div style="color:#666;font-size:10px;letter-spacing:5px;text-transform:uppercase;">Archery Master</div>
+    <h1>ARCHERY</h1>
+    <p>
+      <b style="color:#ffd700;">Move your mouse</b> to aim the arrow tip at the target.<br>
+      <b style="color:#ffd700;">Click &amp; Hold</b> or <b style="color:#ffd700;">Hold SPACE</b> to draw the bow and charge power.<br>
+      <b style="color:#ffd700;">Release</b> to fire the arrow!<br><br>
+      If you don't shoot in time, the arrow fires <b style="color:#e04020;">automatically</b>.<br>
+      Wind affects the arrow path — watch the indicator!
+    </p>
+    <div class="sub">10 Arrows &bull; Aim for Bullseye &bull; Max 100 pts</div>
+    <button onclick="startGame()">DRAW BOW</button>
+  </div>
+
+  <!-- GAME OVER -->
+  <div class="overlay" id="go">
+    <div style="color:#666;font-size:10px;letter-spacing:5px;text-transform:uppercase;">Game Over</div>
+    <h1>ARCHERY MASTER</h1>
+    <div style="font-size:28px;font-weight:700;color:#ffd700;" id="go-sc"></div>
+    <div style="color:#aaa;font-size:15px;" id="go-gr"></div>
+    <div style="color:#555;font-size:12px;" id="go-ht"></div>
+    <button onclick="restart()">PLAY AGAIN</button>
+  </div>
+</div>
+
+<div id="hud">
+  <div><div class="lbl">Score</div><div id="score-box">0</div></div>
+  <div><div class="lbl">Round</div><div id="rnd-num">1/10</div></div>
+  <div style="display:flex;flex-direction:column;align-items:flex-start;">
+    <div class="lbl">Arrows</div>
+    <div id="arrows-row"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;">
+    <div class="lbl">Power</div>
+    <div id="pbg"><div id="pfill"></div></div>
+  </div>
+  <div id="wind-box">
+    <div>
+      <div class="lbl">Wind</div>
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span id="wind-dir">→</span>
+        <span id="wind-val" style="font-size:13px;">0.0</span>
+      </div>
+    </div>
+  </div>
+  <div style="color:#555;font-size:11px;margin-left:auto;">Move mouse to aim &bull; Hold click/SPACE to charge &bull; Release to fire</div>
+</div>
+
+<script>
+const bgc=document.getElementById('bgc'), bgx=bgc.getContext('2d');
+const mc=document.getElementById('mc'),   ctx=mc.getContext('2d');
+let W,H;
+
+/* ── STATE ── */
+const AUTO_TIME=3, MAX_POW=26, GRAV=0.30;
+let score=0,left=10,rnd=1,hits=0,active=false;
+let pow=0,charging=false,tLeft=AUTO_TIME,tIv=null;
+let wind=0;
+let arrow={x:0,y:0,vx:0,vy:0,flying:false};
+let stuck=[];
+let mx=0,my=0,bowPull=0;
+let tgX,tgY,tgR=72;
+
+function resize(){
+  W=bgc.width=mc.width=bgc.offsetWidth;
+  H=bgc.height=mc.height=bgc.offsetHeight;
+  tgX=W*.42; tgY=H*.40;
+  if(!active){mx=tgX;my=tgY;}
+  drawBG();
+}
+window.addEventListener('resize',resize);
+
+/* ── BACKGROUND ── */
+function drawBG(){
+  bgx.clearRect(0,0,W,H);
+  // Sky
+  const sg=bgx.createLinearGradient(0,0,0,H*.52);
+  sg.addColorStop(0,'#b8d0ec');sg.addColorStop(.55,'#d0e4f0');sg.addColorStop(1,'#e0d0a0');
+  bgx.fillStyle=sg;bgx.fillRect(0,0,W,H*.52);
+
+  // Mountains (3 layers)
+  function mtn(pts,c){
+    bgx.fillStyle=c;bgx.beginPath();bgx.moveTo(0,H*.52);
+    pts.forEach(([x,y])=>bgx.lineTo(W*x,H*y));
+    bgx.lineTo(W,H*.52);bgx.closePath();bgx.fill();
+  }
+  mtn([[0,.46],[.1,.26],[.2,.34],[.32,.20],[.44,.30],[.54,.17],[.66,.28],[.78,.22],[.9,.34],[1,.40]],'#9a8070');
+  mtn([[0,.49],[.08,.36],[.2,.28],[.34,.36],[.46,.24],[.58,.34],[.70,.26],[.84,.36],[.94,.28],[1,.44]],'#b09080');
+  mtn([[0,.51],[.12,.42],[.24,.34],[.38,.42],[.5,.30],[.62,.38],[.76,.32],[.88,.40],[1,.48]],'#c8a890');
+
+  // Ground
+  const gg=bgx.createLinearGradient(0,H*.5,0,H);
+  gg.addColorStop(0,'#4a8020');gg.addColorStop(.3,'#3a6018');gg.addColorStop(1,'#2a4810');
+  bgx.fillStyle=gg;bgx.fillRect(0,H*.5,W,H*.5);
+
+  // Perspective field lines
+  bgx.strokeStyle='rgba(255,255,255,.18)';bgx.lineWidth=1;
+  for(let i=-5;i<=5;i++){bgx.beginPath();bgx.moveTo(W/2+i*W*.10,H*.5);bgx.lineTo(W/2+i*W*.75,H);bgx.stroke();}
+  for(let f=.545;f<1;f+=.055){bgx.beginPath();bgx.moveTo(0,H*f);bgx.lineTo(W,H*f);bgx.stroke();}
+
+  // Distance signs
+  function sign(x,y,txt){
+    bgx.fillStyle='rgba(255,255,255,.9)';
+    bgx.beginPath();if(bgx.roundRect)bgx.roundRect(x-28,y-14,56,27,4);else bgx.rect(x-28,y-14,56,27);bgx.fill();
+    bgx.strokeStyle='#aaa';bgx.lineWidth=1.5;
+    bgx.beginPath();if(bgx.roundRect)bgx.roundRect(x-28,y-14,56,27,4);else bgx.rect(x-28,y-14,56,27);bgx.stroke();
+    bgx.fillStyle='#222';bgx.font='bold 14px Segoe UI';bgx.textAlign='center';bgx.fillText(txt,x,y+5);
+  }
+  sign(W*.14,H*.63,'30m');sign(W*.86,H*.63,'30m');
+
+  // Autumn trees
+  function tree(x,y,h,hue){
+    bgx.fillStyle='#5a3010';bgx.fillRect(x-5,y-h*.2,10,h*.2);
+    [1,.7,.45].forEach((s,i)=>{
+      bgx.fillStyle=`hsl(${hue},78%,${30+i*7}%)`;
+      bgx.beginPath();bgx.ellipse(x,y-h*(.2+s*.34),h*s*.28,h*s*.28,0,0,Math.PI*2);bgx.fill();
+    });
+  }
+  [[.04,.92,165,22],[.10,.87,130,28],[.17,.83,112,18],[.23,.80,96,32]].forEach(([x,y,h,hu])=>tree(W*x,H*y,h,hu));
+  [[.96,.92,165,25],[.90,.87,130,20],[.83,.83,112,30],[.77,.80,96,18]].forEach(([x,y,h,hu])=>tree(W*x,H*y,h,hu));
+
+  // Fence boundary
+  bgx.strokeStyle='rgba(255,255,255,.38)';bgx.lineWidth=2;
+  bgx.beginPath();bgx.moveTo(W*.14,H*.62);bgx.lineTo(W*.86,H*.62);bgx.stroke();
+  bgx.beginPath();bgx.moveTo(W*.08,H*.76);bgx.lineTo(W*.92,H*.76);bgx.stroke();
+}
+
+/* ── DRAW TARGET ── */
+function drawTarget(){
+  const tx=tgX,ty=tgY,r=tgR;
+  // Stand post
+  ctx.fillStyle='#6a4020';ctx.fillRect(tx-5,ty+r+5,10,H-ty-r-5);
+  // Straw backing
+  ctx.fillStyle='#c8a840';ctx.beginPath();ctx.arc(tx,ty,r+12,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#a88830';ctx.beginPath();ctx.arc(tx,ty,r+9,0,Math.PI*2);ctx.fill();
+  // Target rings: white, blue, blue, red, red, yellow
+  [{r:1.0,c:'#f8f8f8'},{r:.82,c:'#5080d0'},{r:.64,c:'#5080d0'},
+   {r:.46,c:'#d03030'},{r:.28,c:'#d03030'},{r:.10,c:'#f0d010'}].forEach(rg=>{
+    ctx.fillStyle=rg.c;
+    ctx.beginPath();ctx.arc(tx,ty,r*rg.r,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=.7;
+    ctx.beginPath();ctx.arc(tx,ty,r*rg.r,0,Math.PI*2);ctx.stroke();
+  });
+  // Crosshair lines on target
+  ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=.8;
+  ctx.beginPath();ctx.moveTo(tx-r,ty);ctx.lineTo(tx+r,ty);ctx.moveTo(tx,ty-r);ctx.lineTo(tx,ty+r);ctx.stroke();
+}
+
+/* ── DRAW BOW (FIXED position, right side) ── */
+function drawBow(){
+  // BOW is always fixed at right side, vertically centered
+  const bx=W-Math.max(W*.12,90);   // fixed X
+  const cy=H*.5;                     // fixed vertical center
+  const limb=Math.min(H*.38,180);    // limb half length
+  const pull=bowPull*24;
+
+  ctx.save();
+
+  // Metallic blue gradient for bow
+  const rg=ctx.createLinearGradient(bx-14,0,bx+14,0);
+  rg.addColorStop(0,'#0e1e50');rg.addColorStop(.28,'#2858c0');rg.addColorStop(.55,'#60a0ff');rg.addColorStop(.75,'#2858c0');rg.addColorStop(1,'#0e1e50');
+
+  // Main riser (vertical bar)
+  ctx.strokeStyle=rg;ctx.lineWidth=24;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(bx,cy-limb);ctx.lineTo(bx,cy+limb);ctx.stroke();
+
+  // Top limb curve
+  ctx.strokeStyle=rg;ctx.lineWidth=13;
+  ctx.beginPath();ctx.moveTo(bx,cy-limb);ctx.bezierCurveTo(bx+30,cy-limb*.68,bx+22,cy-limb*.3,bx-9,cy-limb*.04);ctx.stroke();
+
+  // Bottom limb curve
+  ctx.beginPath();ctx.moveTo(bx,cy+limb);ctx.bezierCurveTo(bx+30,cy+limb*.68,bx+22,cy+limb*.3,bx-9,cy+limb*.04);ctx.stroke();
+
+  // Grip (black handle)
+  ctx.fillStyle='#141414';
+  if(ctx.roundRect)ctx.roundRect(bx-14,cy-38,28,76,6);else ctx.rect(bx-14,cy-38,28,76);ctx.fill();
+  // Grip texture lines
+  for(let i=-3;i<=3;i++){ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(bx-14,cy+i*10);ctx.lineTo(bx+14,cy+i*10);ctx.stroke();}
+
+  // Arrow rest / sight
+  ctx.fillStyle='#1c1c1c';ctx.fillRect(bx-38,cy-24,24,20);
+  ctx.strokeStyle='#3a3a3a';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(bx-26,cy-14,8,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.arc(bx-26,cy-14,3,0,Math.PI*2);ctx.stroke();
+
+  // Stabilizer rods
+  ctx.strokeStyle='#282828';ctx.lineWidth=7;
+  ctx.beginPath();ctx.moveTo(bx-13,cy+12);ctx.lineTo(bx-48,cy+22);ctx.stroke();
+  ctx.strokeStyle='#3a3a3a';ctx.lineWidth=5;
+  ctx.beginPath();ctx.moveTo(bx-13,cy-12);ctx.lineTo(bx-46,cy-20);ctx.stroke();
+
+  // String attachment tips
+  const tipTop={x:bx-9,y:cy-limb*.96};
+  const tipBot={x:bx-9,y:cy+limb*.96};
+  const strMid={x:bx-9-pull,y:cy};
+
+  ctx.strokeStyle='rgba(220,205,150,0.92)';ctx.lineWidth=2.2;
+  ctx.beginPath();ctx.moveTo(tipTop.x,tipTop.y);ctx.lineTo(strMid.x,strMid.y);ctx.lineTo(tipBot.x,tipBot.y);ctx.stroke();
+
+  /* ── ARROW ON BOW (points toward mouse aim) ── */
+  if(!arrow.flying && active){
+    // Arrow tail at string mid, tip points toward mouse
+    const tailX=strMid.x, tailY=strMid.y;
+    const ang=Math.atan2(my-tailY, mx-tailX);
+    const arLen=Math.min(180, Math.sqrt((mx-tailX)**2+(my-tailY)**2)*0.85+60);
+
+    ctx.save();
+    ctx.translate(tailX,tailY);ctx.rotate(ang);
+
+    // Arrow shaft
+    ctx.strokeStyle='#8a6010';ctx.lineWidth=4.5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(arLen,0);ctx.stroke();
+
+    // Arrow tip (metal)
+    ctx.fillStyle='#d0d0d0';
+    ctx.beginPath();ctx.moveTo(arLen,0);ctx.lineTo(arLen-14,-5.5);ctx.lineTo(arLen-14,5.5);ctx.fill();
+    ctx.strokeStyle='#aaa';ctx.lineWidth=.8;
+    ctx.beginPath();ctx.moveTo(arLen,0);ctx.lineTo(arLen-14,-5.5);ctx.lineTo(arLen-14,5.5);ctx.closePath();ctx.stroke();
+
+    // Fletching (3 vanes at tail)
+    ctx.fillStyle='#cc2020';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(18,-10);ctx.lineTo(18,-1);ctx.fill();
+    ctx.fillStyle='#dd3030';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(18,10);ctx.lineTo(18,1);ctx.fill();
+    ctx.fillStyle='#f0f0f0';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(16,-5);ctx.lineTo(16,5);ctx.fill();
+
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+/* ── DRAW STUCK ARROWS ── */
+function drawStuck(){
+  stuck.forEach(a=>{
+    ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.ang);
+    ctx.strokeStyle='#7a5010';ctx.lineWidth=4;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(-48,0);ctx.lineTo(28,0);ctx.stroke();
+    ctx.fillStyle='#c0c0c0';ctx.beginPath();ctx.moveTo(28,0);ctx.lineTo(18,-5);ctx.lineTo(18,5);ctx.fill();
+    ctx.fillStyle='#c03020';ctx.beginPath();ctx.moveTo(-48,0);ctx.lineTo(-36,-8);ctx.lineTo(-36,8);ctx.fill();
+    ctx.restore();
+  });
+}
+
+/* ── DRAW FLYING ARROW ── */
+function drawFlyingArrow(){
+  const ang=Math.atan2(arrow.vy,arrow.vx);
+  ctx.save();ctx.translate(arrow.x,arrow.y);ctx.rotate(ang);
+  ctx.strokeStyle='#7a5010';ctx.lineWidth=4;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(-48,0);ctx.lineTo(28,0);ctx.stroke();
+  ctx.fillStyle='#c0c0c0';ctx.beginPath();ctx.moveTo(28,0);ctx.lineTo(18,-5);ctx.lineTo(18,5);ctx.fill();
+  ctx.fillStyle='#c03020';ctx.beginPath();ctx.moveTo(-48,0);ctx.lineTo(-36,-8);ctx.lineTo(-36,8);ctx.fill();
+  // Trail
+  ctx.globalAlpha=.38;ctx.strokeStyle='#ffe090';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(-48,0);ctx.lineTo(-90,0);ctx.stroke();ctx.globalAlpha=1;
+  ctx.restore();
+}
+
+/* ── DRAW CROSSHAIR (at mouse) ── */
+function drawCrosshair(){
+  if(!active||arrow.flying)return;
+  ctx.save();
+  ctx.strokeStyle='rgba(255,255,255,.82)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(mx,my,18,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(mx-30,my);ctx.lineTo(mx-20,my);
+  ctx.moveTo(mx+20,my);ctx.lineTo(mx+30,my);
+  ctx.moveTo(mx,my-30);ctx.lineTo(mx,my-20);
+  ctx.moveTo(mx,my+20);ctx.lineTo(mx,my+30);
+  ctx.stroke();
+  ctx.fillStyle='rgba(255,60,60,.9)';ctx.beginPath();ctx.arc(mx,my,2.8,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+}
+
+/* ── MAIN DRAW ── */
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  drawTarget();
+  drawStuck();
+  if(arrow.flying) drawFlyingArrow();
+  drawBow();
+  drawCrosshair();
+}
+
+/* ── PHYSICS ── */
+function update(){
+  if(!arrow.flying)return;
+  arrow.vx+=wind*0.016;
+  arrow.vy+=GRAV;
+  arrow.x+=arrow.vx;
+  arrow.y+=arrow.vy;
+  const dx=arrow.x-tgX,dy=arrow.y-tgY;
+  const dist=Math.sqrt(dx*dx+dy*dy);
+  if(dist<tgR+5){land(dist);return;}
+  if(arrow.x>W+100||arrow.y>H+100||arrow.x<-100){
+    stuck.push({x:Math.max(0,Math.min(W,arrow.x)),y:Math.min(H,arrow.y),ang:Math.atan2(arrow.vy,arrow.vx)});
+    arrow.flying=false;
+    showMsg('MISS!','#e04020');
+    nextRound();
+  }
+}
+
+function calcPts(d){
+  const r=tgR;
+  if(d<r*.10)return 10;if(d<r*.28)return 8;if(d<r*.46)return 6;if(d<r*.64)return 4;if(d<r*.82)return 2;return 1;
+}
+
+function land(dist){
+  const pts=calcPts(dist);
+  score+=pts;hits++;
+  stuck.push({x:arrow.x,y:arrow.y,ang:Math.atan2(arrow.vy,arrow.vx)});
+  arrow.flying=false;
+  document.getElementById('score-box').textContent=score;
+  spawnPop(arrow.x,arrow.y,pts);
+  const msgs={10:['BULLSEYE!','#ffd700'],8:['EXCELLENT!','#ffd700'],6:['GREAT!','#60e040'],4:['GOOD!','#60c0f0'],2:['HIT','#ccc'],1:['HIT','#ccc']};
+  const [mt,mc2]=msgs[pts]||['HIT','#ccc'];
+  showMsg(mt,mc2);
+  nextRound();
+}
+
+function spawnPop(x,y,pts){
+  const el=document.createElement('div');
+  el.className='spop';
+  el.style.cssText=`left:${(x/W*100).toFixed(1)}%;top:${(y/H*100).toFixed(1)}%;color:${pts>=10?'#ffd700':pts>=6?'#f0a040':'#f0f0f0'};font-size:${pts>=10?'26px':'18px'};`;
+  el.textContent=pts>=10?'BULLSEYE! +10':pts>=8?'EXCELLENT! +'+pts:'+'+pts;
+  document.getElementById('game').appendChild(el);
+  setTimeout(()=>el.remove(),1500);
+}
+
+function showMsg(txt,color){
+  const m=document.getElementById('msg');
+  m.textContent=txt;m.style.color=color;m.style.opacity=1;
+  clearTimeout(m._t);m._t=setTimeout(()=>m.style.opacity=0,2100);
+}
+
+/* ── TIMER ── */
+function startTimer(){clearTimer();tLeft=AUTO_TIME;updateTimer();tIv=setInterval(()=>{tLeft=Math.max(0,tLeft-.08);updateTimer();if(tLeft<=0){clearTimer();autoFire();}},80);}
+function clearTimer(){if(tIv){clearInterval(tIv);tIv=null;}}
+function updateTimer(){
+  const t=Math.max(0,tLeft);
+  document.getElementById('t-arc').style.strokeDashoffset=138*(1-t/AUTO_TIME);
+  document.getElementById('t-arc').style.stroke=t<1?'#e04020':t<2?'#f0c020':'#20d040';
+  document.getElementById('t-txt').textContent=Math.ceil(t);
+}
+
+/* ── SHOOT ── */
+function autoFire(){
+  if(!active||arrow.flying)return;
+  pow=8+Math.random()*15;
+  document.getElementById('pfill').style.width=(pow/MAX_POW*100)+'%';
+  setTimeout(shoot,110);
+}
+function shoot(){
+  if(!active||arrow.flying)return;
+  clearTimer();charging=false;bowPull=0;
+  document.getElementById('pfill').style.width='0%';
+  // Fire from bow string mid toward aim point (mouse)
+  const bx=W-Math.max(W*.12,90);
+  const pull=pow/MAX_POW*24;
+  const tailX=bx-9-pull, tailY=H*.5;
+  const ang=Math.atan2(my-tailY, mx-tailX);
+  const spd=(pow/MAX_POW)*16+8;
+  arrow={x:tailX,y:tailY,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,flying:true};
+}
+
+/* ── CHARGE ── */
+let chIv=null;
+function startCharge(){
+  if(!active||arrow.flying)return;
+  charging=true;pow=0;bowPull=0;clearTimer();
+  chIv=setInterval(()=>{
+    pow=Math.min(MAX_POW,pow+0.65);bowPull=pow/MAX_POW;
+    document.getElementById('pfill').style.width=(pow/MAX_POW*100)+'%';
+    if(pow>=MAX_POW){clearInterval(chIv);chIv=null;}
+  },25);
+}
+function releaseCharge(){if(!charging)return;clearInterval(chIv);chIv=null;if(!active||arrow.flying)return;shoot();}
+
+/* ── EVENTS ── */
+const g=document.getElementById('game');
+g.addEventListener('mousemove',e=>{const r=mc.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});
+g.addEventListener('mousedown',e=>{if(!active||arrow.flying)return;clearTimer();startCharge();});
+document.addEventListener('mouseup',()=>{if(charging)releaseCharge();});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();if(!active||arrow.flying)return;clearTimer();startCharge();}});
+document.addEventListener('keyup',e=>{if(e.code==='Space'&&charging)releaseCharge();});
+g.addEventListener('touchstart',e=>{e.preventDefault();const r=mc.getBoundingClientRect();mx=e.touches[0].clientX-r.left;my=e.touches[0].clientY-r.top;if(!active||arrow.flying)return;clearTimer();startCharge();},{passive:false});
+g.addEventListener('touchmove',e=>{e.preventDefault();const r=mc.getBoundingClientRect();mx=e.touches[0].clientX-r.left;my=e.touches[0].clientY-r.top;},{passive:false});
+document.addEventListener('touchend',()=>{if(charging)releaseCharge();});
+
+/* ── ROUND ── */
+function nextRound(){
+  left--;rnd++;
+  updateArrows();
+  if(left<=0){setTimeout(endGame,900);return;}
+  document.getElementById('rnd-num').textContent=rnd+'/10';
+  wind=(Math.random()-.5)*6;updateWind();
+  tgR=Math.max(40,72-rnd*2);
+  setTimeout(()=>startTimer(),650);
+}
+function updateArrows(){
+  const box=document.getElementById('arrows-row');box.innerHTML='';
+  for(let i=9;i>=0;i--){const d=document.createElement('div');d.className='adot'+(i>=left?' used':'');box.appendChild(d);}
+}
+function updateWind(){
+  document.getElementById('wind-dir').textContent=wind>=0?'→':'←';
+  document.getElementById('wind-val').textContent=Math.abs(wind).toFixed(1);
+  document.getElementById('wind-dir').style.color=Math.abs(wind)>3?'#e04020':Math.abs(wind)>1.5?'#f0c020':'#60e040';
+}
+
+/* ── GAME CONTROL ── */
+function _init(){
+  score=0;left=10;rnd=1;hits=0;active=false;
+  stuck=[];arrow.flying=false;pow=0;charging=false;bowPull=0;
+  wind=(Math.random()-.5)*3;
+  tgX=W*.42;tgY=H*.40;tgR=72;
+  mx=tgX;my=tgY;
+  document.getElementById('score-box').textContent='0';
+  document.getElementById('rnd-num').textContent='1/10';
+  document.getElementById('pfill').style.width='0%';
+  document.getElementById('msg').style.opacity=0;
+  updateArrows();updateWind();
+}
+function startGame(){document.getElementById('intro').style.display='none';_init();active=true;startTimer();}
+function restart(){document.getElementById('go').classList.remove('show');_init();active=true;startTimer();}
+function endGame(){
+  active=false;clearTimer();
+  document.getElementById('go').classList.add('show');
+  document.getElementById('go-sc').textContent='Final Score: '+score+' / 100';
+  const g=score>=90?'MASTER ARCHER 🏆':score>=70?'EXPERT ARCHER 🥇':score>=50?'SKILLED 🥈':score>=30?'APPRENTICE 🥉':'KEEP PRACTICING 🎯';
+  document.getElementById('go-gr').textContent=g;
+  document.getElementById('go-ht').textContent=hits+' hits out of 10 arrows';
+}
+
+/* ── LOOP ── */
+function loop(){update();draw();requestAnimationFrame(loop);}
+resize();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

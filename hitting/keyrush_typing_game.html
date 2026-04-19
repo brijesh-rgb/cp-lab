@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KeyRush — Typing Game</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #0f0f0f;
+  --bg2: #1a1a1a;
+  --bg3: #242424;
+  --border: #2e2e2e;
+  --text: #d1d5db;
+  --muted: #4a4a4a;
+  --accent: #e2b714;
+  --green: #3cbc74;
+  --red: #ca4754;
+  --blue: #4090ff;
+  --purple: #9b59b6;
+  --font: 'JetBrains Mono', monospace;
+  --ui: 'Inter', sans-serif;
+  --radius: 10px;
+}
+.light {
+  --bg: #f5f5f0;
+  --bg2: #ebebeb;
+  --bg3: #dededb;
+  --border: #c8c8c4;
+  --text: #2e2e2e;
+  --muted: #aaaaaa;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--ui);
+  display: flex;
+  flex-direction: column;
+  transition: background .3s, color .3s;
+}
+
+/* ══ TOP BAR ══ */
+#topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#logo {
+  font-family: var(--font);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -1px;
+  margin-right: 8px;
+}
+.tab-group { display: flex; gap: 4px; }
+.tab {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--muted);
+  border: 1px solid transparent;
+  transition: all .15s;
+  background: transparent;
+  font-family: var(--ui);
+}
+.tab:hover { color: var(--text); background: var(--bg3); }
+.tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+.tab.toggle { border: 1px solid var(--border); }
+.tab.toggle.on { background: var(--bg3); color: var(--accent); border-color: var(--accent); }
+.sep { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+#topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.icon-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: all .15s;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ══ MAIN LAYOUT ══ */
+#main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ══ LEFT — TYPING AREA ══ */
+#left-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Live stats */
+#live-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+  font-family: var(--font);
+}
+.stat {
+  display: flex; flex-direction: column; align-items: center;
+}
+.stat-val { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; }
+.stat-lbl { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+#timer-display {
+  font-size: 36px; font-weight: 700; color: var(--accent); font-family: var(--font); min-width: 60px;
+}
+#timer-display.urgent { color: var(--red); animation: urgentPulse .5s infinite alternate; }
+@keyframes urgentPulse { to { opacity: .6; } }
+
+/* Progress bar */
+#progress-bar-wrap { height: 3px; background: var(--bg3); border-radius: 2px; margin-bottom: 12px; }
+#progress-bar { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width .2s; }
+
+/* Word display */
+#words-container {
+  position: relative;
+  height: 96px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+#words-inner {
+  position: absolute; width: 100%; top: 0; left: 0;
+  transition: top .15s ease;
+  font-family: var(--font);
+  font-size: 20px;
+  line-height: 1.9;
+  word-spacing: 10px;
+}
+.word { display: inline-flex; margin-right: 6px; position: relative; }
+.word.current::after {
+  content: '';
+  position: absolute; left: 0; bottom: -2px;
+  width: 100%; height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+.char { color: var(--muted); transition: color .05s; position: relative; }
+.char.correct { color: var(--green); }
+.char.wrong { color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
+.char.cursor::before {
+  content: '';
+  position: absolute; left: -1px; top: 0; bottom: 0;
+  width: 2px; background: var(--accent);
+  animation: blink .7s infinite;
+  border-radius: 1px;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* Hidden input */
+#hidden-input {
+  position: absolute; opacity: 0; pointer-events: none; left: -9999px;
+}
+
+/* Desktop keyboard visual */
+#kb-visual {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-bottom: 10px;
+}
+.kb-row { display: flex; gap: 4px; justify-content: center; }
+.kk {
+  min-width: 32px; height: 30px;
+  border-radius: 5px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  color: var(--muted);
+  font-family: var(--font);
+  transition: all .1s;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+.kk.wide { min-width: 52px; }
+.kk.wider { min-width: 72px; }
+.kk.widest { flex: 1; max-width: 220px; }
+.kk.flash-correct { background: var(--green)!important; color: #fff!important; border-color: var(--green)!important; transform: scale(.94); }
+.kk.flash-wrong { background: var(--red)!important; color: #fff!important; border-color: var(--red)!important; transform: scale(.94); }
+.kk.flash-yellow { background: var(--accent)!important; color: #000!important; border-color: var(--accent)!important; transform: scale(.94); }
+.finger-dot { position: absolute; top: 2px; right: 3px; width: 5px; height: 5px; border-radius: 50%; }
+.f-lp { background: #ff6b6b; } .f-lr { background: #ffa94d; } .f-lm { background: #ffd43b; } .f-li { background: #69db7c; }
+.f-ri { background: #69db7c; } .f-rm { background: #ffd43b; } .f-rr { background: #ffa94d; } .f-rp { background: #ff6b6b; }
+.f-th { background: #74c0fc; }
+
+/* Bottom controls */
+#bottom-row {
+  display: flex; align-items: center; gap: 10px; padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+#hint-text { font-size: 12px; color: var(--muted); font-family: var(--font); flex: 1; }
+#restart-btn {
+  padding: 8px 20px;
+  background: var(--accent); color: #000;
+  border: none; border-radius: 8px;
+  font-weight: 700; font-size: 13px;
+  cursor: pointer; font-family: var(--ui);
+  transition: all .15s;
+}
+#restart-btn:hover { filter: brightness(1.1); transform: scale(1.03); }
+#stop-btn {
+  padding: 8px 14px;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: 13px; cursor: pointer; font-family: var(--ui);
+  transition: all .15s;
+}
+#stop-btn:hover { color: var(--red); border-color: var(--red); }
+
+/* ══ RIGHT — ANDROID PHONE ══ */
+#right-panel {
+  width: 280px;
+  flex-shrink: 0;
+  padding: 12px 12px 12px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#phone {
+  width: 256px;
+  background: #1c1c1e;
+  border-radius: 38px;
+  border: 2px solid #3a3a3c;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 520px;
+}
+
+/* Status bar */
+#phone-status {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 20px 2px;
+  font-size: 10px; font-weight: 600; color: #fff;
+  background: #1c1c1e;
+  font-family: var(--ui);
+}
+.battery-icon { display: flex; align-items: center; gap: 3px; font-size: 10px; }
+
+/* Notch */
+#notch {
+  width: 80px; height: 22px;
+  background: #1c1c1e;
+  border-radius: 0 0 14px 14px;
+  margin: 0 auto;
+  position: relative;
+}
+.notch-cam { width: 8px; height: 8px; background: #2c2c2e; border-radius: 50%; position: absolute; top: 7px; left: 50%; transform: translateX(-50%); }
+
+/* App area */
+#phone-app {
+  flex: 1;
+  background: #f2f2f7;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* App top bar */
+#app-topbar {
+  background: #fff;
+  padding: 6px 12px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 11px;
+  color: #333;
+  font-family: var(--ui);
+}
+.app-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+#app-title { font-weight: 600; font-size: 12px; }
+
+/* Text field */
+#phone-text-area {
+  background: #fff;
+  margin: 8px;
+  border-radius: 10px;
+  padding: 8px 10px;
+  min-height: 52px;
+  font-size: 13px;
+  color: #333;
+  font-family: var(--ui);
+  border: 2px solid #4090ff;
+  line-height: 1.5;
+  position: relative;
+  word-break: break-all;
+}
+#phone-cursor { display: inline-block; width: 2px; height: 14px; background: #4090ff; animation: blink .7s infinite; vertical-align: middle; margin-left: 1px; }
+
+/* Suggestions */
+#suggestions {
+  background: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  gap: 0;
+}
+.sug {
+  flex: 1;
+  padding: 6px 4px;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+  cursor: pointer;
+  border-right: 1px solid #e0e0e0;
+  font-family: var(--ui);
+  transition: background .1s;
+}
+.sug:last-child { border-right: none; }
+.sug:hover { background: #e8e8e8; }
+.sug.main { font-weight: 700; color: #000; }
+
+/* Virtual keyboard */
+#vkb {
+  background: #d1d5db;
+  padding: 6px 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.vkb-row { display: flex; gap: 4px; justify-content: center; }
+.vk {
+  flex: 1;
+  max-width: 30px;
+  height: 38px;
+  border-radius: 7px;
+  background: #fff;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 0 #aaa;
+  transition: all .1s;
+  font-family: var(--ui);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.vk:active, .vk.pressed { background: #c8d0e0; transform: translateY(1px); box-shadow: 0 1px 0 #aaa; }
+.vk.lit { background: #4090ff; color: #fff; box-shadow: 0 2px 0 #2060cc; }
+.vk.special { background: #adb5bd; color: #000; font-size: 11px; }
+.vk.space-vk { flex: 3; max-width: 120px; font-size: 11px; color: #555; }
+.vk.emoji-vk { font-size: 16px; }
+.vk.enter-vk { background: #4090ff; color: #fff; box-shadow: 0 2px 0 #2060cc; font-size: 10px; }
+
+/* Swipe + voice row */
+#vkb-extras {
+  display: flex; gap: 6px; padding: 4px 6px 0;
+  justify-content: center;
+}
+.extra-btn {
+  padding: 4px 10px; border-radius: 12px;
+  background: rgba(255,255,255,.5); border: none;
+  font-size: 10px; color: #555; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--ui);
+}
+.extra-btn.on { background: #4090ff22; color: #4090ff; }
+
+/* Home bar */
+#home-bar { height: 22px; background: #1c1c1e; display: flex; align-items: center; justify-content: center; }
+.home-indicator { width: 80px; height: 4px; background: rgba(255,255,255,.25); border-radius: 2px; }
+
+/* ══ RESULTS OVERLAY ══ */
+#results {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.92);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#results.show { display: flex; }
+#results-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 36px;
+  width: min(600px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+#results-box h2 { font-family: var(--font); font-size: 28px; color: var(--accent); margin-bottom: 20px; }
+.res-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.res-stat { background: var(--bg3); border-radius: 10px; padding: 14px; text-align: center; }
+.res-stat .rv { font-size: 32px; font-weight: 700; color: var(--accent); font-family: var(--font); }
+.res-stat .rl { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+#wpm-chart { margin: 16px 0; }
+#wpm-chart h4 { font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: var(--font); }
+#chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 60px; background: var(--bg3); border-radius: 8px; padding: 8px; }
+.bar { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 2px; transition: height .4s; opacity: .8; }
+#leaderboard { margin-top: 16px; }
+#leaderboard h4 { font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: var(--font); }
+.lb-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; font-size: 13px; margin-bottom: 4px; }
+.lb-row:nth-child(odd) { background: var(--bg3); }
+.lb-row.you { background: #e2b71422; border: 1px solid var(--accent); }
+.lb-rank { font-weight: 700; color: var(--accent); min-width: 22px; font-family: var(--font); }
+.lb-name { flex: 1; }
+.lb-wpm { font-weight: 700; font-family: var(--font); }
+.lb-acc { color: var(--muted); font-size: 12px; }
+.res-btns { display: flex; gap: 10px; margin-top: 16px; }
+.res-btn {
+  flex: 1; padding: 11px; border-radius: 9px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  border: none; font-family: var(--ui); transition: all .15s;
+}
+.res-btn.primary { background: var(--accent); color: #000; }
+.res-btn.secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+.res-btn:hover { filter: brightness(1.12); transform: scale(1.02); }
+
+/* ══ STREAK BADGE ══ */
+#streak-badge {
+  position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+  color: #000; font-weight: 700; font-size: 15px;
+  padding: 8px 20px; border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(255,200,0,.4);
+  z-index: 200; pointer-events: none;
+  animation: badgePop .4s ease-out;
+  display: none;
+}
+@keyframes badgePop { from { transform: translateX(-50%) scale(.5); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
+
+/* Floating combo text */
+.combo-float {
+  position: fixed; font-weight: 700; font-size: 16px;
+  color: var(--accent); pointer-events: none; z-index: 199;
+  animation: floatUp .9s ease-out forwards;
+}
+@keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-60px) scale(1.2)} }
+
+/* Zen mode */
+body.zen-mode #kb-visual { display: none; }
+body.zen-mode #bottom-row { border-top: none; }
+
+/* Custom text overlay */
+#custom-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.8); z-index: 300;
+  align-items: center; justify-content: center;
+}
+#custom-overlay.show { display: flex; }
+#custom-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; width: min(500px, 90vw);
+}
+#custom-box h3 { margin-bottom: 12px; font-family: var(--font); color: var(--accent); }
+#custom-textarea {
+  width: 100%; height: 120px; background: var(--bg3);
+  border: 1px solid var(--border); color: var(--text);
+  border-radius: 8px; padding: 10px; font-family: var(--font); font-size: 14px;
+  resize: none; outline: none;
+}
+#custom-textarea:focus { border-color: var(--accent); }
+.custom-btns { display: flex; gap: 8px; margin-top: 12px; }
+.custom-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 14px; }
+.custom-btn.go { background: var(--accent); color: #000; }
+.custom-btn.cancel { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div id="logo">⌨️ KeyRush</div>
+  <div class="tab-group" id="mode-tabs">
+    <button class="tab active" data-mode="time">⏱ Time</button>
+    <button class="tab" data-mode="words">📝 Words</button>
+    <button class="tab" data-mode="zen">🧘 Zen</button>
+    <button class="tab" data-mode="custom">✏️ Custom</button>
+  </div>
+  <div class="sep"></div>
+  <div class="tab-group" id="time-tabs">
+    <button class="tab active" data-time="15">15</button>
+    <button class="tab" data-time="30">30</button>
+    <button class="tab" data-time="60">60</button>
+    <button class="tab" data-time="120">120</button>
+  </div>
+  <div class="sep"></div>
+  <button class="tab toggle" id="toggle-punct" title="Punctuation">@ punct</button>
+  <button class="tab toggle" id="toggle-nums" title="Numbers"># nums</button>
+  <div class="sep"></div>
+  <button class="tab toggle" id="toggle-sound" title="Sounds">🔊 Sound</button>
+  <div id="topbar-right">
+    <button class="icon-btn" id="theme-btn" title="Toggle theme">🌙</button>
+    <button class="icon-btn" id="lb-btn" title="Leaderboard">🏆</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- LEFT: TYPING -->
+  <div id="left-panel">
+
+    <!-- Stats -->
+    <div id="live-stats">
+      <div class="stat">
+        <div class="stat-val" id="wpm-val">0</div>
+        <div class="stat-lbl">wpm</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="acc-val">100%</div>
+        <div class="stat-lbl">acc</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="err-val">0</div>
+        <div class="stat-lbl">errors</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="streak-val">0</div>
+        <div class="stat-lbl">🔥streak</div>
+      </div>
+      <div class="stat" id="timer-stat">
+        <div id="timer-display">15</div>
+        <div class="stat-lbl">sec</div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+    <!-- Words -->
+    <div id="words-container">
+      <div id="words-inner"></div>
+    </div>
+    <input id="hidden-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="none">
+
+    <!-- Desktop Keyboard Visual -->
+    <div id="kb-visual">
+      <div class="kb-row">
+        <div class="kk" data-key="`">` <span class="finger-dot f-lp"></span></div>
+        <div class="kk" data-key="1">1 <span class="finger-dot f-lp"></span></div>
+        <div class="kk" data-key="2">2 <span class="finger-dot f-lr"></span></div>
+        <div class="kk" data-key="3">3 <span class="finger-dot f-lm"></span></div>
+        <div class="kk" data-key="4">4 <span class="finger-dot f-li"></span></div>
+        <div class="kk" data-key="5">5 <span class="finger-dot f-li"></span></div>
+        <div class="kk" data-key="6">6 <span class="finger-dot f-ri"></span></div>
+        <div class="kk" data-key="7">7 <span class="finger-dot f-ri"></span></div>
+        <div class="kk" data-key="8">8 <span class="finger-dot f-rm"></span></div>
+        <div class="kk" data-key="9">9 <span class="finger-dot f-rr"></span></div>
+        <div class="kk" data-key="0">0 <span class="finger-dot f-rp"></span></div>
+        <div class="kk" data-key="-">- <span class="finger-dot f-rp"></span></div>
+        <div class="kk wider" data-key="Backspace">⌫</div>
+      </div>
+      <div class="kb-row">
+        <div class="kk wide" data-key="Tab">Tab</div>
+        <div class="kk" data-key="q">q <span class="finger-dot f-lp"></span></div>
+        <div class="kk" data-key="w">w <span class="finger-dot f-lr"></span></div>
+        <div class="kk" data-key="e">e <span class="finger-dot f-lm"></span></div>
+        <div class="kk" data-key="r">r <span class="finger-dot f-li"></span></div>
+        <div class="kk" data-key="t">t <span class="finger-dot f-li"></span></div>
+        <div class="kk" data-key="y">y <span class="finger-dot f-ri"></span></div>
+        <div class="kk" data-key="u">u <span class="finger-dot f-ri"></span></div>
+        <div class="kk" data-key="i">i <span class="finger-dot f-rm"></span></div>
+        <div class="kk" data-key="o">o <span class="finger-dot f-rr"></span></div>
+        <div class="kk" data-key="p">p <span class="finger-dot f-rp"></span></div>
+        <div class="kk" data-key="[">[ <span class="finger-dot f-rp"></span></div>
+        <div class="kk" data-key="]">]</div>
+        <div class="kk" data-key="Enter">↵</div>
+      </div>
+      <div class="kb-row">
+        <div class="kk wider" data-key="CapsLock">Caps</div>
+        <div class="kk" data-key="a">a <span class="finger-dot f-lp"></span></div>
+        <div class="kk" data-key="s">s <span class="finger-dot f-lr"></span></div>
+        <div class="kk" data-key="d">d <span class="finger-dot f-lm"></span></div>
+        <div class="kk" data-key="f">f <span class="finger-dot f-li"></span></div>
+        <div class="kk" data-key="g">g <span class="finger-dot f-li"></span></div>
+        <div class="kk" data-key="h">h <span class="finger-dot f-ri"></span></div>
+        <div class="kk" data-key="j">j <span class="finger-dot f-ri"></span></div>
+        <div class="kk" data-key="k">k <span class="finger-dot f-rm"></span></div>
+        <div class="kk" data-key="l">l <span class="finger-dot f-rr"></span></div>
+        <div class="kk" data-key=";">; <span class="finger-dot f-rp"></span></div>
+        <div class="kk" data-key="'">' <span class="finger-dot f-rp"></span></div>
+        <div class="kk wider" data-key="Enter">Enter</div>
+      </div>
+      <div class="kb-row">
+        <div class="kk wider" data-key="Shift">Shift</div>
+        <div class="kk" data-key="z">z <span class="finger-dot f-lp"></span></div>
+        <div class="kk" data-key="x">x <span class="finger-dot f-lp"></span></div>
+        <div class="kk" data-key="c">c <span class="finger-dot f-lm"></span></div>
+        <div class="kk" data-key="v">v <span class="finger-dot f-li"></span></div>
+        <div class="kk" data-key="b">b <span class="finger-dot f-li"></span></div>
+        <div class="kk" data-key="n">n <span class="finger-dot f-ri"></span></div>
+        <div class="kk" data-key="m">m <span class="finger-dot f-ri"></span></div>
+        <div class="kk" data-key=",">, <span class="finger-dot f-rm"></span></div>
+        <div class="kk" data-key=".">. <span class="finger-dot f-rr"></span></div>
+        <div class="kk" data-key="/">/</div>
+        <div class="kk wider" data-key="Shift">Shift</div>
+      </div>
+      <div class="kb-row">
+        <div class="kk wide" data-key="Ctrl">Ctrl</div>
+        <div class="kk" data-key="Alt">Alt</div>
+        <div class="kk widest" data-key=" ">SPACE <span class="finger-dot f-th"></span></div>
+        <div class="kk" data-key="Alt">Alt</div>
+        <div class="kk wide" data-key="Ctrl">Ctrl</div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div id="bottom-row">
+      <div id="hint-text">Tab = restart &nbsp;|&nbsp; Esc = stop &nbsp;|&nbsp; Touch any key to type</div>
+      <button id="stop-btn" onclick="stopTest()">■ Stop</button>
+      <button id="restart-btn" onclick="restartTest()">↺ Restart</button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: ANDROID PHONE -->
+  <div id="right-panel">
+    <div id="phone">
+
+      <!-- Status bar -->
+      <div id="phone-status">
+        <span id="phone-time">9:41</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span>●●●●</span>
+          <span>WiFi</span>
+          <div class="battery-icon">🔋<span id="batt-pct">87</span>%</div>
+        </div>
+      </div>
+
+      <!-- Notch -->
+      <div id="notch"><div class="notch-cam"></div></div>
+
+      <!-- App area -->
+      <div id="phone-app">
+        <!-- App top bar -->
+        <div id="app-topbar">
+          <div class="app-icon">⌨️</div>
+          <div id="app-title">KeyRush</div>
+          <div style="margin-left:auto;font-size:10px;color:#888;">Touch to type</div>
+        </div>
+
+        <!-- Text display -->
+        <div id="phone-text-area">
+          <span id="phone-typed"></span><span id="phone-cursor"></span>
+        </div>
+
+        <!-- Suggestions -->
+        <div id="suggestions">
+          <div class="sug" id="sug0" onclick="tapSuggestion(0)">...</div>
+          <div class="sug main" id="sug1" onclick="tapSuggestion(1)">...</div>
+          <div class="sug" id="sug2" onclick="tapSuggestion(2)">...</div>
+        </div>
+
+        <!-- Virtual Keyboard -->
+        <div id="vkb">
+          <div id="vkb-extras">
+            <button class="extra-btn" id="swipe-btn" onclick="toggleSwipe()">👆 Swipe</button>
+            <button class="extra-btn" id="voice-btn" onclick="toggleVoice()">🎤 Voice</button>
+            <button class="extra-btn on" id="haptic-btn" onclick="toggleHaptic()">📳 Haptic</button>
+          </div>
+          <div class="vkb-row">
+            <div class="vk" data-vk="q">q</div>
+            <div class="vk" data-vk="w">w</div>
+            <div class="vk" data-vk="e">e</div>
+            <div class="vk" data-vk="r">r</div>
+            <div class="vk" data-vk="t">t</div>
+            <div class="vk" data-vk="y">y</div>
+            <div class="vk" data-vk="u">u</div>
+            <div class="vk" data-vk="i">i</div>
+            <div class="vk" data-vk="o">o</div>
+            <div class="vk" data-vk="p">p</div>
+          </div>
+          <div class="vkb-row">
+            <div class="vk" data-vk="a">a</div>
+            <div class="vk" data-vk="s">s</div>
+            <div class="vk" data-vk="d">d</div>
+            <div class="vk" data-vk="f">f</div>
+            <div class="vk" data-vk="g">g</div>
+            <div class="vk" data-vk="h">h</div>
+            <div class="vk" data-vk="j">j</div>
+            <div class="vk" data-vk="k">k</div>
+            <div class="vk" data-vk="l">l</div>
+          </div>
+          <div class="vkb-row">
+            <div class="vk special" data-vk="Shift">⬆</div>
+            <div class="vk" data-vk="z">z</div>
+            <div class="vk" data-vk="x">x</div>
+            <div class="vk" data-vk="c">c</div>
+            <div class="vk" data-vk="v">v</div>
+            <div class="vk" data-vk="b">b</div>
+            <div class="vk" data-vk="n">n</div>
+            <div class="vk" data-vk="m">m</div>
+            <div class="vk special" data-vk="Backspace">⌫</div>
+          </div>
+          <div class="vkb-row">
+            <div class="vk special" style="max-width:36px;font-size:10px;" data-vk="?123">?123</div>
+            <div class="vk emoji-vk" data-vk="emoji">😊</div>
+            <div class="vk space-vk" data-vk=" ">English (US)</div>
+            <div class="vk" data-vk=".">.</div>
+            <div class="vk enter-vk" data-vk="Enter">Go</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Home bar -->
+      <div id="home-bar"><div class="home-indicator"></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STREAK BADGE -->
+<div id="streak-badge">🔥 Streak!</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div id="results-box">
+    <h2>📊 Results</h2>
+    <div class="res-grid">
+      <div class="res-stat"><div class="rv" id="r-wpm">—</div><div class="rl">WPM</div></div>
+      <div class="res-stat"><div class="rv" id="r-acc">—</div><div class="rl">Accuracy</div></div>
+      <div class="res-stat"><div class="rv" id="r-err">—</div><div class="rl">Errors</div></div>
+      <div class="res-stat"><div class="rv" id="r-streak">—</div><div class="rl">Best Streak</div></div>
+      <div class="res-stat"><div class="rv" id="r-chars">—</div><div class="rl">Characters</div></div>
+      <div class="res-stat"><div class="rv" id="r-best">—</div><div class="rl">Best WPM</div></div>
+    </div>
+    <div id="wpm-chart">
+      <h4>WPM over time</h4>
+      <div id="chart-bars"></div>
+    </div>
+    <div id="leaderboard">
+      <h4>🏆 Leaderboard</h4>
+      <div id="lb-list"></div>
+    </div>
+    <div class="res-btns">
+      <button class="res-btn primary" onclick="restartTest()">↺ Try Again</button>
+      <button class="res-btn secondary" onclick="closeResults()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOM TEXT -->
+<div id="custom-overlay">
+  <div id="custom-box">
+    <h3>✏️ Custom Text</h3>
+    <textarea id="custom-textarea" placeholder="Paste your own text here..."></textarea>
+    <div class="custom-btns">
+      <button class="custom-btn go" onclick="applyCustom()">▶ Start</button>
+      <button class="custom-btn cancel" onclick="closeCustom()">✕ Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  WORD BANK
+// ═══════════════════════════════════════════════════════
+const WORDS = `the be to of and a in that have it for not on with he as you do at this his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us`.split(' ');
+const PUNCTS = [',', '.', '!', '?', ';', ':', '-', "'"];
+const NUMS = '0123456789'.split('');
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let mode = 'time', timeLimit = 15, usePunct = false, useNums = false;
+let soundOn = true, hapticOn = true;
+let wordList = [], currentWordIdx = 0, currentCharIdx = 0;
+let typedWords = [], errors = 0, totalChars = 0, correctChars = 0;
+let streak = 0, bestStreak = 0, wpmHistory = [];
+let started = false, finished = false;
+let timerVal = 15, timerRef = null, startTime = null, lastWpmTime = null;
+let customText = '';
+let isLight = false;
+
+const leaderboard = JSON.parse(localStorage.getItem('kr_lb') || '[]');
+const stats = JSON.parse(localStorage.getItem('kr_stats') || '{"best":0,"tests":0,"totalAcc":0}');
+
+// ═══════════════════════════════════════════════════════
+//  AUDIO
+// ═══════════════════════════════════════════════════════
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function getAudio() { if (!audioCtx) audioCtx = new AudioCtx(); return audioCtx; }
+function playClick(correct) {
+  if (!soundOn) return;
+  try {
+    const ac = getAudio();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.frequency.value = correct === null ? 600 : correct ? 900 : 200;
+    g.gain.setValueAtTime(.08, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .06);
+    o.start(); o.stop(ac.currentTime + .06);
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════
+//  WORD GENERATION
+// ═══════════════════════════════════════════════════════
+function genWords(n = 80) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    let w = WORDS[Math.floor(Math.random() * WORDS.length)];
+    if (useNums && Math.random() < .15) w = Math.floor(Math.random() * 1000).toString();
+    if (usePunct && Math.random() < .2) {
+      const p = PUNCTS[Math.floor(Math.random() * PUNCTS.length)];
+      if ([',', '.', '!', '?', ';', ':'].includes(p)) w += p;
+      else w = p + w;
+    }
+    out.push(w);
+  }
+  return out;
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER WORDS
+// ═══════════════════════════════════════════════════════
+function renderWords() {
+  const wi = document.getElementById('words-inner');
+  wi.innerHTML = '';
+  wordList.forEach((word, wi2) => {
+    const wEl = document.createElement('span');
+    wEl.className = 'word' + (wi2 === currentWordIdx ? ' current' : '');
+    wEl.dataset.idx = wi2;
+    [...word].forEach((ch, ci) => {
+      const cEl = document.createElement('span');
+      cEl.className = 'char';
+      cEl.textContent = ch;
+      const typed = typedWords[wi2];
+      if (typed !== undefined) {
+        if (ci < typed.length) {
+          cEl.classList.add(typed[ci] === ch ? 'correct' : 'wrong');
+        }
+      }
+      if (wi2 === currentWordIdx && ci === currentCharIdx) {
+        cEl.classList.add('cursor');
+      }
+      wEl.appendChild(cEl);
+    });
+    // Extra wrong chars
+    if (wi2 === currentWordIdx && typedWords[wi2]) {
+      const typed = typedWords[wi2];
+      for (let ci = word.length; ci < typed.length; ci++) {
+        const cEl = document.createElement('span');
+        cEl.className = 'char wrong';
+        cEl.textContent = typed[ci];
+        if (ci === currentCharIdx) cEl.classList.add('cursor');
+        wEl.appendChild(cEl);
+      }
+    }
+    wi.appendChild(wEl);
+  });
+  // Scroll to current word
+  const currentEl = wi.querySelector('.current');
+  if (currentEl) {
+    const offset = currentEl.offsetTop;
+    const targetTop = -Math.max(0, offset - 28);
+    wi.style.top = targetTop + 'px';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  PHONE TEXT UPDATE
+// ═══════════════════════════════════════════════════════
+function updatePhoneText() {
+  const typed = typedWords.map((t, i) => t).join(' ');
+  document.getElementById('phone-typed').textContent = typed.slice(-30);
+  updateSuggestions();
+}
+
+function updateSuggestions() {
+  const cur = wordList[currentWordIdx] || '';
+  const matches = WORDS.filter(w => w.startsWith(cur.slice(0, 2))).slice(0, 5);
+  const sugs = [
+    matches[0] || '...',
+    cur || '...',
+    matches[1] || '...'
+  ];
+  ['sug0','sug1','sug2'].forEach((id, i) => {
+    document.getElementById(id).textContent = sugs[i];
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT / RESTART
+// ═══════════════════════════════════════════════════════
+function init() {
+  wordList = customText && mode === 'custom'
+    ? customText.split(/\s+/).filter(Boolean)
+    : genWords(100);
+  currentWordIdx = 0; currentCharIdx = 0;
+  typedWords = ['']; errors = 0; totalChars = 0; correctChars = 0;
+  streak = 0; bestStreak = 0; wpmHistory = [];
+  started = false; finished = false;
+  clearInterval(timerRef);
+  timerVal = timeLimit;
+  document.getElementById('timer-display').textContent = mode === 'zen' ? '∞' : timerVal;
+  document.getElementById('timer-display').classList.remove('urgent');
+  document.getElementById('wpm-val').textContent = '0';
+  document.getElementById('acc-val').textContent = '100%';
+  document.getElementById('err-val').textContent = '0';
+  document.getElementById('streak-val').textContent = '0';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('phone-typed').textContent = '';
+  document.getElementById('timer-stat').style.display = mode === 'zen' ? 'none' : '';
+  renderWords();
+  updateSuggestions();
+  document.getElementById('results').classList.remove('show');
+}
+
+function restartTest() {
+  init();
+  focusInput();
+}
+
+function stopTest() {
+  if (started) { finished = true; clearInterval(timerRef); showResults(); }
+  else init();
+}
+
+function focusInput() {
+  document.getElementById('hidden-input').focus();
+}
+
+// ═══════════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════════
+function startTimer() {
+  startTime = Date.now();
+  lastWpmTime = startTime;
+  if (mode === 'zen' || mode === 'words') return;
+  timerRef = setInterval(() => {
+    timerVal--;
+    const td = document.getElementById('timer-display');
+    td.textContent = timerVal;
+    if (timerVal <= 5) td.classList.add('urgent');
+    // WPM snapshot
+    if (Date.now() - lastWpmTime >= 2000) {
+      wpmHistory.push(calcWpm());
+      lastWpmTime = Date.now();
+    }
+    if (timerVal <= 0) { clearInterval(timerRef); finished = true; showResults(); }
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════════════
+//  WPM / ACCURACY
+// ═══════════════════════════════════════════════════════
+function calcWpm() {
+  if (!startTime) return 0;
+  const mins = (Date.now() - startTime) / 60000;
+  if (mins < .01) return 0;
+  return Math.round(correctChars / 5 / mins);
+}
+function calcAcc() {
+  if (totalChars === 0) return 100;
+  return Math.max(0, Math.round(correctChars / totalChars * 100));
+}
+function updateStats() {
+  document.getElementById('wpm-val').textContent = calcWpm();
+  document.getElementById('acc-val').textContent = calcAcc() + '%';
+  document.getElementById('err-val').textContent = errors;
+  document.getElementById('streak-val').textContent = streak;
+}
+
+// ═══════════════════════════════════════════════════════
+//  KEY PROCESSING (shared for desktop + virtual)
+// ═══════════════════════════════════════════════════════
+function processKey(key) {
+  if (finished) return;
+
+  // Tab = restart
+  if (key === 'Tab') { restartTest(); return; }
+  if (key === 'Escape') { stopTest(); return; }
+
+  // Start timer on first key
+  if (!started && key !== 'Backspace' && key.length === 1) {
+    started = true;
+    startTimer();
+  }
+  if (!started) return;
+
+  const word = wordList[currentWordIdx];
+
+  if (key === 'Backspace') {
+    playClick(null);
+    if (currentCharIdx > 0) {
+      typedWords[currentWordIdx] = typedWords[currentWordIdx].slice(0, -1);
+      currentCharIdx--;
+      if (totalChars > 0) totalChars--;
+      streak = 0;
+    } else if (currentWordIdx > 0) {
+      currentWordIdx--;
+      currentCharIdx = typedWords[currentWordIdx].length;
+    }
+    flashKey('Backspace', 'yellow');
+    updateStats(); renderWords(); updatePhoneText();
+    return;
+  }
+
+  if (key === ' ' || key === 'Enter') {
+    if (typedWords[currentWordIdx].length === 0) return;
+    // Complete word
+    if (typedWords[currentWordIdx] !== word) {
+      errors += Math.abs(typedWords[currentWordIdx].length - word.length) + 1;
+      streak = 0;
+    }
+    currentWordIdx++;
+    currentCharIdx = 0;
+    if (!typedWords[currentWordIdx]) typedWords[currentWordIdx] = '';
+    // Expand word list
+    if (currentWordIdx >= wordList.length - 10) wordList.push(...genWords(20));
+    // Words mode end
+    if (mode === 'words' && currentWordIdx >= 50) { finished = true; showResults(); }
+    // Progress
+    if (mode === 'time') {
+      const prog = (timeLimit - timerVal) / timeLimit * 100;
+      document.getElementById('progress-bar').style.width = prog + '%';
+    } else {
+      document.getElementById('progress-bar').style.width = (currentWordIdx / 50 * 100) + '%';
+    }
+    flashKey(' ', 'yellow');
+    updateStats(); renderWords(); updatePhoneText();
+    return;
+  }
+
+  if (key.length !== 1) return;
+
+  const expected = word[currentCharIdx];
+  const correct = key === expected;
+
+  typedWords[currentWordIdx] += key;
+  currentCharIdx++;
+  totalChars++;
+  if (correct) {
+    correctChars++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    if (streak > 0 && streak % 10 === 0) showStreakBadge();
+  } else {
+    errors++;
+    streak = 0;
+  }
+
+  // Highlight virtual key
+  const vk = document.querySelector(`[data-vk="${key}"]`);
+  if (vk) {
+    vk.classList.add('lit');
+    setTimeout(() => vk.classList.remove('lit'), 120);
+  }
+  flashKey(key, correct ? 'correct' : 'wrong');
+  playClick(correct);
+
+  updateStats(); renderWords(); updatePhoneText();
+}
+
+// ═══════════════════════════════════════════════════════
+//  KEYBOARD EVENTS
+// ═══════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  // Allow typing anywhere
+  if (e.target.tagName === 'TEXTAREA' || e.target.id === 'custom-textarea') return;
+  e.preventDefault();
+  processKey(e.key);
+});
+
+// Desktop KB click
+document.querySelectorAll('.kk').forEach(kk => {
+  kk.addEventListener('click', () => {
+    const k = kk.dataset.key;
+    if (!k || k === 'CapsLock' || k === 'Alt' || k === 'Ctrl') return;
+    processKey(k);
+  });
+  kk.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const k = kk.dataset.key;
+    if (!k || k === 'CapsLock' || k === 'Alt' || k === 'Ctrl') return;
+    processKey(k);
+  }, {passive: false});
+});
+
+// Virtual KB click
+document.querySelectorAll('.vk').forEach(vk => {
+  vk.addEventListener('click', () => {
+    const k = vk.dataset.vk;
+    if (!k || k === '?123' || k === 'emoji' || k === 'Shift') return;
+    processKey(k);
+  });
+  vk.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const k = vk.dataset.vk;
+    if (!k || k === '?123' || k === 'emoji' || k === 'Shift') return;
+    if (hapticOn && navigator.vibrate) navigator.vibrate(10);
+    processKey(k);
+    vk.classList.add('pressed');
+    setTimeout(() => vk.classList.remove('pressed'), 100);
+  }, {passive: false});
+});
+
+// Game area touch to focus
+document.getElementById('words-container').addEventListener('click', () => {
+  focusInput();
+});
+
+// ═══════════════════════════════════════════════════════
+//  KEY FLASH (desktop visual)
+// ═══════════════════════════════════════════════════════
+function flashKey(key, type) {
+  const el = document.querySelector(`.kk[data-key="${key}"]`);
+  if (!el) return;
+  el.classList.add(`flash-${type}`);
+  setTimeout(() => el.classList.remove(`flash-${type}`), 140);
+}
+
+// ═══════════════════════════════════════════════════════
+//  STREAK BADGE
+// ═══════════════════════════════════════════════════════
+function showStreakBadge() {
+  const badge = document.getElementById('streak-badge');
+  badge.textContent = `🔥 ${streak} Streak!`;
+  badge.style.display = 'block';
+  badge.style.animation = 'none';
+  badge.offsetHeight;
+  badge.style.animation = 'badgePop .4s ease-out';
+  setTimeout(() => badge.style.display = 'none', 1800);
+  // Float
+  const fc = document.createElement('div');
+  fc.className = 'combo-float';
+  fc.style.cssText = `left:${40 + Math.random()*20}%;top:60%;`;
+  fc.textContent = `+${streak} 🔥`;
+  document.body.appendChild(fc);
+  setTimeout(() => fc.remove(), 1000);
+}
+
+// ═══════════════════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════════════════
+function showResults() {
+  clearInterval(timerRef);
+  wpmHistory.push(calcWpm());
+  const wpm = calcWpm(), acc = calcAcc();
+  document.getElementById('r-wpm').textContent = wpm;
+  document.getElementById('r-acc').textContent = acc + '%';
+  document.getElementById('r-err').textContent = errors;
+  document.getElementById('r-streak').textContent = bestStreak;
+  document.getElementById('r-chars').textContent = correctChars + '/' + totalChars;
+  // Save stats
+  if (wpm > stats.best) stats.best = wpm;
+  stats.tests++; stats.totalAcc += acc;
+  localStorage.setItem('kr_stats', JSON.stringify(stats));
+  document.getElementById('r-best').textContent = stats.best;
+  // Chart
+  const bars = document.getElementById('chart-bars');
+  bars.innerHTML = '';
+  const maxW = Math.max(...wpmHistory, 1);
+  wpmHistory.forEach(w => {
+    const b = document.createElement('div');
+    b.className = 'bar';
+    b.style.height = (w / maxW * 100) + '%';
+    b.title = w + ' wpm';
+    bars.appendChild(b);
+  });
+  // Leaderboard
+  const myEntry = { name: 'You', wpm, acc, time: Date.now() };
+  leaderboard.push(myEntry);
+  leaderboard.sort((a, b) => b.wpm - a.wpm);
+  while (leaderboard.length > 10) leaderboard.pop();
+  localStorage.setItem('kr_lb', JSON.stringify(leaderboard));
+  renderLeaderboard(myEntry);
+  document.getElementById('results').classList.add('show');
+}
+
+function renderLeaderboard(myEntry) {
+  const defaults = [
+    {name:'SpeedDemon',wpm:142,acc:98},{name:'TypeMaster',wpm:128,acc:96},
+    {name:'KeyRacer',wpm:115,acc:94},{name:'Fingertips',wpm:108,acc:97},
+    {name:'WordWizard',wpm:99,acc:95},{name:'SwiftKeys',wpm:91,acc:92}
+  ];
+  const all = [...defaults, ...leaderboard];
+  all.sort((a, b) => b.wpm - a.wpm);
+  const unique = all.slice(0, 8);
+  const list = document.getElementById('lb-list');
+  list.innerHTML = '';
+  unique.forEach((e, i) => {
+    const row = document.createElement('div');
+    const isMe = e.name === 'You' && e === myEntry;
+    row.className = 'lb-row' + (isMe ? ' you' : '');
+    row.innerHTML = `<span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.'}</span>
+      <span class="lb-name">${isMe ? '👤 You' : e.name}</span>
+      <span class="lb-wpm">${e.wpm} wpm</span>
+      <span class="lb-acc">${e.acc}%</span>`;
+    list.appendChild(row);
+  });
+}
+
+function closeResults() { document.getElementById('results').classList.remove('show'); }
+
+// ═══════════════════════════════════════════════════════
+//  SUGGESTIONS TAP
+// ═══════════════════════════════════════════════════════
+function tapSuggestion(idx) {
+  const sug = document.getElementById('sug'+idx).textContent;
+  if (!sug || sug === '...') return;
+  // Complete current word with suggestion
+  const word = wordList[currentWordIdx];
+  const missing = sug.slice(typedWords[currentWordIdx].length);
+  missing.split('').forEach(c => processKey(c));
+  processKey(' ');
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOGGLE CONTROLS
+// ═══════════════════════════════════════════════════════
+document.querySelectorAll('#mode-tabs .tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#mode-tabs .tab').forEach(tt => tt.classList.remove('active'));
+    t.classList.add('active');
+    mode = t.dataset.mode;
+    document.getElementById('time-tabs').style.display = mode === 'time' ? 'flex' : 'none';
+    if (mode === 'zen') document.body.classList.add('zen-mode');
+    else document.body.classList.remove('zen-mode');
+    if (mode === 'custom') { document.getElementById('custom-overlay').classList.add('show'); return; }
+    restartTest();
+  });
+});
+document.getElementById('time-tabs').style.display = 'flex';
+
+document.querySelectorAll('#time-tabs .tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#time-tabs .tab').forEach(tt => tt.classList.remove('active'));
+    t.classList.add('active');
+    timeLimit = parseInt(t.dataset.time);
+    timerVal = timeLimit;
+    restartTest();
+  });
+});
+
+function togglePunct() {
+  usePunct = !usePunct;
+  document.getElementById('toggle-punct').classList.toggle('on', usePunct);
+  restartTest();
+}
+function toggleNums() {
+  useNums = !useNums;
+  document.getElementById('toggle-nums').classList.toggle('on', useNums);
+  restartTest();
+}
+document.getElementById('toggle-punct').onclick = togglePunct;
+document.getElementById('toggle-nums').onclick = toggleNums;
+document.getElementById('toggle-sound').onclick = function() {
+  soundOn = !soundOn;
+  this.classList.toggle('on', soundOn);
+  this.textContent = soundOn ? '🔊 Sound' : '🔇 Mute';
+};
+document.getElementById('toggle-sound').classList.add('on');
+
+document.getElementById('theme-btn').onclick = function() {
+  isLight = !isLight;
+  document.body.classList.toggle('light', isLight);
+  this.textContent = isLight ? '☀️' : '🌙';
+};
+
+document.getElementById('lb-btn').onclick = function() {
+  if (leaderboard.length || true) { showResults(); }
+};
+
+// ═══════════════════════════════════════════════════════
+//  CUSTOM TEXT
+// ═══════════════════════════════════════════════════════
+function applyCustom() {
+  customText = document.getElementById('custom-textarea').value.trim();
+  if (!customText) { closeCustom(); return; }
+  mode = 'custom';
+  closeCustom();
+  restartTest();
+}
+function closeCustom() { document.getElementById('custom-overlay').classList.remove('show'); }
+
+// ═══════════════════════════════════════════════════════
+//  PHONE EXTRAS
+// ═══════════════════════════════════════════════════════
+function toggleSwipe() {
+  const b = document.getElementById('swipe-btn');
+  b.classList.toggle('on');
+}
+function toggleVoice() {
+  const b = document.getElementById('voice-btn');
+  b.classList.toggle('on');
+  if (b.classList.contains('on') && window.SpeechRecognition || window.webkitSpeechRecognition) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = new SR();
+    rec.onresult = e => {
+      const txt = e.results[0][0].transcript.toLowerCase();
+      txt.split('').forEach(c => processKey(c));
+    };
+    rec.start();
+  }
+}
+function toggleHaptic() {
+  hapticOn = !hapticOn;
+  document.getElementById('haptic-btn').classList.toggle('on', hapticOn);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PHONE CLOCK
+// ═══════════════════════════════════════════════════════
+function updatePhoneClock() {
+  const now = new Date();
+  document.getElementById('phone-time').textContent =
+    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+}
+setInterval(updatePhoneClock, 1000);
+updatePhoneClock();
+
+// ═══════════════════════════════════════════════════════
+//  GAME AREA CLICK = FOCUS
+// ═══════════════════════════════════════════════════════
+document.getElementById('left-panel').addEventListener('click', focusInput);
+document.getElementById('hidden-input').addEventListener('blur', () => {
+  setTimeout(focusInput, 100);
+});
+
+// ═══════════════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════════════
+init();
+focusInput();
+</script>
+</body>
+</html>
