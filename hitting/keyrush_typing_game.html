@@ -2,1350 +2,1578 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0f0f0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>KeyRush — Typing Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
+/* ═══════════════════════════════════════
+   CSS VARIABLES & RESET
+═══════════════════════════════════════ */
 :root {
-  --bg: #0f0f0f;
-  --bg2: #1a1a1a;
-  --bg3: #242424;
-  --border: #2e2e2e;
-  --text: #d1d5db;
-  --muted: #4a4a4a;
-  --accent: #e2b714;
-  --green: #3cbc74;
-  --red: #ca4754;
-  --blue: #4090ff;
-  --purple: #9b59b6;
-  --font: 'JetBrains Mono', monospace;
-  --ui: 'Inter', sans-serif;
-  --radius: 10px;
+  --bg: #0f0f0f; --bg2: #1a1a1a; --bg3: #242424; --bg4: #2e2e2e;
+  --border: #333; --border2: #3e3e3e;
+  --text: #d1d5db; --text2: #9ca3af; --text3: #6b7280;
+  --muted: #4b5563; --muted2: #374151;
+  --accent: #e2b714; --accent2: #f0c830; --accent-dim: #e2b71433;
+  --green: #3cbc74; --green-dim: #3cbc7422;
+  --red: #ca4754; --red-dim: #ca475422;
+  --blue: #4090ff; --blue-dim: #4090ff22;
+  --purple: #a855f7; --orange: #f97316;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+  --r: 10px; --r2: 14px; --r3: 20px;
+  --shadow: 0 4px 24px rgba(0,0,0,.4);
+  --shadow2: 0 2px 8px rgba(0,0,0,.3);
+  --trans: .18s cubic-bezier(.4,0,.2,1);
 }
-.light {
-  --bg: #f5f5f0;
-  --bg2: #ebebeb;
-  --bg3: #dededb;
-  --border: #c8c8c4;
-  --text: #2e2e2e;
-  --muted: #aaaaaa;
+.theme-light {
+  --bg: #f0ede8; --bg2: #e8e5e0; --bg3: #dedad5; --bg4: #cec9c4;
+  --border: #c8c4be; --border2: #b8b4ae;
+  --text: #2c2c2c; --text2: #4a4a4a; --text3: #6a6a6a;
+  --muted: #8a8a8a; --muted2: #aaaaaa;
+  --shadow: 0 4px 24px rgba(0,0,0,.12);
+  --shadow2: 0 2px 8px rgba(0,0,0,.08);
 }
+.theme-ocean { --bg: #0a1628; --bg2: #0f2040; --bg3: #1a2e52; --bg4: #243d66; --border: #2d4f7a; --accent: #38bdf8; --accent-dim: #38bdf822; }
+.theme-forest { --bg: #0a1a0a; --bg2: #0f240f; --bg3: #1a3a1a; --bg4: #244a24; --border: #2d5a2d; --accent: #86efac; --accent-dim: #86efac22; }
+.theme-purple { --bg: #120a1e; --bg2: #1a0f2e; --bg3: #24183a; --bg4: #2e2048; --border: #3d2860; --accent: #d8b4fe; --accent-dim: #d8b4fe22; }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: 15px; height: 100%; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--ui);
-  display: flex;
-  flex-direction: column;
-  transition: background .3s, color .3s;
+  font-family: var(--sans); background: var(--bg); color: var(--text);
+  height: 100%; overflow: hidden; display: flex; flex-direction: column;
+  transition: background var(--trans), color var(--trans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ══ TOP BAR ══ */
+/* ═══════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════ */
 #topbar {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 20px;
-  background: var(--bg2);
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 8px 16px; background: var(--bg2);
   border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
+  flex-shrink: 0; min-height: 50px;
 }
 #logo {
-  font-family: var(--font);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: -1px;
-  margin-right: 8px;
+  font-family: var(--mono); font-size: 18px; font-weight: 700;
+  color: var(--accent); letter-spacing: -1px; white-space: nowrap;
+  margin-right: 4px; cursor: pointer;
 }
-.tab-group { display: flex; gap: 4px; }
+#logo span { opacity: .5; }
+.vsep { width: 1px; height: 22px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+.tab-group { display: flex; gap: 3px; flex-wrap: wrap; }
 .tab {
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--muted);
-  border: 1px solid transparent;
-  transition: all .15s;
-  background: transparent;
-  font-family: var(--ui);
+  padding: 5px 11px; border-radius: 6px; font-size: 12px; font-weight: 500;
+  cursor: pointer; color: var(--text3); border: 1px solid transparent;
+  background: transparent; font-family: var(--sans); white-space: nowrap;
+  transition: all var(--trans); user-select: none; line-height: 1.2;
 }
 .tab:hover { color: var(--text); background: var(--bg3); }
-.tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
-.tab.toggle { border: 1px solid var(--border); }
-.tab.toggle.on { background: var(--bg3); color: var(--accent); border-color: var(--accent); }
-.sep { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
-#topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.tab.active { background: var(--accent); color: #000; font-weight: 700; }
+.tab.toggle { border: 1px solid var(--border); color: var(--text3); }
+.tab.toggle:hover { border-color: var(--accent); color: var(--accent); }
+.tab.toggle.on { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+.tab.danger.on { background: var(--red-dim); color: var(--red); border-color: var(--red); }
+#topbar-right { margin-left: auto; display: flex; gap: 6px; align-items: center; }
 .icon-btn {
-  width: 34px; height: 34px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg3);
-  color: var(--text);
-  cursor: pointer;
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg3); color: var(--text2); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  transition: all .15s;
+  font-size: 15px; transition: all var(--trans); flex-shrink: 0;
 }
 .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.icon-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-/* ══ MAIN LAYOUT ══ */
-#main {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
+/* ═══════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════ */
+#main { display: flex; flex: 1; min-height: 0; overflow: hidden; }
 
-/* ══ LEFT — TYPING AREA ══ */
+/* ═══════════════════════════════════════
+   LEFT PANEL — TYPING AREA
+═══════════════════════════════════════ */
 #left-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 16px 24px 12px;
-  min-width: 0;
-  overflow: hidden;
+  flex: 1; display: flex; flex-direction: column;
+  padding: 12px 20px 10px; min-width: 0; overflow: hidden;
 }
 
-/* Live stats */
+/* Live Stats */
 #live-stats {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 12px;
-  font-family: var(--font);
+  display: flex; gap: 20px; margin-bottom: 10px;
+  align-items: flex-end; flex-wrap: wrap;
 }
-.stat {
-  display: flex; flex-direction: column; align-items: center;
+.stat { display: flex; flex-direction: column; align-items: center; min-width: 50px; }
+.stat-val {
+  font-size: 30px; font-weight: 700; color: var(--accent);
+  line-height: 1; font-family: var(--mono);
 }
-.stat-val { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; }
-.stat-lbl { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+.stat-val.sm { font-size: 22px; }
+.stat-lbl { font-size: 9px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
 #timer-display {
-  font-size: 36px; font-weight: 700; color: var(--accent); font-family: var(--font); min-width: 60px;
+  font-size: 38px; font-weight: 700; color: var(--accent);
+  font-family: var(--mono); min-width: 56px; text-align: center; line-height: 1;
 }
 #timer-display.urgent { color: var(--red); animation: urgentPulse .5s infinite alternate; }
-@keyframes urgentPulse { to { opacity: .6; } }
+#timer-display.warn { color: var(--orange); }
+@keyframes urgentPulse { to { opacity: .55; } }
 
-/* Progress bar */
-#progress-bar-wrap { height: 3px; background: var(--bg3); border-radius: 2px; margin-bottom: 12px; }
-#progress-bar { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width .2s; }
+/* Progress */
+#progress-outer { height: 3px; background: var(--bg3); border-radius: 2px; margin-bottom: 10px; overflow: hidden; }
+#progress-inner { height: 100%; background: var(--accent); width: 0%; border-radius: 2px; transition: width .3s; }
 
-/* Word display */
-#words-container {
-  position: relative;
-  height: 96px;
-  overflow: hidden;
-  margin-bottom: 12px;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+/* Word Display */
+#words-wrap {
+  position: relative; height: 98px; overflow: hidden; margin-bottom: 10px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  cursor: text; border-radius: var(--r);
 }
 #words-inner {
   position: absolute; width: 100%; top: 0; left: 0;
-  transition: top .15s ease;
-  font-family: var(--font);
-  font-size: 20px;
-  line-height: 1.9;
-  word-spacing: 10px;
-}
-.word { display: inline-flex; margin-right: 6px; position: relative; }
-.word.current::after {
-  content: '';
-  position: absolute; left: 0; bottom: -2px;
-  width: 100%; height: 2px;
-  background: var(--accent);
-  border-radius: 1px;
-}
-.char { color: var(--muted); transition: color .05s; position: relative; }
-.char.correct { color: var(--green); }
-.char.wrong { color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
-.char.cursor::before {
-  content: '';
-  position: absolute; left: -1px; top: 0; bottom: 0;
-  width: 2px; background: var(--accent);
-  animation: blink .7s infinite;
-  border-radius: 1px;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-/* Hidden input */
-#hidden-input {
-  position: absolute; opacity: 0; pointer-events: none; left: -9999px;
-}
-
-/* Desktop keyboard visual */
-#kb-visual {
-  display: flex; flex-direction: column; gap: 4px;
-  margin-bottom: 10px;
-}
-.kb-row { display: flex; gap: 4px; justify-content: center; }
-.kk {
-  min-width: 32px; height: 30px;
-  border-radius: 5px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 600;
-  color: var(--muted);
-  font-family: var(--font);
-  transition: all .1s;
-  cursor: pointer;
-  position: relative;
-  user-select: none;
-}
-.kk.wide { min-width: 52px; }
-.kk.wider { min-width: 72px; }
-.kk.widest { flex: 1; max-width: 220px; }
-.kk.flash-correct { background: var(--green)!important; color: #fff!important; border-color: var(--green)!important; transform: scale(.94); }
-.kk.flash-wrong { background: var(--red)!important; color: #fff!important; border-color: var(--red)!important; transform: scale(.94); }
-.kk.flash-yellow { background: var(--accent)!important; color: #000!important; border-color: var(--accent)!important; transform: scale(.94); }
-.finger-dot { position: absolute; top: 2px; right: 3px; width: 5px; height: 5px; border-radius: 50%; }
-.f-lp { background: #ff6b6b; } .f-lr { background: #ffa94d; } .f-lm { background: #ffd43b; } .f-li { background: #69db7c; }
-.f-ri { background: #69db7c; } .f-rm { background: #ffd43b; } .f-rr { background: #ffa94d; } .f-rp { background: #ff6b6b; }
-.f-th { background: #74c0fc; }
-
-/* Bottom controls */
-#bottom-row {
-  display: flex; align-items: center; gap: 10px; padding-top: 6px;
-  border-top: 1px solid var(--border);
-}
-#hint-text { font-size: 12px; color: var(--muted); font-family: var(--font); flex: 1; }
-#restart-btn {
-  padding: 8px 20px;
-  background: var(--accent); color: #000;
-  border: none; border-radius: 8px;
-  font-weight: 700; font-size: 13px;
-  cursor: pointer; font-family: var(--ui);
-  transition: all .15s;
-}
-#restart-btn:hover { filter: brightness(1.1); transform: scale(1.03); }
-#stop-btn {
-  padding: 8px 14px;
-  background: transparent; color: var(--muted);
-  border: 1px solid var(--border); border-radius: 8px;
-  font-size: 13px; cursor: pointer; font-family: var(--ui);
-  transition: all .15s;
-}
-#stop-btn:hover { color: var(--red); border-color: var(--red); }
-
-/* ══ RIGHT — ANDROID PHONE ══ */
-#right-panel {
-  width: 280px;
-  flex-shrink: 0;
-  padding: 12px 12px 12px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-#phone {
-  width: 256px;
-  background: #1c1c1e;
-  border-radius: 38px;
-  border: 2px solid #3a3a3c;
-  box-shadow: 0 8px 32px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  height: 520px;
-}
-
-/* Status bar */
-#phone-status {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 6px 20px 2px;
-  font-size: 10px; font-weight: 600; color: #fff;
-  background: #1c1c1e;
-  font-family: var(--ui);
-}
-.battery-icon { display: flex; align-items: center; gap: 3px; font-size: 10px; }
-
-/* Notch */
-#notch {
-  width: 80px; height: 22px;
-  background: #1c1c1e;
-  border-radius: 0 0 14px 14px;
-  margin: 0 auto;
-  position: relative;
-}
-.notch-cam { width: 8px; height: 8px; background: #2c2c2e; border-radius: 50%; position: absolute; top: 7px; left: 50%; transform: translateX(-50%); }
-
-/* App area */
-#phone-app {
-  flex: 1;
-  background: #f2f2f7;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-/* App top bar */
-#app-topbar {
-  background: #fff;
-  padding: 6px 12px;
-  display: flex; align-items: center; gap: 8px;
-  border-bottom: 1px solid #e0e0e0;
-  font-size: 11px;
-  color: #333;
-  font-family: var(--ui);
-}
-.app-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-#app-title { font-weight: 600; font-size: 12px; }
-
-/* Text field */
-#phone-text-area {
-  background: #fff;
-  margin: 8px;
-  border-radius: 10px;
-  padding: 8px 10px;
-  min-height: 52px;
-  font-size: 13px;
-  color: #333;
-  font-family: var(--ui);
-  border: 2px solid #4090ff;
-  line-height: 1.5;
-  position: relative;
+  transition: top .18s ease;
+  font-family: var(--mono); font-size: 19px; line-height: 1.85;
   word-break: break-all;
 }
-#phone-cursor { display: inline-block; width: 2px; height: 14px; background: #4090ff; animation: blink .7s infinite; vertical-align: middle; margin-left: 1px; }
+.w { display: inline-flex; flex-wrap: wrap; margin-right: 8px; position: relative; }
+.w.current { background: var(--accent-dim); border-radius: 3px; padding: 0 2px; }
+.ch { color: var(--muted); transition: color .04s; position: relative; }
+.ch.ok { color: var(--green); }
+.ch.bad { color: var(--red); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--red); }
+.ch.extra { color: var(--red); opacity: .7; }
+.ch.caret::before {
+  content: ''; position: absolute; left: -1px; top: 2px; bottom: 2px;
+  width: 2px; background: var(--accent); border-radius: 1px;
+  animation: caretBlink .7s cubic-bezier(.4,0,.2,1) infinite;
+}
+@keyframes caretBlink { 0%,100%{opacity:1} 49%{opacity:1} 50%,99%{opacity:0} }
 
-/* Suggestions */
-#suggestions {
-  background: #f8f8f8;
-  border-top: 1px solid #e0e0e0;
-  display: flex;
-  gap: 0;
+/* Hidden input */
+#ghost-input {
+  position: fixed; left: -9999px; top: 0; opacity: 0;
+  pointer-events: none; width: 1px; height: 1px;
 }
-.sug {
-  flex: 1;
-  padding: 6px 4px;
-  text-align: center;
-  font-size: 12px;
-  color: #333;
-  cursor: pointer;
-  border-right: 1px solid #e0e0e0;
-  font-family: var(--ui);
-  transition: background .1s;
-}
-.sug:last-child { border-right: none; }
-.sug:hover { background: #e8e8e8; }
-.sug.main { font-weight: 700; color: #000; }
 
-/* Virtual keyboard */
-#vkb {
-  background: #d1d5db;
-  padding: 6px 4px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+/* ═══════════════════════════════════════
+   DESKTOP KEYBOARD VISUAL
+═══════════════════════════════════════ */
+#kb-desk {
+  display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 8px;
 }
-.vkb-row { display: flex; gap: 4px; justify-content: center; }
-.vk {
-  flex: 1;
-  max-width: 30px;
-  height: 38px;
-  border-radius: 7px;
-  background: #fff;
-  border: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: #000;
-  cursor: pointer;
+.kb-row { display: flex; gap: 3px; justify-content: center; }
+.kk {
+  min-width: 30px; height: 28px;
+  border-radius: 5px; background: var(--bg2);
+  border: 1px solid var(--border2); border-bottom: 2px solid var(--muted2);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 0 #aaa;
-  transition: all .1s;
-  font-family: var(--ui);
+  font-size: 10px; font-weight: 600; color: var(--text3);
+  font-family: var(--mono); cursor: pointer; position: relative;
+  transition: background .08s, transform .08s, border-color .08s;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
-.vk:active, .vk.pressed { background: #c8d0e0; transform: translateY(1px); box-shadow: 0 1px 0 #aaa; }
-.vk.lit { background: #4090ff; color: #fff; box-shadow: 0 2px 0 #2060cc; }
-.vk.special { background: #adb5bd; color: #000; font-size: 11px; }
-.vk.space-vk { flex: 3; max-width: 120px; font-size: 11px; color: #555; }
-.vk.emoji-vk { font-size: 16px; }
-.vk.enter-vk { background: #4090ff; color: #fff; box-shadow: 0 2px 0 #2060cc; font-size: 10px; }
+.kk:hover { background: var(--bg4); color: var(--text); }
+.kk:active { transform: translateY(1px); border-bottom-width: 1px; }
+.kk.w1 { min-width: 36px; } .kk.w2 { min-width: 48px; } .kk.w3 { min-width: 60px; }
+.kk.wflex { flex: 1; max-width: 200px; }
+.kk.lit-ok { background: var(--green)!important; color: #fff!important; border-color: var(--green)!important; transform: translateY(1px); border-bottom-width: 1px!important; }
+.kk.lit-bad { background: var(--red)!important; color: #fff!important; border-color: var(--red)!important; transform: translateY(1px); border-bottom-width: 1px!important; }
+.kk.lit-neu { background: var(--accent)!important; color: #000!important; border-color: var(--accent)!important; transform: translateY(1px); border-bottom-width: 1px!important; }
+/* Finger colors */
+.fd { position: absolute; top: 2px; right: 2px; width: 5px; height: 5px; border-radius: 50%; }
+.f-lp{background:#ff6b6b}.f-lr{background:#ffa94d}.f-lm{background:#ffd43b}.f-li{background:#69db7c}
+.f-ri{background:#40c057}.f-rm{background:#228be6}.f-rr{background:#9775fa}.f-rp{background:#f783ac}.f-th{background:#74c0fc}
 
-/* Swipe + voice row */
+/* ═══════════════════════════════════════
+   BOTTOM BAR
+═══════════════════════════════════════ */
+#bottom-bar {
+  display: flex; align-items: center; gap: 8px; padding-top: 8px;
+  border-top: 1px solid var(--border); flex-shrink: 0;
+}
+#hint-line { font-size: 11px; color: var(--muted); font-family: var(--mono); flex: 1; }
+.action-btn {
+  padding: 7px 18px; border-radius: 7px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; font-family: var(--sans); transition: all var(--trans);
+}
+.action-btn.primary { background: var(--accent); color: #000; }
+.action-btn.primary:hover { filter: brightness(1.1); transform: scale(1.02); }
+.action-btn.ghost { background: transparent; color: var(--text3); border: 1px solid var(--border); }
+.action-btn.ghost:hover { color: var(--red); border-color: var(--red); }
+
+/* ═══════════════════════════════════════
+   RIGHT PANEL — ANDROID PHONE
+═══════════════════════════════════════ */
+#right-panel {
+  width: 270px; flex-shrink: 0; padding: 10px 12px 10px 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+#phone {
+  width: 252px; background: #111; border-radius: 40px;
+  border: 3px solid #2a2a2a; box-shadow: 0 12px 40px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.05);
+  display: flex; flex-direction: column; overflow: hidden;
+  height: min(520px, calc(100vh - 90px)); position: relative;
+}
+/* Phone frame shine */
+#phone::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%;
+  background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, transparent 100%);
+  pointer-events: none; z-index: 10; border-radius: 37px 37px 0 0;
+}
+/* Power/vol buttons */
+#phone::after {
+  content: ''; position: absolute; right: -5px; top: 80px;
+  width: 4px; height: 50px; background: #2a2a2a; border-radius: 0 2px 2px 0;
+  box-shadow: 0 55px 0 #2a2a2a, 0 80px 0 #2a2a2a;
+}
+#phone-status {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 20px 0; font-size: 10px; font-weight: 700; color: #fff;
+  background: #111; font-family: var(--sans); letter-spacing: .3px;
+  flex-shrink: 0;
+}
+.status-icons { display: flex; gap: 5px; align-items: center; font-size: 9px; }
+#notch {
+  width: 90px; height: 24px; background: #111; border-radius: 0 0 16px 16px;
+  margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 6px; flex-shrink: 0;
+}
+.notch-speaker { width: 30px; height: 4px; background: #222; border-radius: 2px; }
+.notch-cam { width: 7px; height: 7px; background: #1a1a2e; border-radius: 50%; border: 1px solid #333; }
+#phone-body {
+  flex: 1; background: #f2f2f7; display: flex; flex-direction: column; overflow: hidden; min-height: 0;
+}
+/* App header */
+#app-header {
+  background: linear-gradient(135deg, #667eea, #764ba2); padding: 10px 12px 8px;
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+.app-logo { width: 28px; height: 28px; background: rgba(255,255,255,.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+#app-title { color: #fff; font-weight: 700; font-size: 13px; }
+#app-wpm { margin-left: auto; color: rgba(255,255,255,.9); font-size: 11px; font-family: var(--mono); font-weight: 600; }
+/* Text field */
+#phone-field {
+  background: #fff; margin: 8px 8px 4px; border-radius: 10px;
+  padding: 8px 10px; min-height: 50px; max-height: 70px;
+  font-size: 12px; color: #333; font-family: var(--sans);
+  border: 2px solid #764ba2; line-height: 1.6; overflow: hidden;
+  word-break: break-all; flex-shrink: 0;
+}
+#phone-caret {
+  display: inline-block; width: 2px; height: 13px; background: #764ba2;
+  animation: caretBlink .7s infinite; vertical-align: middle; margin-left: 1px;
+}
+/* Suggestions */
+#phone-sug {
+  background: #f8f8fa; border-top: 1px solid #e0e0e5; border-bottom: 1px solid #e0e0e5;
+  display: flex; flex-shrink: 0;
+}
+.sug-item {
+  flex: 1; padding: 5px 4px; text-align: center; font-size: 11px; color: #444;
+  cursor: pointer; font-family: var(--sans); transition: background .1s;
+  border-right: 1px solid #e0e0e5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sug-item:last-child { border-right: none; }
+.sug-item.mid { font-weight: 700; color: #111; }
+.sug-item:hover { background: #ececf0; }
+/* Virtual Keyboard */
+#vkb {
+  background: #cdd1d9; padding: 5px 4px 6px; display: flex;
+  flex-direction: column; gap: 5px; flex-shrink: 0;
+}
+.vkb-row { display: flex; gap: 5px; justify-content: center; }
+.vk {
+  flex: 1; max-width: 28px; height: 36px; border-radius: 6px;
+  background: #fff; border: none; font-size: 13px; font-weight: 500; color: #000;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 0 #aaa; transition: all .08s;
+  font-family: var(--sans); user-select: none; -webkit-tap-highlight-color: transparent;
+  position: relative; overflow: hidden;
+}
+.vk::after {
+  content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0); transition: background .08s;
+}
+.vk:active::after, .vk.pressed::after { background: rgba(0,0,0,.15); }
+.vk:active, .vk.pressed { transform: translateY(1px); box-shadow: 0 0 0 #aaa; }
+.vk.lit { background: var(--blue); color: #fff; box-shadow: 0 1px 0 #2060cc; }
+.vk.lit-ok { background: var(--green); color: #fff; box-shadow: 0 1px 0 #27874f; }
+.vk.lit-bad { background: var(--red); color: #fff; box-shadow: 0 1px 0 #8b2030; }
+.vk.sp { background: #acb4be; color: #333; font-size: 10px; }
+.vk.space { flex: 3; max-width: 110px; font-size: 10px; color: #555; }
+.vk.enter { background: var(--blue); color: #fff; box-shadow: 0 1px 0 #2060cc; font-size: 10px; max-width: 36px; }
+.vk.sym { font-size: 9px; color: #333; }
+/* Extras row */
 #vkb-extras {
-  display: flex; gap: 6px; padding: 4px 6px 0;
-  justify-content: center;
+  display: flex; gap: 5px; padding: 3px 4px 0;
+  justify-content: space-around; flex-shrink: 0;
 }
-.extra-btn {
-  padding: 4px 10px; border-radius: 12px;
-  background: rgba(255,255,255,.5); border: none;
-  font-size: 10px; color: #555; cursor: pointer;
-  display: flex; align-items: center; gap: 4px;
-  font-family: var(--ui);
+.ext-btn {
+  flex: 1; padding: 4px 2px; border-radius: 10px; border: none;
+  background: rgba(255,255,255,.4); font-size: 9px; color: #555;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px;
+  font-family: var(--sans); transition: all .15s;
 }
-.extra-btn.on { background: #4090ff22; color: #4090ff; }
-
+.ext-btn.on { background: #764ba255; color: #764ba2; }
 /* Home bar */
-#home-bar { height: 22px; background: #1c1c1e; display: flex; align-items: center; justify-content: center; }
-.home-indicator { width: 80px; height: 4px; background: rgba(255,255,255,.25); border-radius: 2px; }
+#home-bar {
+  height: 20px; background: #111; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.home-line { width: 80px; height: 3.5px; background: rgba(255,255,255,.22); border-radius: 2px; }
 
-/* ══ RESULTS OVERLAY ══ */
-#results {
-  display: none;
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,.92);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+/* ═══════════════════════════════════════
+   OVERLAY — RESULTS
+═══════════════════════════════════════ */
+#overlay-results {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.88); z-index: 500;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
 }
-#results.show { display: flex; }
+#overlay-results.show { display: flex; }
 #results-box {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px 36px;
-  width: min(600px, 94vw);
-  max-height: 90vh;
-  overflow-y: auto;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 18px; padding: 28px 32px;
+  width: min(620px,96vw); max-height: 90vh; overflow-y: auto;
+  box-shadow: var(--shadow);
 }
-#results-box h2 { font-family: var(--font); font-size: 28px; color: var(--accent); margin-bottom: 20px; }
-.res-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-.res-stat { background: var(--bg3); border-radius: 10px; padding: 14px; text-align: center; }
-.res-stat .rv { font-size: 32px; font-weight: 700; color: var(--accent); font-family: var(--font); }
-.res-stat .rl { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
-#wpm-chart { margin: 16px 0; }
-#wpm-chart h4 { font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: var(--font); }
-#chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 60px; background: var(--bg3); border-radius: 8px; padding: 8px; }
-.bar { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 2px; transition: height .4s; opacity: .8; }
-#leaderboard { margin-top: 16px; }
-#leaderboard h4 { font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: var(--font); }
-.lb-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; font-size: 13px; margin-bottom: 4px; }
+#results-box h2 { font-family: var(--mono); font-size: 26px; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 18px; }
+.res-card { background: var(--bg3); border-radius: 10px; padding: 14px; text-align: center; border: 1px solid var(--border); }
+.res-card .rv { font-size: 30px; font-weight: 700; color: var(--accent); font-family: var(--mono); line-height: 1; }
+.res-card .rl { font-size: 9px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+/* Chart */
+#chart-section { margin-bottom: 18px; }
+#chart-section h4 { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; }
+#chart-area { display: flex; align-items: flex-end; gap: 3px; height: 70px; background: var(--bg3); border-radius: 8px; padding: 8px 10px; border: 1px solid var(--border); }
+.chart-bar { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 3px; opacity: .8; transition: height .5s ease; }
+.chart-bar:hover { opacity: 1; }
+/* Leaderboard */
+#lb-section h4 { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; }
+.lb-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; font-size: 12px; margin-bottom: 3px; transition: background .15s; }
 .lb-row:nth-child(odd) { background: var(--bg3); }
-.lb-row.you { background: #e2b71422; border: 1px solid var(--accent); }
-.lb-rank { font-weight: 700; color: var(--accent); min-width: 22px; font-family: var(--font); }
+.lb-row.you { background: var(--accent-dim); border: 1px solid var(--accent); }
+.lb-rank { font-weight: 700; min-width: 24px; font-family: var(--mono); }
 .lb-name { flex: 1; }
-.lb-wpm { font-weight: 700; font-family: var(--font); }
-.lb-acc { color: var(--muted); font-size: 12px; }
-.res-btns { display: flex; gap: 10px; margin-top: 16px; }
-.res-btn {
-  flex: 1; padding: 11px; border-radius: 9px;
-  font-size: 14px; font-weight: 700; cursor: pointer;
-  border: none; font-family: var(--ui); transition: all .15s;
-}
+.lb-wpm { font-weight: 700; font-family: var(--mono); color: var(--accent); }
+.lb-acc { color: var(--muted); }
+.res-actions { display: flex; gap: 10px; margin-top: 18px; }
+.res-btn { flex: 1; padding: 11px; border-radius: 9px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: var(--sans); transition: all var(--trans); }
 .res-btn.primary { background: var(--accent); color: #000; }
 .res-btn.secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
-.res-btn:hover { filter: brightness(1.12); transform: scale(1.02); }
+.res-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-/* ══ STREAK BADGE ══ */
-#streak-badge {
-  position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+/* ═══════════════════════════════════════
+   OVERLAY — CUSTOM TEXT / SETTINGS
+═══════════════════════════════════════ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8);
+  z-index: 600; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+  padding: 24px; width: min(480px, 94vw); box-shadow: var(--shadow);
+}
+.modal-box h3 { font-family: var(--mono); font-size: 18px; color: var(--accent); margin-bottom: 16px; }
+.modal-textarea {
+  width: 100%; height: 110px; background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); border-radius: 8px; padding: 10px 12px;
+  font-family: var(--mono); font-size: 13px; resize: vertical; outline: none;
+  transition: border-color var(--trans);
+}
+.modal-textarea:focus { border-color: var(--accent); }
+.modal-actions { display: flex; gap: 8px; margin-top: 12px; }
+.modal-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 14px; font-family: var(--sans); transition: all var(--trans); }
+.modal-btn.go { background: var(--accent); color: #000; }
+.modal-btn.go:hover { filter: brightness(1.1); }
+.modal-btn.cancel { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+.modal-btn.cancel:hover { border-color: var(--red); color: var(--red); }
+/* Settings grid */
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.setting-item { background: var(--bg3); border-radius: 8px; padding: 12px; border: 1px solid var(--border); }
+.setting-item label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+.setting-item select, .setting-item input[type=range] { width: 100%; background: var(--bg4); border: 1px solid var(--border); color: var(--text); border-radius: 5px; padding: 4px 8px; font-size: 12px; outline: none; font-family: var(--sans); }
+.setting-item input[type=range] { padding: 0; height: 4px; cursor: pointer; }
+/* Theme swatches */
+.theme-swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+.swatch { width: 28px; height: 28px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: all var(--trans); }
+.swatch.active { border-color: var(--accent); transform: scale(1.1); }
+
+/* ═══════════════════════════════════════
+   FLOATING EFFECTS
+═══════════════════════════════════════ */
+#streak-popup {
+  position: fixed; top: 62px; left: 50%; transform: translateX(-50%);
   background: linear-gradient(135deg, #f7971e, #ffd200);
-  color: #000; font-weight: 700; font-size: 15px;
-  padding: 8px 20px; border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(255,200,0,.4);
-  z-index: 200; pointer-events: none;
-  animation: badgePop .4s ease-out;
-  display: none;
+  color: #000; font-weight: 800; font-size: 14px;
+  padding: 7px 20px; border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(255,200,0,.5); z-index: 400;
+  pointer-events: none; display: none;
+  animation: popIn .4s cubic-bezier(.34,1.56,.64,1);
 }
-@keyframes badgePop { from { transform: translateX(-50%) scale(.5); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
+@keyframes popIn { from{transform:translateX(-50%) scale(.4);opacity:0} to{transform:translateX(-50%) scale(1);opacity:1} }
+.float-combo {
+  position: fixed; font-weight: 800; font-size: 15px; pointer-events: none;
+  z-index: 399; animation: floatUp 1s ease-out forwards;
+  text-shadow: 0 2px 8px rgba(0,0,0,.6);
+}
+@keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1)} 60%{opacity:1} 100%{opacity:0;transform:translateY(-70px) scale(1.15)} }
+/* Word complete flash */
+.word-flash { animation: wordFlash .3s ease-out; }
+@keyframes wordFlash { 0%{opacity:.4} 100%{opacity:1} }
 
-/* Floating combo text */
-.combo-float {
-  position: fixed; font-weight: 700; font-size: 16px;
-  color: var(--accent); pointer-events: none; z-index: 199;
-  animation: floatUp .9s ease-out forwards;
-}
-@keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-60px) scale(1.2)} }
+/* ═══════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border2); }
 
-/* Zen mode */
-body.zen-mode #kb-visual { display: none; }
-body.zen-mode #bottom-row { border-top: none; }
-
-/* Custom text overlay */
-#custom-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.8); z-index: 300;
-  align-items: center; justify-content: center;
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 700px) {
+  #right-panel { display: none; }
+  #left-panel { padding: 8px 12px; }
+  #kb-desk { display: none; }
+  #topbar { gap: 4px; padding: 6px 10px; }
+  .tab { padding: 4px 8px; font-size: 11px; }
 }
-#custom-overlay.show { display: flex; }
-#custom-box {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 14px; padding: 24px; width: min(500px, 90vw);
+@media (max-width: 900px) {
+  #right-panel { width: 220px; }
+  #phone { width: 200px; }
+  .vk { max-width: 22px; height: 30px; font-size: 11px; }
 }
-#custom-box h3 { margin-bottom: 12px; font-family: var(--font); color: var(--accent); }
-#custom-textarea {
-  width: 100%; height: 120px; background: var(--bg3);
-  border: 1px solid var(--border); color: var(--text);
-  border-radius: 8px; padding: 10px; font-family: var(--font); font-size: 14px;
-  resize: none; outline: none;
-}
-#custom-textarea:focus { border-color: var(--accent); }
-.custom-btns { display: flex; gap: 8px; margin-top: 12px; }
-.custom-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 14px; }
-.custom-btn.go { background: var(--accent); color: #000; }
-.custom-btn.cancel { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 </style>
-</head>
-<body>
-
-<!-- TOPBAR -->
+<!-- ═══════════════════════════════════════
+     TOPBAR
+═══════════════════════════════════════ -->
 <div id="topbar">
-  <div id="logo">⌨️ KeyRush</div>
+  <div id="logo" onclick="resetGame()">⌨️ Key<span>Rush</span></div>
+  <div class="vsep"></div>
+  <!-- Mode tabs -->
   <div class="tab-group" id="mode-tabs">
     <button class="tab active" data-mode="time">⏱ Time</button>
     <button class="tab" data-mode="words">📝 Words</button>
+    <button class="tab" data-mode="quote">💬 Quote</button>
     <button class="tab" data-mode="zen">🧘 Zen</button>
     <button class="tab" data-mode="custom">✏️ Custom</button>
   </div>
-  <div class="sep"></div>
+  <div class="vsep"></div>
+  <!-- Time options -->
   <div class="tab-group" id="time-tabs">
-    <button class="tab active" data-time="15">15</button>
-    <button class="tab" data-time="30">30</button>
+    <button class="tab" data-time="15">15</button>
+    <button class="tab active" data-time="30">30</button>
     <button class="tab" data-time="60">60</button>
     <button class="tab" data-time="120">120</button>
   </div>
-  <div class="sep"></div>
-  <button class="tab toggle" id="toggle-punct" title="Punctuation">@ punct</button>
-  <button class="tab toggle" id="toggle-nums" title="Numbers"># nums</button>
-  <div class="sep"></div>
-  <button class="tab toggle" id="toggle-sound" title="Sounds">🔊 Sound</button>
+  <div class="vsep"></div>
+  <!-- Toggles -->
+  <button class="tab toggle" id="btn-punct" title="Add punctuation">@ punct</button>
+  <button class="tab toggle" id="btn-nums" title="Add numbers"># nums</button>
+  <div class="vsep"></div>
+  <button class="tab toggle" id="btn-sound" title="Sound effects">🔊</button>
   <div id="topbar-right">
-    <button class="icon-btn" id="theme-btn" title="Toggle theme">🌙</button>
-    <button class="icon-btn" id="lb-btn" title="Leaderboard">🏆</button>
+    <button class="icon-btn" id="btn-theme" title="Themes">🎨</button>
+    <button class="icon-btn" id="btn-settings" title="Settings">⚙️</button>
+    <button class="icon-btn" id="btn-lb" title="Leaderboard">🏆</button>
   </div>
 </div>
 
-<!-- MAIN -->
+<!-- ═══════════════════════════════════════
+     MAIN
+═══════════════════════════════════════ -->
 <div id="main">
 
-  <!-- LEFT: TYPING -->
+  <!-- LEFT PANEL -->
   <div id="left-panel">
 
-    <!-- Stats -->
+    <!-- Live Stats -->
     <div id="live-stats">
       <div class="stat">
-        <div class="stat-val" id="wpm-val">0</div>
-        <div class="stat-lbl">wpm</div>
+        <div class="stat-val" id="sv-wpm">0</div>
+        <div class="stat-lbl">WPM</div>
       </div>
       <div class="stat">
-        <div class="stat-val" id="acc-val">100%</div>
-        <div class="stat-lbl">acc</div>
+        <div class="stat-val" id="sv-raw">0</div>
+        <div class="stat-lbl">Raw</div>
       </div>
       <div class="stat">
-        <div class="stat-val" id="err-val">0</div>
-        <div class="stat-lbl">errors</div>
+        <div class="stat-val" id="sv-acc">100%</div>
+        <div class="stat-lbl">Accuracy</div>
       </div>
       <div class="stat">
-        <div class="stat-val" id="streak-val">0</div>
-        <div class="stat-lbl">🔥streak</div>
+        <div class="stat-val" id="sv-err">0</div>
+        <div class="stat-lbl">Errors</div>
       </div>
-      <div class="stat" id="timer-stat">
-        <div id="timer-display">15</div>
-        <div class="stat-lbl">sec</div>
+      <div class="stat">
+        <div class="stat-val" id="sv-streak">0</div>
+        <div class="stat-lbl">🔥 Streak</div>
+      </div>
+      <div class="stat" id="timer-stat" style="margin-left:auto">
+        <div id="timer-display">30</div>
+        <div class="stat-lbl" id="timer-lbl">Seconds</div>
       </div>
     </div>
 
-    <!-- Progress -->
-    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+    <!-- Progress bar -->
+    <div id="progress-outer"><div id="progress-inner"></div></div>
 
-    <!-- Words -->
-    <div id="words-container">
+    <!-- Word display -->
+    <div id="words-wrap" onclick="focusInput()">
       <div id="words-inner"></div>
     </div>
-    <input id="hidden-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="none">
+    <input id="ghost-input" type="text" inputmode="none"
+      autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
 
-    <!-- Desktop Keyboard Visual -->
-    <div id="kb-visual">
+    <!-- Desktop Keyboard -->
+    <div id="kb-desk">
+      <!-- Row 0: Numbers -->
       <div class="kb-row">
-        <div class="kk" data-key="`">` <span class="finger-dot f-lp"></span></div>
-        <div class="kk" data-key="1">1 <span class="finger-dot f-lp"></span></div>
-        <div class="kk" data-key="2">2 <span class="finger-dot f-lr"></span></div>
-        <div class="kk" data-key="3">3 <span class="finger-dot f-lm"></span></div>
-        <div class="kk" data-key="4">4 <span class="finger-dot f-li"></span></div>
-        <div class="kk" data-key="5">5 <span class="finger-dot f-li"></span></div>
-        <div class="kk" data-key="6">6 <span class="finger-dot f-ri"></span></div>
-        <div class="kk" data-key="7">7 <span class="finger-dot f-ri"></span></div>
-        <div class="kk" data-key="8">8 <span class="finger-dot f-rm"></span></div>
-        <div class="kk" data-key="9">9 <span class="finger-dot f-rr"></span></div>
-        <div class="kk" data-key="0">0 <span class="finger-dot f-rp"></span></div>
-        <div class="kk" data-key="-">- <span class="finger-dot f-rp"></span></div>
-        <div class="kk wider" data-key="Backspace">⌫</div>
+        <div class="kk" data-k="`">`</div>
+        <div class="kk" data-k="1">1<span class="fd f-lp"></span></div>
+        <div class="kk" data-k="2">2<span class="fd f-lr"></span></div>
+        <div class="kk" data-k="3">3<span class="fd f-lm"></span></div>
+        <div class="kk" data-k="4">4<span class="fd f-li"></span></div>
+        <div class="kk" data-k="5">5<span class="fd f-li"></span></div>
+        <div class="kk" data-k="6">6<span class="fd f-ri"></span></div>
+        <div class="kk" data-k="7">7<span class="fd f-ri"></span></div>
+        <div class="kk" data-k="8">8<span class="fd f-rm"></span></div>
+        <div class="kk" data-k="9">9<span class="fd f-rr"></span></div>
+        <div class="kk" data-k="0">0<span class="fd f-rp"></span></div>
+        <div class="kk" data-k="-">-</div>
+        <div class="kk" data-k="=">=</div>
+        <div class="kk w3" data-k="Backspace" style="font-size:12px;">⌫</div>
       </div>
+      <!-- Row 1: QWERTY -->
       <div class="kb-row">
-        <div class="kk wide" data-key="Tab">Tab</div>
-        <div class="kk" data-key="q">q <span class="finger-dot f-lp"></span></div>
-        <div class="kk" data-key="w">w <span class="finger-dot f-lr"></span></div>
-        <div class="kk" data-key="e">e <span class="finger-dot f-lm"></span></div>
-        <div class="kk" data-key="r">r <span class="finger-dot f-li"></span></div>
-        <div class="kk" data-key="t">t <span class="finger-dot f-li"></span></div>
-        <div class="kk" data-key="y">y <span class="finger-dot f-ri"></span></div>
-        <div class="kk" data-key="u">u <span class="finger-dot f-ri"></span></div>
-        <div class="kk" data-key="i">i <span class="finger-dot f-rm"></span></div>
-        <div class="kk" data-key="o">o <span class="finger-dot f-rr"></span></div>
-        <div class="kk" data-key="p">p <span class="finger-dot f-rp"></span></div>
-        <div class="kk" data-key="[">[ <span class="finger-dot f-rp"></span></div>
-        <div class="kk" data-key="]">]</div>
-        <div class="kk" data-key="Enter">↵</div>
+        <div class="kk w2" data-k="Tab">Tab</div>
+        <div class="kk" data-k="q">q<span class="fd f-lp"></span></div>
+        <div class="kk" data-k="w">w<span class="fd f-lr"></span></div>
+        <div class="kk" data-k="e">e<span class="fd f-lm"></span></div>
+        <div class="kk" data-k="r">r<span class="fd f-li"></span></div>
+        <div class="kk" data-k="t">t<span class="fd f-li"></span></div>
+        <div class="kk" data-k="y">y<span class="fd f-ri"></span></div>
+        <div class="kk" data-k="u">u<span class="fd f-ri"></span></div>
+        <div class="kk" data-k="i">i<span class="fd f-rm"></span></div>
+        <div class="kk" data-k="o">o<span class="fd f-rr"></span></div>
+        <div class="kk" data-k="p">p<span class="fd f-rp"></span></div>
+        <div class="kk" data-k="[">[</div>
+        <div class="kk" data-k="]">]</div>
+        <div class="kk w2" data-k="Enter" style="font-size:12px;">↵</div>
       </div>
+      <!-- Row 2: ASDF -->
       <div class="kb-row">
-        <div class="kk wider" data-key="CapsLock">Caps</div>
-        <div class="kk" data-key="a">a <span class="finger-dot f-lp"></span></div>
-        <div class="kk" data-key="s">s <span class="finger-dot f-lr"></span></div>
-        <div class="kk" data-key="d">d <span class="finger-dot f-lm"></span></div>
-        <div class="kk" data-key="f">f <span class="finger-dot f-li"></span></div>
-        <div class="kk" data-key="g">g <span class="finger-dot f-li"></span></div>
-        <div class="kk" data-key="h">h <span class="finger-dot f-ri"></span></div>
-        <div class="kk" data-key="j">j <span class="finger-dot f-ri"></span></div>
-        <div class="kk" data-key="k">k <span class="finger-dot f-rm"></span></div>
-        <div class="kk" data-key="l">l <span class="finger-dot f-rr"></span></div>
-        <div class="kk" data-key=";">; <span class="finger-dot f-rp"></span></div>
-        <div class="kk" data-key="'">' <span class="finger-dot f-rp"></span></div>
-        <div class="kk wider" data-key="Enter">Enter</div>
+        <div class="kk w3" data-k="CapsLock" style="font-size:9px;">Caps</div>
+        <div class="kk" data-k="a">a<span class="fd f-lp"></span></div>
+        <div class="kk" data-k="s">s<span class="fd f-lr"></span></div>
+        <div class="kk" data-k="d">d<span class="fd f-lm"></span></div>
+        <div class="kk" data-k="f">f<span class="fd f-li"></span></div>
+        <div class="kk" data-k="g">g<span class="fd f-li"></span></div>
+        <div class="kk" data-k="h">h<span class="fd f-ri"></span></div>
+        <div class="kk" data-k="j">j<span class="fd f-ri"></span></div>
+        <div class="kk" data-k="k">k<span class="fd f-rm"></span></div>
+        <div class="kk" data-k="l">l<span class="fd f-rr"></span></div>
+        <div class="kk" data-k=";">;<span class="fd f-rp"></span></div>
+        <div class="kk" data-k="'">'</div>
+        <div class="kk w3" data-k="Enter">Enter</div>
       </div>
+      <!-- Row 3: ZXCV -->
       <div class="kb-row">
-        <div class="kk wider" data-key="Shift">Shift</div>
-        <div class="kk" data-key="z">z <span class="finger-dot f-lp"></span></div>
-        <div class="kk" data-key="x">x <span class="finger-dot f-lp"></span></div>
-        <div class="kk" data-key="c">c <span class="finger-dot f-lm"></span></div>
-        <div class="kk" data-key="v">v <span class="finger-dot f-li"></span></div>
-        <div class="kk" data-key="b">b <span class="finger-dot f-li"></span></div>
-        <div class="kk" data-key="n">n <span class="finger-dot f-ri"></span></div>
-        <div class="kk" data-key="m">m <span class="finger-dot f-ri"></span></div>
-        <div class="kk" data-key=",">, <span class="finger-dot f-rm"></span></div>
-        <div class="kk" data-key=".">. <span class="finger-dot f-rr"></span></div>
-        <div class="kk" data-key="/">/</div>
-        <div class="kk wider" data-key="Shift">Shift</div>
+        <div class="kk w3" data-k="Shift">Shift</div>
+        <div class="kk" data-k="z">z<span class="fd f-lp"></span></div>
+        <div class="kk" data-k="x">x<span class="fd f-lp"></span></div>
+        <div class="kk" data-k="c">c<span class="fd f-lm"></span></div>
+        <div class="kk" data-k="v">v<span class="fd f-li"></span></div>
+        <div class="kk" data-k="b">b<span class="fd f-li"></span></div>
+        <div class="kk" data-k="n">n<span class="fd f-ri"></span></div>
+        <div class="kk" data-k="m">m<span class="fd f-ri"></span></div>
+        <div class="kk" data-k=",">,<span class="fd f-rm"></span></div>
+        <div class="kk" data-k=".">.<span class="fd f-rr"></span></div>
+        <div class="kk" data-k="/">/</div>
+        <div class="kk w3" data-k="Shift">Shift</div>
       </div>
+      <!-- Row 4: Space -->
       <div class="kb-row">
-        <div class="kk wide" data-key="Ctrl">Ctrl</div>
-        <div class="kk" data-key="Alt">Alt</div>
-        <div class="kk widest" data-key=" ">SPACE <span class="finger-dot f-th"></span></div>
-        <div class="kk" data-key="Alt">Alt</div>
-        <div class="kk wide" data-key="Ctrl">Ctrl</div>
+        <div class="kk w2" data-k="Ctrl" style="font-size:9px;">Ctrl</div>
+        <div class="kk w1" data-k="Alt" style="font-size:9px;">Alt</div>
+        <div class="kk wflex" data-k=" ">SPACE<span class="fd f-th"></span></div>
+        <div class="kk w1" data-k="Alt" style="font-size:9px;">Alt</div>
+        <div class="kk w2" data-k="Ctrl" style="font-size:9px;">Ctrl</div>
       </div>
     </div>
 
-    <!-- Bottom Row -->
-    <div id="bottom-row">
-      <div id="hint-text">Tab = restart &nbsp;|&nbsp; Esc = stop &nbsp;|&nbsp; Touch any key to type</div>
-      <button id="stop-btn" onclick="stopTest()">■ Stop</button>
-      <button id="restart-btn" onclick="restartTest()">↺ Restart</button>
+    <!-- Bottom bar -->
+    <div id="bottom-bar">
+      <div id="hint-line">Tab = restart &nbsp;|&nbsp; Esc = stop &nbsp;|&nbsp; Click anywhere to focus</div>
+      <button class="action-btn ghost" onclick="stopTest()">■ Stop</button>
+      <button class="action-btn primary" onclick="restartTest()">↺ Restart</button>
     </div>
-
   </div>
 
-  <!-- RIGHT: ANDROID PHONE -->
+  <!-- RIGHT PANEL: ANDROID PHONE -->
   <div id="right-panel">
     <div id="phone">
-
-      <!-- Status bar -->
+      <!-- Status Bar -->
       <div id="phone-status">
         <span id="phone-time">9:41</span>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <span>●●●●</span>
+        <div class="status-icons">
+          <span>▲▲▲</span>
           <span>WiFi</span>
-          <div class="battery-icon">🔋<span id="batt-pct">87</span>%</div>
+          <span>🔋<span id="batt">87</span>%</span>
         </div>
       </div>
-
       <!-- Notch -->
-      <div id="notch"><div class="notch-cam"></div></div>
-
-      <!-- App area -->
-      <div id="phone-app">
-        <!-- App top bar -->
-        <div id="app-topbar">
-          <div class="app-icon">⌨️</div>
+      <div id="notch">
+        <div class="notch-speaker"></div>
+        <div class="notch-cam"></div>
+      </div>
+      <!-- App body -->
+      <div id="phone-body">
+        <!-- App header -->
+        <div id="app-header">
+          <div class="app-logo">⌨️</div>
           <div id="app-title">KeyRush</div>
-          <div style="margin-left:auto;font-size:10px;color:#888;">Touch to type</div>
+          <div id="app-wpm">0 WPM</div>
         </div>
-
-        <!-- Text display -->
-        <div id="phone-text-area">
-          <span id="phone-typed"></span><span id="phone-cursor"></span>
+        <!-- Text field -->
+        <div id="phone-field">
+          <span id="phone-typed"></span><span id="phone-caret"></span>
         </div>
-
         <!-- Suggestions -->
-        <div id="suggestions">
-          <div class="sug" id="sug0" onclick="tapSuggestion(0)">...</div>
-          <div class="sug main" id="sug1" onclick="tapSuggestion(1)">...</div>
-          <div class="sug" id="sug2" onclick="tapSuggestion(2)">...</div>
+        <div id="phone-sug">
+          <div class="sug-item" id="sg0" onclick="tapSug(0)">...</div>
+          <div class="sug-item mid" id="sg1" onclick="tapSug(1)">...</div>
+          <div class="sug-item" id="sg2" onclick="tapSug(2)">...</div>
         </div>
-
+        <!-- Extras -->
+        <div id="vkb-extras">
+          <button class="ext-btn" id="btn-swipe" onclick="toggleExt('swipe')">👆 Swipe</button>
+          <button class="ext-btn on" id="btn-haptic" onclick="toggleExt('haptic')">📳 Haptic</button>
+          <button class="ext-btn" id="btn-voice" onclick="activateVoice()">🎤 Voice</button>
+        </div>
         <!-- Virtual Keyboard -->
         <div id="vkb">
-          <div id="vkb-extras">
-            <button class="extra-btn" id="swipe-btn" onclick="toggleSwipe()">👆 Swipe</button>
-            <button class="extra-btn" id="voice-btn" onclick="toggleVoice()">🎤 Voice</button>
-            <button class="extra-btn on" id="haptic-btn" onclick="toggleHaptic()">📳 Haptic</button>
+          <div class="vkb-row">
+            <div class="vk" data-vk="q">q</div><div class="vk" data-vk="w">w</div>
+            <div class="vk" data-vk="e">e</div><div class="vk" data-vk="r">r</div>
+            <div class="vk" data-vk="t">t</div><div class="vk" data-vk="y">y</div>
+            <div class="vk" data-vk="u">u</div><div class="vk" data-vk="i">i</div>
+            <div class="vk" data-vk="o">o</div><div class="vk" data-vk="p">p</div>
           </div>
           <div class="vkb-row">
-            <div class="vk" data-vk="q">q</div>
-            <div class="vk" data-vk="w">w</div>
-            <div class="vk" data-vk="e">e</div>
-            <div class="vk" data-vk="r">r</div>
-            <div class="vk" data-vk="t">t</div>
-            <div class="vk" data-vk="y">y</div>
-            <div class="vk" data-vk="u">u</div>
-            <div class="vk" data-vk="i">i</div>
-            <div class="vk" data-vk="o">o</div>
-            <div class="vk" data-vk="p">p</div>
-          </div>
-          <div class="vkb-row">
-            <div class="vk" data-vk="a">a</div>
-            <div class="vk" data-vk="s">s</div>
-            <div class="vk" data-vk="d">d</div>
-            <div class="vk" data-vk="f">f</div>
-            <div class="vk" data-vk="g">g</div>
-            <div class="vk" data-vk="h">h</div>
-            <div class="vk" data-vk="j">j</div>
-            <div class="vk" data-vk="k">k</div>
+            <div class="vk" data-vk="a">a</div><div class="vk" data-vk="s">s</div>
+            <div class="vk" data-vk="d">d</div><div class="vk" data-vk="f">f</div>
+            <div class="vk" data-vk="g">g</div><div class="vk" data-vk="h">h</div>
+            <div class="vk" data-vk="j">j</div><div class="vk" data-vk="k">k</div>
             <div class="vk" data-vk="l">l</div>
           </div>
           <div class="vkb-row">
-            <div class="vk special" data-vk="Shift">⬆</div>
-            <div class="vk" data-vk="z">z</div>
-            <div class="vk" data-vk="x">x</div>
-            <div class="vk" data-vk="c">c</div>
-            <div class="vk" data-vk="v">v</div>
-            <div class="vk" data-vk="b">b</div>
-            <div class="vk" data-vk="n">n</div>
+            <div class="vk sp" data-vk="Shift" id="shift-key">⬆</div>
+            <div class="vk" data-vk="z">z</div><div class="vk" data-vk="x">x</div>
+            <div class="vk" data-vk="c">c</div><div class="vk" data-vk="v">v</div>
+            <div class="vk" data-vk="b">b</div><div class="vk" data-vk="n">n</div>
             <div class="vk" data-vk="m">m</div>
-            <div class="vk special" data-vk="Backspace">⌫</div>
+            <div class="vk sp" data-vk="Backspace">⌫</div>
           </div>
           <div class="vkb-row">
-            <div class="vk special" style="max-width:36px;font-size:10px;" data-vk="?123">?123</div>
-            <div class="vk emoji-vk" data-vk="emoji">😊</div>
-            <div class="vk space-vk" data-vk=" ">English (US)</div>
-            <div class="vk" data-vk=".">.</div>
-            <div class="vk enter-vk" data-vk="Enter">Go</div>
+            <div class="vk sym sp" data-vk="?123">?123</div>
+            <div class="vk sp" style="font-size:14px;" data-vk="emoji">😊</div>
+            <div class="vk space" data-vk=" ">English (India)</div>
+            <div class="vk sp" data-vk=".">.</div>
+            <div class="vk enter" data-vk="Enter">Go</div>
           </div>
         </div>
-
       </div>
-
       <!-- Home bar -->
-      <div id="home-bar"><div class="home-indicator"></div></div>
+      <div id="home-bar"><div class="home-line"></div></div>
     </div>
   </div>
-
 </div>
 
-<!-- STREAK BADGE -->
-<div id="streak-badge">🔥 Streak!</div>
+<!-- ═══════════════════════════════════════
+     STREAK POPUP
+═══════════════════════════════════════ -->
+<div id="streak-popup">🔥 10 Streak!</div>
 
-<!-- RESULTS -->
-<div id="results">
+<!-- ═══════════════════════════════════════
+     RESULTS OVERLAY
+═══════════════════════════════════════ -->
+<div id="overlay-results">
   <div id="results-box">
-    <h2>📊 Results</h2>
+    <h2>📊 <span id="r-title">Results</span></h2>
     <div class="res-grid">
-      <div class="res-stat"><div class="rv" id="r-wpm">—</div><div class="rl">WPM</div></div>
-      <div class="res-stat"><div class="rv" id="r-acc">—</div><div class="rl">Accuracy</div></div>
-      <div class="res-stat"><div class="rv" id="r-err">—</div><div class="rl">Errors</div></div>
-      <div class="res-stat"><div class="rv" id="r-streak">—</div><div class="rl">Best Streak</div></div>
-      <div class="res-stat"><div class="rv" id="r-chars">—</div><div class="rl">Characters</div></div>
-      <div class="res-stat"><div class="rv" id="r-best">—</div><div class="rl">Best WPM</div></div>
+      <div class="res-card"><div class="rv" id="r-wpm">—</div><div class="rl">WPM</div></div>
+      <div class="res-card"><div class="rv" id="r-raw">—</div><div class="rl">Raw WPM</div></div>
+      <div class="res-card"><div class="rv" id="r-acc">—</div><div class="rl">Accuracy</div></div>
+      <div class="res-card"><div class="rv" id="r-err">—</div><div class="rl">Errors</div></div>
+      <div class="res-card"><div class="rv" id="r-streak">—</div><div class="rl">Best Streak</div></div>
+      <div class="res-card"><div class="rv" id="r-best">—</div><div class="rl">Best Ever WPM</div></div>
     </div>
-    <div id="wpm-chart">
-      <h4>WPM over time</h4>
-      <div id="chart-bars"></div>
+    <div id="chart-section">
+      <h4>WPM History</h4>
+      <div id="chart-area"></div>
     </div>
-    <div id="leaderboard">
+    <div id="lb-section">
       <h4>🏆 Leaderboard</h4>
       <div id="lb-list"></div>
     </div>
-    <div class="res-btns">
+    <div class="res-actions">
       <button class="res-btn primary" onclick="restartTest()">↺ Try Again</button>
-      <button class="res-btn secondary" onclick="closeResults()">✕ Close</button>
+      <button class="res-btn secondary" onclick="document.getElementById('overlay-results').classList.remove('show')">✕ Close</button>
     </div>
   </div>
 </div>
 
-<!-- CUSTOM TEXT -->
-<div id="custom-overlay">
-  <div id="custom-box">
+<!-- ═══════════════════════════════════════
+     CUSTOM TEXT MODAL
+═══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-custom">
+  <div class="modal-box">
     <h3>✏️ Custom Text</h3>
-    <textarea id="custom-textarea" placeholder="Paste your own text here..."></textarea>
-    <div class="custom-btns">
-      <button class="custom-btn go" onclick="applyCustom()">▶ Start</button>
-      <button class="custom-btn cancel" onclick="closeCustom()">✕ Cancel</button>
+    <textarea class="modal-textarea" id="custom-ta" placeholder="Paste your own text here to practice typing..."></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn go" onclick="applyCustom()">▶ Start Typing</button>
+      <button class="modal-btn cancel" onclick="closeModal('modal-custom')">✕ Cancel</button>
     </div>
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════
+     SETTINGS MODAL
+═══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal-box">
+    <h3>⚙️ Settings</h3>
+    <div class="settings-grid">
+      <div class="setting-item">
+        <label>Font Size</label>
+        <input type="range" id="set-fontsize" min="14" max="26" value="19" step="1" oninput="applyFontSize(this.value)">
+      </div>
+      <div class="setting-item">
+        <label>Caret Style</label>
+        <select id="set-caret" onchange="applyCaretStyle(this.value)">
+          <option value="bar">Bar |</option>
+          <option value="block">Block █</option>
+          <option value="underline">Underline _</option>
+        </select>
+      </div>
+      <div class="setting-item">
+        <label>Word Count (Words mode)</label>
+        <select id="set-wordcount">
+          <option value="10">10 words</option>
+          <option value="25">25 words</option>
+          <option value="50" selected>50 words</option>
+          <option value="100">100 words</option>
+        </select>
+      </div>
+      <div class="setting-item">
+        <label>Difficulty</label>
+        <select id="set-diff">
+          <option value="easy">Easy (common)</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard (uncommon)</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px;">Theme</label>
+      <div class="theme-swatches">
+        <div class="swatch active" data-theme="" style="background:linear-gradient(135deg,#0f0f0f,#e2b714)" title="Dark (Default)" onclick="setTheme('')"></div>
+        <div class="swatch" data-theme="theme-light" style="background:linear-gradient(135deg,#f0ede8,#e2b714)" title="Light" onclick="setTheme('theme-light')"></div>
+        <div class="swatch" data-theme="theme-ocean" style="background:linear-gradient(135deg,#0a1628,#38bdf8)" title="Ocean" onclick="setTheme('theme-ocean')"></div>
+        <div class="swatch" data-theme="theme-forest" style="background:linear-gradient(135deg,#0a1a0a,#86efac)" title="Forest" onclick="setTheme('theme-forest')"></div>
+        <div class="swatch" data-theme="theme-purple" style="background:linear-gradient(135deg,#120a1e,#d8b4fe)" title="Purple" onclick="setTheme('theme-purple')"></div>
+      </div>
+    </div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="modal-btn go" onclick="closeModal('modal-settings')">✓ Done</button>
+    </div>
+  </div>
+</div>
 <script>
-// ═══════════════════════════════════════════════════════
-//  WORD BANK
-// ═══════════════════════════════════════════════════════
-const WORDS = `the be to of and a in that have it for not on with he as you do at this his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us`.split(' ');
-const PUNCTS = [',', '.', '!', '?', ';', ':', '-', "'"];
-const NUMS = '0123456789'.split('');
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 1: CONSTANTS & DATA
+// ═══════════════════════════════════════════════════════════════════
 
-// ═══════════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════════
-let mode = 'time', timeLimit = 15, usePunct = false, useNums = false;
-let soundOn = true, hapticOn = true;
-let wordList = [], currentWordIdx = 0, currentCharIdx = 0;
-let typedWords = [], errors = 0, totalChars = 0, correctChars = 0;
-let streak = 0, bestStreak = 0, wpmHistory = [];
-let started = false, finished = false;
-let timerVal = 15, timerRef = null, startTime = null, lastWpmTime = null;
-let customText = '';
-let isLight = false;
+const WORD_BANK = {
+  easy: 'the be to of and a in that have it for not on with he as you do at this his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us great use man much know well keep'.split(' '),
+  normal: 'ability accept achieve action actually address already always appear apply around author back basic because begin between build called carry cause change check clear close come compare complete computer consider continue control create data decide describe design develop different direct discuss document early enough enter environment especially establish everything example exist experience extend fact feature field finally follow form found general give government group grow happen hard help high human identify important increase individual industry information instead issue knowledge large later learn leave level light likely list look main major management market mean method might mind miss model move must national need network never next note offer often once open order organization other page particular perform place plan player point policy possible present problem process program provide public quality reach ready real recent record require research resource result return review right rise role run safe school seem service set share since situation small social software some speak start state still subject support system take task team tell term think though today together treat try turn type until usually value various version view visit want while within without world write'.split(' '),
+  hard: 'abrupt accelerate accommodate accomplish acknowledgment acquisition administration ambiguous ameliorate anticipate approximately architecture articulate authenticate bureaucratic catastrophic circumference collaboration commemorate comprehension concentrated conscientious controversial debilitating deliberate differentiate disproportionate documentation ecclesiastical emphasize encyclopedia environment equilibrium exaggerate exhilarating extraordinary facilitate fragmentation grammatically hierarchical hypothetical implication infrastructure initiative instantaneous interpretation jurisdiction knowledgeable maintenance manipulate metamorphosis miscellaneous necessarily negotiation nevertheless observation occasionally omniscient philosophical predetermined quantitative reconnaissance rehabilitation simultaneously sophisticated subsequently transactional transparency ubiquitous unprecedented visualization'.split(' ')
+};
 
-const leaderboard = JSON.parse(localStorage.getItem('kr_lb') || '[]');
-const stats = JSON.parse(localStorage.getItem('kr_stats') || '{"best":0,"tests":0,"totalAcc":0}');
+const PUNCTS = [',', '.', '!', '?', ';', ':', '-'];
+const NUMS = ['0','1','2','3','4','5','6','7','8','9'];
 
-// ═══════════════════════════════════════════════════════
-//  AUDIO
-// ═══════════════════════════════════════════════════════
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let audioCtx;
-function getAudio() { if (!audioCtx) audioCtx = new AudioCtx(); return audioCtx; }
-function playClick(correct) {
-  if (!soundOn) return;
+const QUOTES = [
+  "The only way to do great work is to love what you do.",
+  "In the middle of every difficulty lies opportunity.",
+  "Life is what happens when you are busy making other plans.",
+  "The future belongs to those who believe in the beauty of their dreams.",
+  "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+  "It does not matter how slowly you go as long as you do not stop.",
+  "Everything you have ever wanted is on the other side of fear.",
+  "The quick brown fox jumps over the lazy dog near the riverbank.",
+  "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
+  "Two roads diverged in a wood and I took the one less traveled by and that has made all the difference."
+];
+
+const DEFAULT_LB = [
+  {name:'SpeedDemon',wpm:148,acc:99,date:'2024-12-01'},
+  {name:'TypeMaster',wpm:132,acc:97,date:'2024-11-28'},
+  {name:'KeyRacer',wpm:119,acc:95,date:'2024-11-25'},
+  {name:'Fingertips',wpm:112,acc:98,date:'2024-11-20'},
+  {name:'WordWizard',wpm:104,acc:94,date:'2024-11-15'},
+  {name:'SwiftKeys',wpm:96,acc:92,date:'2024-11-10'}
+];
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 2: STATE
+// ═══════════════════════════════════════════════════════════════════
+
+const S = {
+  mode: 'time',      timeLimit: 30,
+  usePunct: false,   useNums: false,
+  soundOn: true,     hapticOn: true,
+  theme: '',         fontSize: 19,
+  wordCount: 50,     difficulty: 'normal',
+  caretStyle: 'bar', shiftOn: false,
+
+  words: [],         wordIdx: 0,    charIdx: 0,
+  typedWords: [],    errors: 0,
+  totalKeys: 0,      correctKeys: 0, rawKeys: 0,
+  streak: 0,         bestStreak: 0,
+  wpmSnaps: [],      lastSnapTime: 0,
+
+  started: false,    finished: false, paused: false,
+  timerVal: 30,      timerRef: null,  startTime: null,
+  customText: ''
+};
+
+// Persist
+const STORE = {
+  get(k, def) { try { const v = localStorage.getItem('kr_'+k); return v ? JSON.parse(v) : def; } catch(e) { return def; } },
+  set(k, v) { try { localStorage.setItem('kr_'+k, JSON.stringify(v)); } catch(e) {} }
+};
+const LB_DATA = STORE.get('lb', [...DEFAULT_LB]);
+const USER_STATS = STORE.get('stats', { best: 0, tests: 0, totalAcc: 0, totalTime: 0 });
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 3: AUDIO ENGINE
+// ═══════════════════════════════════════════════════════════════════
+
+let _audioCtx = null;
+function getAudio() { if (!_audioCtx) _audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return _audioCtx; }
+
+function playClick(type) {
+  if (!S.soundOn) return;
   try {
     const ac = getAudio();
     const o = ac.createOscillator(), g = ac.createGain();
+    // Distortion for mechanical feel
+    const wave = ac.createWaveShaper();
+    const curve = new Float32Array(256);
+    for(let i=0;i<256;i++) curve[i] = (i/128-1) < 0 ? -1 : 1;
+    wave.curve = curve; wave.oversample = '2x';
     o.connect(g); g.connect(ac.destination);
-    o.frequency.value = correct === null ? 600 : correct ? 900 : 200;
-    g.gain.setValueAtTime(.08, ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .06);
-    o.start(); o.stop(ac.currentTime + .06);
+    if (type === 'correct') {
+      o.type = 'square'; o.frequency.value = 880;
+      g.gain.setValueAtTime(.04, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .055);
+    } else if (type === 'wrong') {
+      o.type = 'sawtooth'; o.frequency.value = 180;
+      g.gain.setValueAtTime(.06, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .08);
+    } else {
+      o.type = 'square'; o.frequency.value = 600;
+      g.gain.setValueAtTime(.035, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .05);
+    }
+    o.start(); o.stop(ac.currentTime + .1);
   } catch(e) {}
 }
 
-// ═══════════════════════════════════════════════════════
-//  WORD GENERATION
-// ═══════════════════════════════════════════════════════
-function genWords(n = 80) {
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 4: WORD GENERATION
+// ═══════════════════════════════════════════════════════════════════
+
+function genWords(n = 120) {
+  if (S.mode === 'custom' && S.customText) return S.customText.trim().split(/\s+/).filter(Boolean);
+  if (S.mode === 'quote') { const q = QUOTES[Math.floor(Math.random()*QUOTES.length)]; return q.split(' '); }
+  const pool = WORD_BANK[S.difficulty] || WORD_BANK.normal;
   const out = [];
   for (let i = 0; i < n; i++) {
-    let w = WORDS[Math.floor(Math.random() * WORDS.length)];
-    if (useNums && Math.random() < .15) w = Math.floor(Math.random() * 1000).toString();
-    if (usePunct && Math.random() < .2) {
-      const p = PUNCTS[Math.floor(Math.random() * PUNCTS.length)];
-      if ([',', '.', '!', '?', ';', ':'].includes(p)) w += p;
-      else w = p + w;
+    let w = pool[Math.floor(Math.random()*pool.length)];
+    if (S.useNums && Math.random() < .12) w = String(Math.floor(Math.random()*9999));
+    if (S.usePunct && Math.random() < .18) {
+      const p = PUNCTS[Math.floor(Math.random()*PUNCTS.length)];
+      w = [',','.','!','?',';',':'].includes(p) ? w + p : p + w;
     }
     out.push(w);
   }
   return out;
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER WORDS
-// ═══════════════════════════════════════════════════════
-function renderWords() {
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 5: RENDER ENGINE
+// ═══════════════════════════════════════════════════════════════════
+
+function render() {
   const wi = document.getElementById('words-inner');
-  wi.innerHTML = '';
-  wordList.forEach((word, wi2) => {
+  const frag = document.createDocumentFragment();
+
+  S.words.forEach((word, wIdx) => {
     const wEl = document.createElement('span');
-    wEl.className = 'word' + (wi2 === currentWordIdx ? ' current' : '');
-    wEl.dataset.idx = wi2;
-    [...word].forEach((ch, ci) => {
+    wEl.className = 'w' + (wIdx === S.wordIdx ? ' current' : '');
+    wEl.dataset.wIdx = wIdx;
+
+    const typed = S.typedWords[wIdx] || '';
+    const len = Math.max(word.length, typed.length);
+
+    for (let ci = 0; ci < len; ci++) {
       const cEl = document.createElement('span');
-      cEl.className = 'char';
-      cEl.textContent = ch;
-      const typed = typedWords[wi2];
-      if (typed !== undefined) {
-        if (ci < typed.length) {
-          cEl.classList.add(typed[ci] === ch ? 'correct' : 'wrong');
-        }
+      cEl.className = 'ch';
+      if (ci < word.length) {
+        cEl.textContent = word[ci];
+        if (ci < typed.length) cEl.classList.add(typed[ci] === word[ci] ? 'ok' : 'bad');
+      } else {
+        // Extra characters typed beyond word length
+        cEl.textContent = typed[ci] || '';
+        cEl.classList.add('extra', 'bad');
       }
-      if (wi2 === currentWordIdx && ci === currentCharIdx) {
-        cEl.classList.add('cursor');
-      }
+      // Caret
+      if (wIdx === S.wordIdx && ci === S.charIdx) cEl.classList.add('caret');
       wEl.appendChild(cEl);
-    });
-    // Extra wrong chars
-    if (wi2 === currentWordIdx && typedWords[wi2]) {
-      const typed = typedWords[wi2];
-      for (let ci = word.length; ci < typed.length; ci++) {
-        const cEl = document.createElement('span');
-        cEl.className = 'char wrong';
-        cEl.textContent = typed[ci];
-        if (ci === currentCharIdx) cEl.classList.add('cursor');
-        wEl.appendChild(cEl);
-      }
     }
-    wi.appendChild(wEl);
+    // Caret at end of word
+    if (wIdx === S.wordIdx && S.charIdx >= len) {
+      const caret = document.createElement('span');
+      caret.className = 'ch caret'; caret.textContent = '';
+      wEl.appendChild(caret);
+    }
+    frag.appendChild(wEl);
   });
-  // Scroll to current word
-  const currentEl = wi.querySelector('.current');
-  if (currentEl) {
-    const offset = currentEl.offsetTop;
-    const targetTop = -Math.max(0, offset - 28);
-    wi.style.top = targetTop + 'px';
+
+  wi.innerHTML = '';
+  wi.appendChild(frag);
+
+  // Auto-scroll to current word
+  const curEl = wi.querySelector('.current');
+  if (curEl) {
+    const offset = curEl.offsetTop;
+    const targetTop = -Math.max(0, offset - 30);
+    if (wi.style.top !== targetTop + 'px') wi.style.top = targetTop + 'px';
   }
 }
 
-// ═══════════════════════════════════════════════════════
-//  PHONE TEXT UPDATE
-// ═══════════════════════════════════════════════════════
-function updatePhoneText() {
-  const typed = typedWords.map((t, i) => t).join(' ');
-  document.getElementById('phone-typed').textContent = typed.slice(-30);
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 6: STATS ENGINE
+// ═══════════════════════════════════════════════════════════════════
+
+function calcWPM() {
+  if (!S.startTime) return 0;
+  const mins = (Date.now() - S.startTime) / 60000;
+  if (mins < 0.01) return 0;
+  return Math.round(S.correctKeys / 5 / mins);
+}
+function calcRaw() {
+  if (!S.startTime) return 0;
+  const mins = (Date.now() - S.startTime) / 60000;
+  if (mins < 0.01) return 0;
+  return Math.round(S.rawKeys / 5 / mins);
+}
+function calcAcc() {
+  if (S.totalKeys === 0) return 100;
+  return Math.max(0, Math.round(S.correctKeys / S.totalKeys * 100));
+}
+
+function updateLiveStats() {
+  const wpm = calcWPM();
+  document.getElementById('sv-wpm').textContent = wpm;
+  document.getElementById('sv-raw').textContent = calcRaw();
+  document.getElementById('sv-acc').textContent = calcAcc() + '%';
+  document.getElementById('sv-err').textContent = S.errors;
+  document.getElementById('sv-streak').textContent = S.streak;
+  document.getElementById('app-wpm').textContent = wpm + ' WPM';
+
+  // WPM snap
+  if (S.started && Date.now() - S.lastSnapTime > 2000) {
+    S.wpmSnaps.push(wpm);
+    S.lastSnapTime = Date.now();
+  }
+  // Progress
+  let prog = 0;
+  if (S.mode === 'time') prog = Math.min(100, (S.timerVal > 0 ? (S.timeLimit - S.timerVal) / S.timeLimit * 100 : 100));
+  else if (S.mode === 'words' || S.mode === 'quote') prog = Math.min(100, S.wordIdx / S.words.length * 100);
+  document.getElementById('progress-inner').style.width = prog + '%';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 7: PHONE UI
+// ═══════════════════════════════════════════════════════════════════
+
+function updatePhoneUI() {
+  // Show last ~35 typed chars
+  const allTyped = S.typedWords.slice(0, S.wordIdx).join(' ');
+  const curTyped = S.typedWords[S.wordIdx] || '';
+  const full = (allTyped ? allTyped + ' ' : '') + curTyped;
+  document.getElementById('phone-typed').textContent = full.slice(-35);
   updateSuggestions();
 }
 
 function updateSuggestions() {
-  const cur = wordList[currentWordIdx] || '';
-  const matches = WORDS.filter(w => w.startsWith(cur.slice(0, 2))).slice(0, 5);
-  const sugs = [
-    matches[0] || '...',
-    cur || '...',
-    matches[1] || '...'
-  ];
-  ['sug0','sug1','sug2'].forEach((id, i) => {
-    document.getElementById(id).textContent = sugs[i];
-  });
+  const curWord = S.words[S.wordIdx] || '';
+  const pool = WORD_BANK[S.difficulty] || WORD_BANK.normal;
+  const prefix = (S.typedWords[S.wordIdx] || '').slice(0, 3);
+  const matches = pool.filter(w => w.startsWith(prefix) && w !== curWord).slice(0, 4);
+  const sugs = [matches[0] || pool[Math.floor(Math.random()*pool.length)], curWord || '...', matches[1] || pool[Math.floor(Math.random()*pool.length)]];
+  ['sg0','sg1','sg2'].forEach((id, i) => { document.getElementById(id).textContent = sugs[i] || '...'; });
 }
 
-// ═══════════════════════════════════════════════════════
-//  INIT / RESTART
-// ═══════════════════════════════════════════════════════
-function init() {
-  wordList = customText && mode === 'custom'
-    ? customText.split(/\s+/).filter(Boolean)
-    : genWords(100);
-  currentWordIdx = 0; currentCharIdx = 0;
-  typedWords = ['']; errors = 0; totalChars = 0; correctChars = 0;
-  streak = 0; bestStreak = 0; wpmHistory = [];
-  started = false; finished = false;
-  clearInterval(timerRef);
-  timerVal = timeLimit;
-  document.getElementById('timer-display').textContent = mode === 'zen' ? '∞' : timerVal;
-  document.getElementById('timer-display').classList.remove('urgent');
-  document.getElementById('wpm-val').textContent = '0';
-  document.getElementById('acc-val').textContent = '100%';
-  document.getElementById('err-val').textContent = '0';
-  document.getElementById('streak-val').textContent = '0';
-  document.getElementById('progress-bar').style.width = '0%';
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 8: CORE GAME LOGIC
+// ═══════════════════════════════════════════════════════════════════
+
+function initGame() {
+  S.words = genWords(S.mode === 'words' ? S.wordCount + 20 : 120);
+  S.wordIdx = 0; S.charIdx = 0;
+  S.typedWords = [''];
+  S.errors = 0; S.totalKeys = 0; S.correctKeys = 0; S.rawKeys = 0;
+  S.streak = 0; S.bestStreak = 0; S.wpmSnaps = [];
+  S.started = false; S.finished = false; S.paused = false;
+  S.timerVal = S.timeLimit; S.startTime = null; S.lastSnapTime = 0;
+  clearInterval(S.timerRef);
+
+  // Reset UI
+  const td = document.getElementById('timer-display');
+  td.textContent = S.mode === 'zen' ? '∞' : S.timerVal;
+  td.classList.remove('urgent', 'warn');
+  document.getElementById('progress-inner').style.width = '0%';
+  document.getElementById('sv-wpm').textContent = '0';
+  document.getElementById('sv-raw').textContent = '0';
+  document.getElementById('sv-acc').textContent = '100%';
+  document.getElementById('sv-err').textContent = '0';
+  document.getElementById('sv-streak').textContent = '0';
   document.getElementById('phone-typed').textContent = '';
-  document.getElementById('timer-stat').style.display = mode === 'zen' ? 'none' : '';
-  renderWords();
-  updateSuggestions();
-  document.getElementById('results').classList.remove('show');
-}
+  document.getElementById('app-wpm').textContent = '0 WPM';
+  document.getElementById('overlay-results').classList.remove('show');
+  document.getElementById('timer-stat').style.display = S.mode === 'zen' ? 'none' : '';
 
-function restartTest() {
-  init();
+  render();
+  updateSuggestions();
   focusInput();
 }
 
-function stopTest() {
-  if (started) { finished = true; clearInterval(timerRef); showResults(); }
-  else init();
-}
-
-function focusInput() {
-  document.getElementById('hidden-input').focus();
-}
-
-// ═══════════════════════════════════════════════════════
-//  TIMER
-// ═══════════════════════════════════════════════════════
 function startTimer() {
-  startTime = Date.now();
-  lastWpmTime = startTime;
-  if (mode === 'zen' || mode === 'words') return;
-  timerRef = setInterval(() => {
-    timerVal--;
+  S.startTime = Date.now();
+  S.lastSnapTime = Date.now();
+  if (S.mode === 'zen' || S.mode === 'words' || S.mode === 'quote' || S.mode === 'custom') return;
+  S.timerRef = setInterval(() => {
+    S.timerVal--;
     const td = document.getElementById('timer-display');
-    td.textContent = timerVal;
-    if (timerVal <= 5) td.classList.add('urgent');
-    // WPM snapshot
-    if (Date.now() - lastWpmTime >= 2000) {
-      wpmHistory.push(calcWpm());
-      lastWpmTime = Date.now();
-    }
-    if (timerVal <= 0) { clearInterval(timerRef); finished = true; showResults(); }
+    td.textContent = S.timerVal;
+    td.classList.toggle('urgent', S.timerVal <= 5);
+    td.classList.toggle('warn', S.timerVal <= 10 && S.timerVal > 5);
+    updateLiveStats();
+    if (S.timerVal <= 0) { clearInterval(S.timerRef); endGame(); }
   }, 1000);
 }
 
-// ═══════════════════════════════════════════════════════
-//  WPM / ACCURACY
-// ═══════════════════════════════════════════════════════
-function calcWpm() {
-  if (!startTime) return 0;
-  const mins = (Date.now() - startTime) / 60000;
-  if (mins < .01) return 0;
-  return Math.round(correctChars / 5 / mins);
-}
-function calcAcc() {
-  if (totalChars === 0) return 100;
-  return Math.max(0, Math.round(correctChars / totalChars * 100));
-}
-function updateStats() {
-  document.getElementById('wpm-val').textContent = calcWpm();
-  document.getElementById('acc-val').textContent = calcAcc() + '%';
-  document.getElementById('err-val').textContent = errors;
-  document.getElementById('streak-val').textContent = streak;
-}
-
-// ═══════════════════════════════════════════════════════
-//  KEY PROCESSING (shared for desktop + virtual)
-// ═══════════════════════════════════════════════════════
 function processKey(key) {
-  if (finished) return;
+  if (S.finished) { if (key === 'Tab') { restartTest(); } return; }
 
-  // Tab = restart
+  // Meta keys
   if (key === 'Tab') { restartTest(); return; }
   if (key === 'Escape') { stopTest(); return; }
+  if (key === 'Shift' || key === 'CapsLock' || key === 'Control' || key === 'Alt' || key === 'Meta') return;
 
-  // Start timer on first key
-  if (!started && key !== 'Backspace' && key.length === 1) {
-    started = true;
+  // Start on first printable
+  if (!S.started && key !== 'Backspace' && key.length === 1) {
+    S.started = true;
     startTimer();
   }
-  if (!started) return;
+  if (!S.started) return;
 
-  const word = wordList[currentWordIdx];
+  const word = S.words[S.wordIdx] || '';
 
+  // BACKSPACE
   if (key === 'Backspace') {
-    playClick(null);
-    if (currentCharIdx > 0) {
-      typedWords[currentWordIdx] = typedWords[currentWordIdx].slice(0, -1);
-      currentCharIdx--;
-      if (totalChars > 0) totalChars--;
-      streak = 0;
-    } else if (currentWordIdx > 0) {
-      currentWordIdx--;
-      currentCharIdx = typedWords[currentWordIdx].length;
+    playClick('neutral');
+    flashKey('Backspace', 'neu');
+    if (S.charIdx > 0) {
+      S.typedWords[S.wordIdx] = (S.typedWords[S.wordIdx] || '').slice(0, -1);
+      S.charIdx--;
+      S.streak = 0;
+    } else if (S.wordIdx > 0) {
+      S.wordIdx--;
+      S.charIdx = (S.typedWords[S.wordIdx] || '').length;
     }
-    flashKey('Backspace', 'yellow');
-    updateStats(); renderWords(); updatePhoneText();
+    render(); updateLiveStats(); updatePhoneUI();
     return;
   }
 
+  // SPACE / ENTER → advance word
   if (key === ' ' || key === 'Enter') {
-    if (typedWords[currentWordIdx].length === 0) return;
-    // Complete word
-    if (typedWords[currentWordIdx] !== word) {
-      errors += Math.abs(typedWords[currentWordIdx].length - word.length) + 1;
-      streak = 0;
+    if (!S.typedWords[S.wordIdx] || S.typedWords[S.wordIdx].length === 0) return;
+    flashKey(' ', 'neu');
+    // Mark word errors
+    const typed = S.typedWords[S.wordIdx] || '';
+    if (typed !== word) {
+      const wordErrors = Math.abs(typed.length - word.length) + [...word].filter((c, i) => typed[i] !== c).length;
+      S.errors += Math.min(wordErrors, 3);
+      S.streak = 0;
     }
-    currentWordIdx++;
-    currentCharIdx = 0;
-    if (!typedWords[currentWordIdx]) typedWords[currentWordIdx] = '';
-    // Expand word list
-    if (currentWordIdx >= wordList.length - 10) wordList.push(...genWords(20));
-    // Words mode end
-    if (mode === 'words' && currentWordIdx >= 50) { finished = true; showResults(); }
-    // Progress
-    if (mode === 'time') {
-      const prog = (timeLimit - timerVal) / timeLimit * 100;
-      document.getElementById('progress-bar').style.width = prog + '%';
-    } else {
-      document.getElementById('progress-bar').style.width = (currentWordIdx / 50 * 100) + '%';
+    playClick('neutral');
+    S.wordIdx++;
+    S.charIdx = 0;
+    if (!S.typedWords[S.wordIdx]) S.typedWords[S.wordIdx] = '';
+    // Expand word list dynamically
+    if (S.wordIdx >= S.words.length - 15) S.words.push(...genWords(30));
+    // Words/quote mode end
+    if ((S.mode === 'words' || S.mode === 'quote' || S.mode === 'custom') && S.wordIdx >= S.words.length) {
+      endGame(); return;
     }
-    flashKey(' ', 'yellow');
-    updateStats(); renderWords(); updatePhoneText();
+    render(); updateLiveStats(); updatePhoneUI();
     return;
   }
 
+  // Single char
   if (key.length !== 1) return;
 
-  const expected = word[currentCharIdx];
-  const correct = key === expected;
+  const expected = word[S.charIdx];
+  const isCorrect = key === expected;
 
-  typedWords[currentWordIdx] += key;
-  currentCharIdx++;
-  totalChars++;
-  if (correct) {
-    correctChars++;
-    streak++;
-    if (streak > bestStreak) bestStreak = streak;
-    if (streak > 0 && streak % 10 === 0) showStreakBadge();
+  S.typedWords[S.wordIdx] = (S.typedWords[S.wordIdx] || '') + key;
+  S.charIdx++;
+  S.totalKeys++;
+  S.rawKeys++;
+
+  if (isCorrect) {
+    S.correctKeys++;
+    S.streak++;
+    if (S.streak > S.bestStreak) S.bestStreak = S.streak;
+    if (S.streak % 10 === 0) showStreakPop();
+    playClick('correct');
   } else {
-    errors++;
-    streak = 0;
+    S.errors++;
+    S.streak = 0;
+    playClick('wrong');
   }
 
-  // Highlight virtual key
-  const vk = document.querySelector(`[data-vk="${key}"]`);
-  if (vk) {
-    vk.classList.add('lit');
-    setTimeout(() => vk.classList.remove('lit'), 120);
-  }
-  flashKey(key, correct ? 'correct' : 'wrong');
-  playClick(correct);
+  // Flash physical key
+  flashKey(key, isCorrect ? 'ok' : 'bad');
+  // Flash virtual key
+  flashVK(key, isCorrect);
 
-  updateStats(); renderWords(); updatePhoneText();
+  render(); updateLiveStats(); updatePhoneUI();
 }
 
-// ═══════════════════════════════════════════════════════
-//  KEYBOARD EVENTS
-// ═══════════════════════════════════════════════════════
-document.addEventListener('keydown', e => {
-  if (e.ctrlKey || e.metaKey || e.altKey) return;
-  // Allow typing anywhere
-  if (e.target.tagName === 'TEXTAREA' || e.target.id === 'custom-textarea') return;
-  e.preventDefault();
-  processKey(e.key);
-});
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 9: KEY FLASH
+// ═══════════════════════════════════════════════════════════════════
 
-// Desktop KB click
-document.querySelectorAll('.kk').forEach(kk => {
-  kk.addEventListener('click', () => {
-    const k = kk.dataset.key;
-    if (!k || k === 'CapsLock' || k === 'Alt' || k === 'Ctrl') return;
-    processKey(k);
-  });
-  kk.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const k = kk.dataset.key;
-    if (!k || k === 'CapsLock' || k === 'Alt' || k === 'Ctrl') return;
-    processKey(k);
-  }, {passive: false});
-});
-
-// Virtual KB click
-document.querySelectorAll('.vk').forEach(vk => {
-  vk.addEventListener('click', () => {
-    const k = vk.dataset.vk;
-    if (!k || k === '?123' || k === 'emoji' || k === 'Shift') return;
-    processKey(k);
-  });
-  vk.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const k = vk.dataset.vk;
-    if (!k || k === '?123' || k === 'emoji' || k === 'Shift') return;
-    if (hapticOn && navigator.vibrate) navigator.vibrate(10);
-    processKey(k);
-    vk.classList.add('pressed');
-    setTimeout(() => vk.classList.remove('pressed'), 100);
-  }, {passive: false});
-});
-
-// Game area touch to focus
-document.getElementById('words-container').addEventListener('click', () => {
-  focusInput();
-});
-
-// ═══════════════════════════════════════════════════════
-//  KEY FLASH (desktop visual)
-// ═══════════════════════════════════════════════════════
+const flashTimers = {};
 function flashKey(key, type) {
-  const el = document.querySelector(`.kk[data-key="${key}"]`);
+  const el = document.querySelector(`.kk[data-k="${key}"]`);
   if (!el) return;
-  el.classList.add(`flash-${type}`);
-  setTimeout(() => el.classList.remove(`flash-${type}`), 140);
+  clearTimeout(flashTimers[key]);
+  el.className = el.className.replace(/\blit-\w+/g, '');
+  el.classList.add(`lit-${type}`);
+  flashTimers[key] = setTimeout(() => el.classList.remove(`lit-${type}`), 150);
 }
 
-// ═══════════════════════════════════════════════════════
-//  STREAK BADGE
-// ═══════════════════════════════════════════════════════
-function showStreakBadge() {
-  const badge = document.getElementById('streak-badge');
-  badge.textContent = `🔥 ${streak} Streak!`;
-  badge.style.display = 'block';
-  badge.style.animation = 'none';
-  badge.offsetHeight;
-  badge.style.animation = 'badgePop .4s ease-out';
-  setTimeout(() => badge.style.display = 'none', 1800);
-  // Float
+const vkTimers = {};
+function flashVK(key, correct) {
+  const el = document.querySelector(`.vk[data-vk="${key}"]`);
+  if (!el) return;
+  clearTimeout(vkTimers[key]);
+  el.classList.remove('lit', 'lit-ok', 'lit-bad');
+  el.classList.add(correct ? 'lit-ok' : 'lit-bad');
+  vkTimers[key] = setTimeout(() => { el.classList.remove('lit-ok','lit-bad'); }, 150);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 10: STREAK EFFECT
+// ═══════════════════════════════════════════════════════════════════
+
+function showStreakPop() {
+  const el = document.getElementById('streak-popup');
+  el.textContent = `🔥 ${S.streak} Streak!`;
+  el.style.display = 'block';
+  el.style.animation = 'none'; el.offsetHeight;
+  el.style.animation = 'popIn .4s cubic-bezier(.34,1.56,.64,1)';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.display = 'none'; }, 1800);
+  // Floating text
   const fc = document.createElement('div');
-  fc.className = 'combo-float';
-  fc.style.cssText = `left:${40 + Math.random()*20}%;top:60%;`;
-  fc.textContent = `+${streak} 🔥`;
+  fc.className = 'float-combo';
+  fc.style.cssText = `left:${30+Math.random()*30}%;top:55%;color:var(--accent);`;
+  fc.textContent = `+${S.streak} 🔥`;
   document.body.appendChild(fc);
-  setTimeout(() => fc.remove(), 1000);
+  setTimeout(() => fc.remove(), 1100);
+  // Haptic
+  if (S.hapticOn && navigator.vibrate) navigator.vibrate([20, 10, 20]);
 }
 
-// ═══════════════════════════════════════════════════════
-//  RESULTS
-// ═══════════════════════════════════════════════════════
-function showResults() {
-  clearInterval(timerRef);
-  wpmHistory.push(calcWpm());
-  const wpm = calcWpm(), acc = calcAcc();
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 11: END GAME & RESULTS
+// ═══════════════════════════════════════════════════════════════════
+
+function endGame() {
+  if (S.finished) return;
+  S.finished = true;
+  clearInterval(S.timerRef);
+  S.wpmSnaps.push(calcWPM());
+
+  const wpm = calcWPM(), raw = calcRaw(), acc = calcAcc();
+
+  // Update persistent stats
+  if (wpm > USER_STATS.best) USER_STATS.best = wpm;
+  USER_STATS.tests++;
+  USER_STATS.totalAcc = Math.round((USER_STATS.totalAcc * (USER_STATS.tests-1) + acc) / USER_STATS.tests);
+  STORE.set('stats', USER_STATS);
+
+  // Add to leaderboard
+  const myEntry = { name: 'You', wpm, acc, date: new Date().toLocaleDateString() };
+  LB_DATA.push(myEntry);
+  LB_DATA.sort((a, b) => b.wpm - a.wpm);
+  while (LB_DATA.length > 15) LB_DATA.pop();
+  STORE.set('lb', LB_DATA);
+
+  // Populate results
   document.getElementById('r-wpm').textContent = wpm;
+  document.getElementById('r-raw').textContent = raw;
   document.getElementById('r-acc').textContent = acc + '%';
-  document.getElementById('r-err').textContent = errors;
-  document.getElementById('r-streak').textContent = bestStreak;
-  document.getElementById('r-chars').textContent = correctChars + '/' + totalChars;
-  // Save stats
-  if (wpm > stats.best) stats.best = wpm;
-  stats.tests++; stats.totalAcc += acc;
-  localStorage.setItem('kr_stats', JSON.stringify(stats));
-  document.getElementById('r-best').textContent = stats.best;
-  // Chart
-  const bars = document.getElementById('chart-bars');
-  bars.innerHTML = '';
-  const maxW = Math.max(...wpmHistory, 1);
-  wpmHistory.forEach(w => {
-    const b = document.createElement('div');
-    b.className = 'bar';
-    b.style.height = (w / maxW * 100) + '%';
-    b.title = w + ' wpm';
-    bars.appendChild(b);
-  });
+  document.getElementById('r-err').textContent = S.errors;
+  document.getElementById('r-streak').textContent = S.bestStreak;
+  document.getElementById('r-best').textContent = USER_STATS.best;
+
+  // Title with grade
+  const grade = wpm >= 120 ? '🏆 Master' : wpm >= 80 ? '🥇 Expert' : wpm >= 50 ? '🥈 Skilled' : wpm >= 30 ? '🥉 Learning' : '🎯 Beginner';
+  document.getElementById('r-title').textContent = `Results — ${grade}`;
+
+  // WPM Chart
+  renderChart();
   // Leaderboard
-  const myEntry = { name: 'You', wpm, acc, time: Date.now() };
-  leaderboard.push(myEntry);
-  leaderboard.sort((a, b) => b.wpm - a.wpm);
-  while (leaderboard.length > 10) leaderboard.pop();
-  localStorage.setItem('kr_lb', JSON.stringify(leaderboard));
   renderLeaderboard(myEntry);
-  document.getElementById('results').classList.add('show');
+
+  document.getElementById('overlay-results').classList.add('show');
+}
+
+function renderChart() {
+  const area = document.getElementById('chart-area');
+  area.innerHTML = '';
+  const snaps = S.wpmSnaps.length ? S.wpmSnaps : [0];
+  const max = Math.max(...snaps, 1);
+  snaps.forEach((v, i) => {
+    const b = document.createElement('div');
+    b.className = 'chart-bar';
+    b.style.height = '0%';
+    b.title = v + ' wpm';
+    area.appendChild(b);
+    // Animate in
+    setTimeout(() => { b.style.height = (v / max * 100) + '%'; }, i * 60 + 100);
+  });
 }
 
 function renderLeaderboard(myEntry) {
-  const defaults = [
-    {name:'SpeedDemon',wpm:142,acc:98},{name:'TypeMaster',wpm:128,acc:96},
-    {name:'KeyRacer',wpm:115,acc:94},{name:'Fingertips',wpm:108,acc:97},
-    {name:'WordWizard',wpm:99,acc:95},{name:'SwiftKeys',wpm:91,acc:92}
-  ];
-  const all = [...defaults, ...leaderboard];
-  all.sort((a, b) => b.wpm - a.wpm);
-  const unique = all.slice(0, 8);
   const list = document.getElementById('lb-list');
   list.innerHTML = '';
-  unique.forEach((e, i) => {
+  const shown = LB_DATA.slice(0, 8);
+  shown.forEach((e, i) => {
     const row = document.createElement('div');
-    const isMe = e.name === 'You' && e === myEntry;
+    const isMe = e === myEntry;
     row.className = 'lb-row' + (isMe ? ' you' : '');
-    row.innerHTML = `<span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.'}</span>
-      <span class="lb-name">${isMe ? '👤 You' : e.name}</span>
-      <span class="lb-wpm">${e.wpm} wpm</span>
-      <span class="lb-acc">${e.acc}%</span>`;
+    const rank = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}.`;
+    row.innerHTML = `<span class="lb-rank">${rank}</span><span class="lb-name">${isMe ? '👤 You' : e.name}</span><span class="lb-wpm">${e.wpm}</span><span class="lb-acc">${e.acc}%</span><span class="lb-acc" style="margin-left:4px;">${e.date||''}</span>`;
     list.appendChild(row);
   });
 }
 
-function closeResults() { document.getElementById('results').classList.remove('show'); }
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 12: GAME CONTROLS
+// ═══════════════════════════════════════════════════════════════════
 
-// ═══════════════════════════════════════════════════════
-//  SUGGESTIONS TAP
-// ═══════════════════════════════════════════════════════
-function tapSuggestion(idx) {
-  const sug = document.getElementById('sug'+idx).textContent;
-  if (!sug || sug === '...') return;
-  // Complete current word with suggestion
-  const word = wordList[currentWordIdx];
-  const missing = sug.slice(typedWords[currentWordIdx].length);
-  missing.split('').forEach(c => processKey(c));
-  processKey(' ');
+function restartTest() {
+  document.getElementById('overlay-results').classList.remove('show');
+  initGame();
 }
 
-// ═══════════════════════════════════════════════════════
-//  TOGGLE CONTROLS
-// ═══════════════════════════════════════════════════════
+function resetGame() {
+  S.mode = 'time'; S.timeLimit = 30; S.usePunct = false; S.useNums = false;
+  updateModeUI(); restartTest();
+}
+
+function stopTest() {
+  if (S.started && !S.finished) { clearInterval(S.timerRef); endGame(); }
+  else initGame();
+}
+
+function focusInput() {
+  const inp = document.getElementById('ghost-input');
+  inp.focus({ preventScroll: true });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 13: EVENT LISTENERS
+// ═══════════════════════════════════════════════════════════════════
+
+// Physical keyboard
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' && e.target !== document.getElementById('ghost-input')) return;
+  if (e.ctrlKey || e.metaKey) return;
+  if (e.key === 'Tab') { e.preventDefault(); processKey('Tab'); return; }
+  if (e.key === 'Escape') { e.preventDefault(); processKey('Escape'); return; }
+  e.preventDefault();
+  processKey(e.key);
+});
+
+// Ghost input (mobile)
+const ghostInput = document.getElementById('ghost-input');
+ghostInput.addEventListener('keydown', e => {
+  if (e.key === 'Backspace' || e.key === 'Enter') { e.preventDefault(); processKey(e.key); }
+});
+ghostInput.addEventListener('input', e => {
+  const val = ghostInput.value;
+  if (val) { [...val].forEach(c => processKey(c)); ghostInput.value = ''; }
+});
+ghostInput.addEventListener('blur', () => { if (S.started && !S.finished) setTimeout(focusInput, 80); });
+
+// Desktop keyboard clicks + touch
+document.querySelectorAll('.kk').forEach(kk => {
+  const handleKK = (e) => {
+    e.preventDefault();
+    const k = kk.dataset.k;
+    if (!k || ['CapsLock','Ctrl','Alt'].includes(k)) return;
+    processKey(k === 'Tab' ? 'Tab' : k);
+  };
+  kk.addEventListener('mousedown', handleKK);
+  kk.addEventListener('touchstart', handleKK, { passive: false });
+});
+
+// Virtual keyboard clicks + touch
+document.querySelectorAll('.vk').forEach(vk => {
+  const handleVK = (e) => {
+    e.preventDefault();
+    const k = vk.dataset.vk;
+    if (!k) return;
+    // Shift toggle
+    if (k === 'Shift') {
+      S.shiftOn = !S.shiftOn;
+      document.getElementById('shift-key').classList.toggle('lit', S.shiftOn);
+      return;
+    }
+    if (k === '?123' || k === 'emoji') return;
+    vk.classList.add('pressed');
+    setTimeout(() => vk.classList.remove('pressed'), 100);
+    if (S.hapticOn && navigator.vibrate) navigator.vibrate(8);
+    const actualKey = S.shiftOn && k.length === 1 ? k.toUpperCase() : k;
+    if (S.shiftOn) { S.shiftOn = false; document.getElementById('shift-key').classList.remove('lit'); }
+    processKey(actualKey);
+  };
+  vk.addEventListener('mousedown', handleVK);
+  vk.addEventListener('touchstart', handleVK, { passive: false });
+});
+
+// Word area click = focus
+document.getElementById('words-wrap').addEventListener('mousedown', e => { e.preventDefault(); focusInput(); });
+document.getElementById('left-panel').addEventListener('click', focusInput);
+
+// Suggestion tap
+window.tapSug = function(idx) {
+  const sug = document.getElementById('sg' + idx).textContent;
+  if (!sug || sug === '...') return;
+  const cur = S.typedWords[S.wordIdx] || '';
+  const rest = sug.slice(cur.length);
+  rest.split('').forEach(c => processKey(c));
+  processKey(' ');
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 14: MODE & OPTION CONTROLS
+// ═══════════════════════════════════════════════════════════════════
+
+function updateModeUI() {
+  document.querySelectorAll('#mode-tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.mode === S.mode));
+  const showTime = S.mode === 'time';
+  document.getElementById('time-tabs').style.visibility = showTime ? 'visible' : 'hidden';
+  document.getElementById('time-tabs').style.opacity = showTime ? '1' : '0';
+}
+
 document.querySelectorAll('#mode-tabs .tab').forEach(t => {
   t.addEventListener('click', () => {
-    document.querySelectorAll('#mode-tabs .tab').forEach(tt => tt.classList.remove('active'));
-    t.classList.add('active');
-    mode = t.dataset.mode;
-    document.getElementById('time-tabs').style.display = mode === 'time' ? 'flex' : 'none';
-    if (mode === 'zen') document.body.classList.add('zen-mode');
-    else document.body.classList.remove('zen-mode');
-    if (mode === 'custom') { document.getElementById('custom-overlay').classList.add('show'); return; }
+    if (t.dataset.mode === 'custom') { openModal('modal-custom'); return; }
+    S.mode = t.dataset.mode;
+    updateModeUI();
     restartTest();
   });
 });
-document.getElementById('time-tabs').style.display = 'flex';
 
 document.querySelectorAll('#time-tabs .tab').forEach(t => {
   t.addEventListener('click', () => {
-    document.querySelectorAll('#time-tabs .tab').forEach(tt => tt.classList.remove('active'));
+    document.querySelectorAll('#time-tabs .tab').forEach(x => x.classList.remove('active'));
     t.classList.add('active');
-    timeLimit = parseInt(t.dataset.time);
-    timerVal = timeLimit;
+    S.timeLimit = parseInt(t.dataset.time);
+    S.timerVal = S.timeLimit;
     restartTest();
   });
 });
 
-function togglePunct() {
-  usePunct = !usePunct;
-  document.getElementById('toggle-punct').classList.toggle('on', usePunct);
+// Toggle punct
+document.getElementById('btn-punct').addEventListener('click', function() {
+  S.usePunct = !S.usePunct;
+  this.classList.toggle('on', S.usePunct);
   restartTest();
-}
-function toggleNums() {
-  useNums = !useNums;
-  document.getElementById('toggle-nums').classList.toggle('on', useNums);
-  restartTest();
-}
-document.getElementById('toggle-punct').onclick = togglePunct;
-document.getElementById('toggle-nums').onclick = toggleNums;
-document.getElementById('toggle-sound').onclick = function() {
-  soundOn = !soundOn;
-  this.classList.toggle('on', soundOn);
-  this.textContent = soundOn ? '🔊 Sound' : '🔇 Mute';
-};
-document.getElementById('toggle-sound').classList.add('on');
-
-document.getElementById('theme-btn').onclick = function() {
-  isLight = !isLight;
-  document.body.classList.toggle('light', isLight);
-  this.textContent = isLight ? '☀️' : '🌙';
-};
-
-document.getElementById('lb-btn').onclick = function() {
-  if (leaderboard.length || true) { showResults(); }
-};
-
-// ═══════════════════════════════════════════════════════
-//  CUSTOM TEXT
-// ═══════════════════════════════════════════════════════
-function applyCustom() {
-  customText = document.getElementById('custom-textarea').value.trim();
-  if (!customText) { closeCustom(); return; }
-  mode = 'custom';
-  closeCustom();
-  restartTest();
-}
-function closeCustom() { document.getElementById('custom-overlay').classList.remove('show'); }
-
-// ═══════════════════════════════════════════════════════
-//  PHONE EXTRAS
-// ═══════════════════════════════════════════════════════
-function toggleSwipe() {
-  const b = document.getElementById('swipe-btn');
-  b.classList.toggle('on');
-}
-function toggleVoice() {
-  const b = document.getElementById('voice-btn');
-  b.classList.toggle('on');
-  if (b.classList.contains('on') && window.SpeechRecognition || window.webkitSpeechRecognition) {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const rec = new SR();
-    rec.onresult = e => {
-      const txt = e.results[0][0].transcript.toLowerCase();
-      txt.split('').forEach(c => processKey(c));
-    };
-    rec.start();
-  }
-}
-function toggleHaptic() {
-  hapticOn = !hapticOn;
-  document.getElementById('haptic-btn').classList.toggle('on', hapticOn);
-}
-
-// ═══════════════════════════════════════════════════════
-//  PHONE CLOCK
-// ═══════════════════════════════════════════════════════
-function updatePhoneClock() {
-  const now = new Date();
-  document.getElementById('phone-time').textContent =
-    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-}
-setInterval(updatePhoneClock, 1000);
-updatePhoneClock();
-
-// ═══════════════════════════════════════════════════════
-//  GAME AREA CLICK = FOCUS
-// ═══════════════════════════════════════════════════════
-document.getElementById('left-panel').addEventListener('click', focusInput);
-document.getElementById('hidden-input').addEventListener('blur', () => {
-  setTimeout(focusInput, 100);
 });
 
-// ═══════════════════════════════════════════════════════
-//  BOOT
-// ═══════════════════════════════════════════════════════
-init();
-focusInput();
+// Toggle nums
+document.getElementById('btn-nums').addEventListener('click', function() {
+  S.useNums = !S.useNums;
+  this.classList.toggle('on', S.useNums);
+  restartTest();
+});
+
+// Sound
+document.getElementById('btn-sound').addEventListener('click', function() {
+  S.soundOn = !S.soundOn;
+  this.classList.toggle('on', S.soundOn);
+  this.textContent = S.soundOn ? '🔊' : '🔇';
+});
+document.getElementById('btn-sound').classList.add('on');
+
+// Settings
+document.getElementById('btn-settings').addEventListener('click', () => openModal('modal-settings'));
+document.getElementById('btn-theme').addEventListener('click', () => openModal('modal-settings'));
+
+// Leaderboard
+document.getElementById('btn-lb').addEventListener('click', () => {
+  renderLeaderboard({ wpm: 0, acc: 0 });
+  document.getElementById('r-title').textContent = 'Leaderboard';
+  document.getElementById('overlay-results').classList.add('show');
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 15: SETTINGS
+// ═══════════════════════════════════════════════════════════════════
+
+window.applyFontSize = function(val) {
+  document.getElementById('words-inner').style.fontSize = val + 'px';
+};
+
+window.applyCaretStyle = function(style) {
+  const styleEl = document.getElementById('caret-style') || (() => {
+    const s = document.createElement('style'); s.id = 'caret-style'; document.head.appendChild(s); return s;
+  })();
+  if (style === 'block') styleEl.textContent = '.ch.caret::before{width:0.6em!important;height:1.4em!important;top:0!important;background:var(--accent)!important;opacity:.5!important;animation:none!important}';
+  else if (style === 'underline') styleEl.textContent = '.ch.caret::before{width:0.6em!important;height:2px!important;top:auto!important;bottom:0!important;background:var(--accent)!important}';
+  else styleEl.textContent = '';
+};
+
+window.setTheme = function(theme) {
+  document.body.className = theme;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.theme === theme));
+  S.theme = theme;
+  STORE.set('theme', theme);
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 16: MODALS
+// ═══════════════════════════════════════════════════════════════════
+
+window.openModal = function(id) { document.getElementById(id).classList.add('show'); };
+window.closeModal = function(id) { document.getElementById(id).classList.remove('show'); };
+
+window.applyCustom = function() {
+  const ta = document.getElementById('custom-ta');
+  const txt = ta.value.trim();
+  if (!txt) return;
+  S.customText = txt; S.mode = 'custom';
+  closeModal('modal-custom');
+  updateModeUI();
+  restartTest();
+};
+
+// Click outside modal to close
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+});
+document.getElementById('overlay-results').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay-results')) document.getElementById('overlay-results').classList.remove('show');
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 17: PHONE EXTRAS
+// ═══════════════════════════════════════════════════════════════════
+
+window.toggleExt = function(type) {
+  if (type === 'haptic') {
+    S.hapticOn = !S.hapticOn;
+    document.getElementById('btn-haptic').classList.toggle('on', S.hapticOn);
+  } else if (type === 'swipe') {
+    const b = document.getElementById('btn-swipe');
+    b.classList.toggle('on');
+  }
+};
+
+window.activateVoice = function() {
+  const b = document.getElementById('btn-voice');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { b.textContent = '🎤 N/A'; return; }
+  const rec = new SR();
+  rec.lang = 'en-US'; rec.continuous = false;
+  rec.onresult = e => {
+    const txt = e.results[0][0].transcript.toLowerCase().trim();
+    if (!S.started && txt) { S.started = true; startTimer(); }
+    txt.split('').forEach(c => processKey(c));
+    processKey(' ');
+  };
+  rec.onerror = () => { b.classList.remove('on'); b.textContent = '🎤 Voice'; };
+  rec.onend = () => { b.classList.remove('on'); };
+  try { rec.start(); b.classList.add('on'); } catch(e) {}
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 18: PHONE CLOCK
+// ═══════════════════════════════════════════════════════════════════
+
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  document.getElementById('phone-time').textContent = h + ':' + m;
+  // Random battery drain for fun
+  const batt = Math.max(20, 87 - Math.floor((Date.now() / 60000) % 30));
+  document.getElementById('batt').textContent = batt;
+}
+setInterval(updateClock, 10000);
+updateClock();
+
+// ═══════════════════════════════════════════════════════════════════
+//  SECTION 19: BOOT
+// ═══════════════════════════════════════════════════════════════════
+
+// Restore saved theme
+const savedTheme = STORE.get('theme', '');
+if (savedTheme) setTheme(savedTheme);
+
+// Expose globals needed by HTML onclick
+window.restartTest = restartTest;
+window.stopTest = stopTest;
+window.resetGame = resetGame;
+window.focusInput = focusInput;
+
+// Show time-tabs only when time mode
+document.getElementById('time-tabs').style.transition = 'opacity .2s';
+
+// Init
+initGame();
 </script>
-</body>
-</html>
+</body></html>
