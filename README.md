@@ -65,8 +65,16 @@ This repo contains multiple projects, games, and practical implementations built
 
 ## 📷 Screenshots
 
-*(Add screenshots here later for better presentation)*
+## 📷 Project Preview
 
+### 💰 Trip Expense Tracker
+![Trip](screenshots/trip.png)
+
+### 🎾 Tennis Game
+![Tennis](screenshots/tennis.png)
+
+### 💣 Minesweeper
+![Mine](screenshots/mine.png)
 ---
 
 ## 👨‍💻 Author
