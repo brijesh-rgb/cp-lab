@@ -41,6 +41,7 @@ This repo contains multiple projects, games, and practical implementations built
 | Fragmentation | https://brijesh-rgb.github.io/cp-lab/fragmentation_pro.html |
 | Collatz | https://brijesh-rgb.github.io/cp-lab/collatz.html |
 | Solitaire | https://brijesh-rgb.github.io/cp-lab/hitting/solitaire.html |
+| war_game_v3_fixed.html | https://brijesh-rgb.github.io/cp-lab/hitting/war_game_v3_fixed.html
 
 ---
 
