@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>File Fragmentation Visualizer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+:root{--bg:#0a0f1e;--bg2:#111827;--bg3:#1e2a3a;--bg4:#253347;--border:#2d3f55;--text:#e2e8f0;--muted:#64748b;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--yellow:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;--orange:#f97316;--pink:#ec4899;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;gap:14px;}
+header{text-align:center;padding:6px 0 2px;}
+header h1{font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px;margin-bottom:4px;}
+header p{color:var(--muted);font-size:12px;}
+#app{display:grid;grid-template-columns:270px 1fr;gap:14px;width:100%;max-width:1080px;}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.pt{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+#file-list{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;max-height:180px;overflow-y:auto;}
+#file-list::-webkit-scrollbar{width:4px;}#file-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.file-row{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:6px 9px;cursor:pointer;transition:all .15s;}
+.file-row:hover{border-color:var(--blue);}.file-row.selected{border-color:var(--blue);background:#1e3a5f;}
+.fdot{width:11px;height:11px;border-radius:3px;flex-shrink:0;}
+.fi{flex:1;min-width:0;}.fn{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fm{font-size:9px;color:var(--muted);font-family:var(--mono);}
+.fdel{width:18px;height:18px;border-radius:4px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .1s;flex-shrink:0;}
+.fdel:hover{background:var(--red);color:#fff;}
+.fr{display:flex;gap:5px;margin-bottom:7px;align-items:center;}
+.fr label{font-size:10px;color:var(--muted);white-space:nowrap;min-width:68px;}
+input[type=text],input[type=number],select{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 7px;font-size:11px;font-family:var(--sans);outline:none;transition:border-color .15s;width:100%;}
+input[type=text]:focus,input[type=number]:focus,select:focus{border-color:var(--blue);}
+input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer;}
+.btn{padding:7px 12px;border-radius:6px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;justify-content:center;}
+.btn:hover{filter:brightness(1.1);transform:scale(1.02);}.btn:active{transform:scale(.98);}
+.bg{background:var(--green);color:#000;}.bb{background:var(--blue);color:#fff;}.by{background:var(--yellow);color:#000;}
+.br{background:var(--red);color:#fff;}.bp{background:var(--purple);color:#fff;}.bc{background:var(--cyan);color:#000;}
+.bgh{background:var(--bg3);color:var(--text);border:1px solid var(--border);}.bgh:hover{border-color:var(--blue);}
+.brow{display:flex;gap:5px;flex-wrap:wrap;}.bfull{width:100%;}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+.sc{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px;text-align:center;}
+.sv{font-size:18px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:2px;}
+.sl{font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.fbw{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px;margin-bottom:10px;}
+.fbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px;}
+.fbt{height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;}
+.fbf{height:100%;border-radius:4px;transition:width .4s ease,background .3s;}
+#rp{display:flex;flex-direction:column;gap:10px;}
+#mw{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;}
+#mt{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap;}
+#mg{display:grid;grid-template-columns:repeat(25,1fr);gap:3px;}
+.blk{aspect-ratio:1;border-radius:3px;background:var(--bg4);cursor:pointer;transition:transform .1s,box-shadow .1s;position:relative;}
+.blk:hover{transform:scale(1.25);z-index:10;box-shadow:0 0 8px rgba(255,255,255,.3);}
+.blk.free{background:var(--bg4);}.blk.occ{}
+.blk.selfile{box-shadow:0 0 0 2px #fff inset;}
+.btip{display:none;position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:#000;border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-size:9px;font-family:var(--mono);white-space:nowrap;z-index:100;pointer-events:none;}
+.blk:hover .btip{display:block;}
+.leg{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted);}
+.ld{width:11px;height:11px;border-radius:3px;}
+#dp{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;}
+#dv{display:flex;height:32px;border-radius:5px;overflow:hidden;margin-top:8px;border:1px solid var(--border);}
+.dseg{transition:width .5s ease;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden;white-space:nowrap;}
+#lp{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;}
+#li{max-height:110px;overflow-y:auto;font-family:var(--mono);font-size:10px;display:flex;flex-direction:column;gap:3px;}
+#li::-webkit-scrollbar{width:4px;}#li::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.ll{display:flex;gap:7px;padding:3px 5px;border-radius:4px;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.ll.ok{background:#16723422;color:var(--green);}.ll.er{background:#7f1d1d22;color:#f87171;}
+.ll.in{background:#1e3a5f22;color:#60a5fa;}.ll.wa{background:#78350f22;color:#fbbf24;}
+.lt{color:var(--muted);flex-shrink:0;}
+.sw{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);}
+@media(max-width:760px){#app{grid-template-columns:1fr;}#mg{grid-template-columns:repeat(20,1fr);}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📂 File Fragmentation Visualizer</h1>
+  <p>Simulate disk allocation, fragmentation &amp; defragmentation in real time</p>
+</header>
+
+<div id="app">
+  <!-- LEFT -->
+  <div style="display:flex;flex-direction:column;gap:10px;">
+
+    <div class="panel">
+      <div class="pt">🗂️ Files on Disk</div>
+      <div id="file-list"></div>
+      <div class="fr"><label>File name</label><input type="text" id="inp-name" value="File_A" maxlength="10"></div>
+      <div class="fr"><label>Size (blocks)</label><input type="number" id="inp-size" value="8" min="1" max="50"></div>
+      <div class="fr"><label>Mode</label>
+        <select id="inp-mode">
+          <option value="fragmented">Fragmented (scatter)</option>
+          <option value="contiguous">Contiguous (sequential)</option>
+        </select>
+      </div>
+      <button class="btn bg bfull" style="margin-top:7px;" onclick="addFile()">➕ Allocate File</button>
+    </div>
+
+    <div class="panel">
+      <div class="pt">⚡ Operations</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="sw">
+          <span>Speed:</span>
+          <input type="range" id="spd" min="50" max="1000" value="400" step="50" oninput="animSpeed=+this.value;document.getElementById('spl').textContent=this.value+'ms'">
+          <span id="spl" style="font-family:var(--mono);min-width:44px;">400ms</span>
+        </div>
+        <button class="btn by bfull" onclick="defragment()">🔧 Defragment Disk</button>
+        <button class="btn bb bfull" onclick="simulateFrag()">🎲 Auto-Simulate</button>
+        <button class="btn bp bfull" onclick="fillRandom()">📦 Fill Random Files</button>
+        <button class="btn bc bfull" onclick="showBestFit()">🎯 Best Fit Highlight</button>
+        <button class="btn bgh bfull" onclick="resetAll()">🗑️ Reset All</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="pt">📊 Disk Stats</div>
+      <div class="sg">
+        <div class="sc"><div class="sv" id="s-tot" style="color:var(--blue)">200</div><div class="sl">Total</div></div>
+        <div class="sc"><div class="sv" id="s-fr" style="color:var(--green)">200</div><div class="sl">Free</div></div>
+        <div class="sc"><div class="sv" id="s-us" style="color:var(--red)">0</div><div class="sl">Used</div></div>
+        <div class="sc"><div class="sv" id="s-fi" style="color:var(--yellow)">0</div><div class="sl">Files</div></div>
+        <div class="sc"><div class="sv" id="s-fg" style="color:var(--orange)">0</div><div class="sl">Fragments</div></div>
+        <div class="sc"><div class="sv" id="s-hl" style="color:var(--purple)">100%</div><div class="sl">Health</div></div>
+      </div>
+      <div class="fbw">
+        <div class="fbl"><span>Fragmentation Level</span><span id="fpct" style="font-family:var(--mono);color:var(--yellow);">0%</span></div>
+        <div class="fbt"><div class="fbf" id="fbar" style="width:0%;background:var(--green);"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="rp">
+
+    <div id="mw">
+      <div id="mt">
+        <div class="pt" style="margin:0;">💾 Memory Blocks (200)</div>
+        <div class="brow">
+          <button class="btn bgh" onclick="zoomIn()" style="padding:5px 9px;">🔍+</button>
+          <button class="btn bgh" onclick="zoomOut()" style="padding:5px 9px;">🔍−</button>
+          <button class="btn bgh" id="selbtn" onclick="toggleSelect()" style="padding:5px 9px;">☑ Select</button>
+        </div>
+      </div>
+      <div id="mg"></div>
+      <div class="leg" id="leg"><div class="li"><div class="ld" style="background:var(--bg4)"></div>Free</div></div>
+    </div>
+
+    <div id="dp">
+      <div class="pt">🖥️ Disk Allocation Map</div>
+      <div id="dv"></div>
+    </div>
+
+    <div id="lp">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+        <div class="pt" style="margin:0;">📋 Event Log</div>
+        <button class="btn bgh" style="padding:3px 9px;font-size:10px;" onclick="clearLog()">Clear</button>
+      </div>
+      <div id="li"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══ CONFIG ═══
+const TOTAL=200;
+const COLORS=['#22c55e','#3b82f6','#f59e0b','#a855f7','#06b6d4','#f97316','#ec4899','#10b981','#6366f1','#84cc16','#e11d48','#0ea5e9','#d97706','#7c3aed','#059669'];
+let mem=new Array(TOTAL).fill(null),files={},fc=0,selFile=null,selMode=false,blkSize=1,busy=false,animSpeed=400,ci=0;
+
+// ═══ RENDER GRID ═══
+function renderGrid(){
+  const g=document.getElementById('mg');
+  g.innerHTML='';
+  const cols=blkSize===2?20:blkSize===3?15:25;
+  g.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  for(let i=0;i<TOTAL;i++){
+    const fid=mem[i];
+    const d=document.createElement('div');
+    d.className='blk'+(fid?' occ':' free');
+    if(fid&&files[fid]){d.style.background=files[fid].color;d.style.opacity='.88';}
+    if(fid&&selFile&&fid===selFile)d.classList.add('selfile');
+    const tip=document.createElement('div');
+    tip.className='btip';
+    tip.textContent=fid?`#${i} · ${files[fid]?.name}`:`#${i} · Free`;
+    d.appendChild(tip);
+    d.onclick=()=>{if(fid&&files[fid])selFile=(selFile===fid)?null:fid;renderGrid();};
+    g.appendChild(d);
+  }
+  renderLeg();renderDisk();updateStats();
+}
+
+// ═══ LEGEND ═══
+function renderLeg(){
+  const l=document.getElementById('leg');
+  l.innerHTML='<div class="li"><div class="ld" style="background:var(--bg4)"></div>Free</div>';
+  Object.values(files).forEach(f=>{
+    const it=document.createElement('div');it.className='li';
+    it.innerHTML=`<div class="ld" style="background:${f.color}"></div>${f.name}(${f.blocks.length})`;
+    l.appendChild(it);
+  });
+}
+
+// ═══ DISK MAP ═══
+function renderDisk(){
+  const dv=document.getElementById('dv');dv.innerHTML='';
+  let segs=[],cur=null,cl=0;
+  for(let i=0;i<=TOTAL;i++){
+    const fid=i<TOTAL?mem[i]:'__end';
+    if(fid===cur){cl++;continue;}
+    if(cur!==null)segs.push({fid:cur,len:cl});
+    cur=fid;cl=1;
+  }
+  segs.forEach(s=>{
+    const seg=document.createElement('div');seg.className='dseg';
+    seg.style.width=(s.len/TOTAL*100).toFixed(1)+'%';
+    seg.style.background=s.fid&&files[s.fid]?files[s.fid].color+'cc':'var(--bg4)';
+    seg.style.color='#fff';
+    if(s.len>8)seg.textContent=files[s.fid]?.name||'';
+    seg.title=`${files[s.fid]?.name||'Free'}: ${s.len} blocks`;
+    dv.appendChild(seg);
+  });
+}
+
+// ═══ STATS ═══
+function updateStats(){
+  const used=mem.filter(x=>x!==null).length,free=TOTAL-used;
+  document.getElementById('s-tot').textContent=TOTAL;
+  document.getElementById('s-fr').textContent=free;
+  document.getElementById('s-us').textContent=used;
+  document.getElementById('s-fi').textContent=Object.keys(files).length;
+  let frags=0;
+  Object.values(files).forEach(f=>{
+    const s=[...f.blocks].sort((a,b)=>a-b);let runs=1;
+    for(let i=1;i<s.length;i++)if(s[i]!==s[i-1]+1)runs++;
+    if(f.blocks.length>0)frags+=runs-1;
+  });
+  document.getElementById('s-fg').textContent=frags;
+  const mf=used>0?used/2:1,fp=Math.min(100,Math.round(frags/Math.max(mf,1)*100)),hl=100-fp;
+  const hel=document.getElementById('s-hl');hel.textContent=hl+'%';
+  hel.style.color=hl>75?'var(--green)':hl>40?'var(--yellow)':'var(--red)';
+  document.getElementById('fpct').textContent=fp+'%';
+  const bar=document.getElementById('fbar');bar.style.width=fp+'%';
+  bar.style.background=fp<30?'var(--green)':fp<60?'var(--yellow)':'var(--red)';
+  renderFL();
+}
+
+// ═══ FILE LIST ═══
+function renderFL(){
+  const l=document.getElementById('file-list');l.innerHTML='';
+  if(!Object.keys(files).length){l.innerHTML='<div style="color:var(--muted);font-size:11px;text-align:center;padding:10px;">No files allocated</div>';return;}
+  Object.entries(files).forEach(([id,f])=>{
+    const s=[...f.blocks].sort((a,b)=>a-b);let runs=1;
+    for(let i=1;i<s.length;i++)if(s[i]!==s[i-1]+1)runs++;
+    const row=document.createElement('div');
+    row.className='file-row'+(selFile===id?' selected':'');
+    row.innerHTML=`<div class="fdot" style="background:${f.color}"></div><div class="fi"><div class="fn">${f.name}</div><div class="fm">${f.blocks.length}blk · ${runs} frag${runs!==1?'s':''}</div></div><button class="fdel" onclick="delFile('${id}',event)">✕</button>`;
+    row.onclick=()=>{selFile=(selFile===id)?null:id;renderGrid();};
+    l.appendChild(row);
+  });
+}
+
+// ═══ ADD FILE ═══
+function addFile(){
+  const name=document.getElementById('inp-name').value.trim()||'File';
+  const size=Math.max(1,Math.min(50,parseInt(document.getElementById('inp-size').value)||5));
+  const mode=document.getElementById('inp-mode').value;
+  const free=mem.reduce((a,v,i)=>{if(!v)a.push(i);return a;},[]);
+  if(free.length<size){log(`❌ Cannot allocate "${name}" — need ${size}, only ${free.length} free`,'er');return;}
+  const id='f'+(++fc),color=COLORS[ci%COLORS.length];ci++;
+  let chosen=[];
+  if(mode==='contiguous'){
+    let st=-1,run=0;
+    for(let i=0;i<TOTAL;i++){if(!mem[i]){if(!run)st=i;run++;if(run>=size)break;}else{run=0;st=-1;}}
+    if(run>=size){for(let i=st;i<st+size;i++)chosen.push(i);}
+    else{log('⚠️ No contiguous space, using fragmented','wa');chosen=rndPick(free,size);}
+  }else chosen=rndPick(free,size);
+  files[id]={name,size,color,blocks:chosen};
+  chosen.forEach(i=>mem[i]=id);
+  const frag=isFrag(id);
+  log(`✅ Allocated "${name}" — ${size} blocks${frag?' (fragmented 🔴)':' (contiguous 🟢)'}`, 'ok');
+  nextName();renderGrid();selFile=id;renderGrid();
+}
+
+function rndPick(arr,n){return [...arr].sort(()=>Math.random()-.5).slice(0,n);}
+function isFrag(id){const s=[...files[id].blocks].sort((a,b)=>a-b);for(let i=1;i<s.length;i++)if(s[i]!==s[i-1]+1)return true;return false;}
+
+function delFile(id,e){
+  e?.stopPropagation();if(!files[id])return;
+  const name=files[id].name;files[id].blocks.forEach(i=>mem[i]=null);delete files[id];
+  if(selFile===id)selFile=null;log(`🗑️ Deleted "${name}"`,'in');renderGrid();
+}
+
+function nextName(){
+  const cur=document.getElementById('inp-name').value;
+  const m=cur.match(/^(.*?)(\d*)$/),base=m[1]||'File_',num=m[2];
+  const L='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if(num&&num!==''){document.getElementById('inp-name').value=base+(+num+1);}
+  else{const idx=L.indexOf(cur.slice(-1));document.getElementById('inp-name').value=idx>=0&&idx<25?cur.slice(0,-1)+L[idx+1]:cur+'_2';}
+}
+
+// ═══ DEFRAGMENT ═══
+async function defragment(){
+  if(busy)return;if(!Object.keys(files).length){log('ℹ️ No files to defragment','in');return;}
+  busy=true;log('🔧 Defragmenting...','in');
+  mem.fill(null);let wp=0;
+  for(const fid of Object.keys(files)){
+    const f=files[fid];const nb=[];
+    for(let b=0;b<f.blocks.length;b++){mem[wp]=fid;nb.push(wp);wp++;if(b%4===0){renderGrid();await sleep(animSpeed/6);}}
+    files[fid].blocks=nb;
+  }
+  renderGrid();busy=false;log('✅ Defrag complete! All files contiguous 🟢','ok');
+}
+
+// ═══ AUTO SIMULATE ═══
+async function simulateFrag(){
+  if(busy)return;busy=true;log('🎲 Auto-simulation...','in');
+  const sf=[{n:'System',s:12},{n:'Documents',s:8},{n:'Photos',s:15},{n:'Video',s:20},{n:'Music',s:10},{n:'AppData',s:18}];
+  for(const f of sf){
+    const fr=mem.reduce((a,v,i)=>{if(!v)a.push(i);return a;},[]);
+    if(fr.length<f.s)break;
+    const id='f'+(++fc),col=COLORS[ci%COLORS.length];ci++;
+    const ch=rndPick(fr,f.s);files[id]={name:f.n,size:f.s,color:col,blocks:ch};ch.forEach(i=>mem[i]=id);
+    log(`➕ Allocated "${f.n}" (${f.s}blk)`,'ok');renderGrid();await sleep(animSpeed);
+  }
+  const ids=Object.keys(files).slice(0,3);
+  for(const id of ids){
+    if(files[id]){log(`🗑️ Deleted "${files[id].name}" — creating holes`,'wa');files[id].blocks.forEach(i=>mem[i]=null);delete files[id];renderGrid();await sleep(animSpeed);}
+  }
+  const more=[{n:'NewApp',s:16},{n:'Cache',s:12}];
+  for(const f of more){
+    const fr=mem.reduce((a,v,i)=>{if(!v)a.push(i);return a;},[]);if(fr.length<f.s)break;
+    const id='f'+(++fc),col=COLORS[ci%COLORS.length];ci++;
+    const ch=rndPick(fr,f.s);files[id]={name:f.n,size:f.s,color:col,blocks:ch};ch.forEach(i=>mem[i]=id);
+    log(`➕ Allocated "${f.n}" (fragmented 🔴)`,'ok');renderGrid();await sleep(animSpeed);
+  }
+  busy=false;log('🎲 Done! Run Defragment to fix.','wa');
+}
+
+// ═══ FILL RANDOM ═══
+async function fillRandom(){
+  if(busy)return;busy=true;let added=0;const L='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  while(true){
+    const fr=mem.reduce((a,v,i)=>{if(!v)a.push(i);return a;},[]);
+    if(fr.length<3)break;
+    const size=3+Math.floor(Math.random()*Math.min(12,fr.length-2));
+    const id='f'+(++fc),col=COLORS[ci%COLORS.length];ci++;
+    const name='File_'+L[added%26]+(added>=26?Math.floor(added/26):'');
+    const ch=rndPick(fr,size);files[id]={name,size,color:col,blocks:ch};ch.forEach(i=>mem[i]=id);
+    added++;renderGrid();await sleep(animSpeed/3);if(added>20)break;
+  }
+  busy=false;log(`📦 Filled disk with ${added} random files`,'ok');
+}
+
+// ═══ BEST FIT ═══
+function showBestFit(){
+  const size=parseInt(document.getElementById('inp-size').value)||5;
+  let runs=[],st=-1,run=0;
+  for(let i=0;i<=TOTAL;i++){
+    if(i<TOTAL&&!mem[i]){if(!run)st=i;run++;}
+    else{if(run>=size)runs.push({start:st,len:run});run=0;st=-1;}
+  }
+  if(!runs.length){log(`❌ No contiguous space for ${size} blocks`,'er');return;}
+  runs.sort((a,b)=>a.len-b.len);const best=runs[0];
+  log(`🎯 Best fit: blocks ${best.start}–${best.start+size-1} (run of ${best.len})`,'in');
+  const blks=document.getElementById('mg').querySelectorAll('.blk');
+  for(let i=best.start;i<best.start+size;i++){
+    if(blks[i]){blks[i].style.boxShadow='0 0 0 2px #fff,0 0 14px var(--cyan)';blks[i].style.background='var(--cyan)';setTimeout(()=>renderGrid(),2500);}
+  }
+}
+
+// ═══ ZOOM ═══
+function zoomIn(){blkSize=Math.min(3,blkSize+1);renderGrid();}
+function zoomOut(){blkSize=Math.max(1,blkSize-1);renderGrid();}
+function toggleSelect(){selMode=!selMode;document.getElementById('selbtn').style.background=selMode?'var(--blue)':'';}
+
+// ═══ RESET ═══
+function resetAll(){mem.fill(null);files={};fc=0;selFile=null;ci=0;log('🗑️ Memory reset','wa');renderGrid();}
+
+// ═══ LOG ═══
+function log(msg,type='in'){
+  const l=document.getElementById('li');
+  const now=new Date();const t=now.toTimeString().slice(0,8);
+  const d=document.createElement('div');d.className='ll '+type;
+  d.innerHTML=`<span class="lt">[${t}]</span><span>${msg}</span>`;
+  l.prepend(d);while(l.children.length>50)l.removeChild(l.lastChild);
+}
+function clearLog(){document.getElementById('li').innerHTML='';}
+
+// ═══ UTILS ═══
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ═══ KEYBOARD ═══
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if(e.key==='a'||e.key==='A')addFile();
+  if(e.key==='d'||e.key==='D')defragment();
+  if(e.key==='r'||e.key==='R')resetAll();
+  if(e.key==='f'||e.key==='F')fillRandom();
+});
+
+// ═══ BOOT ═══
+renderGrid();
+log('📂 File Fragmentation Visualizer ready','ok');
+log('💡 Keys: A=Add  D=Defrag  R=Reset  F=Fill','in');
+</script>
+</body>
+</html>
