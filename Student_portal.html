@@ -6,212 +6,208 @@
 <title>GCE Yavatmal · Student Academic Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --navy:    #0f1e3c;
-  --navy2:   #162848;
-  --gold:    #e8a320;
-  --gold2:   #f5c842;
-  --cream:   #fdf8ef;
-  --slate:   #e8edf5;
-  --text:    #1a2540;
-  --muted:   #6b7a99;
-  --pass:    #1a7a4a;
-  --fail:    #b91c1c;
-  --card:    #ffffff;
-  --border:  #d6dce8;
-  --shadow:  0 4px 24px rgba(15,30,60,0.10);
-  --shadow2: 0 8px 40px rgba(15,30,60,0.18);
-  --r:       12px;
+:root{
+  --navy:#0a1628;--navy2:#0f1e3c;--navy3:#162848;
+  --gold:#e8a320;--gold2:#f5c842;--gold3:#ffd97d;
+  --cream:#f8f5ef;--slate:#e8edf5;--text:#1a2540;--muted:#6b7a99;
+  --pass:#16a34a;--fail:#dc2626;--card:#ffffff;--border:#d6dce8;
+  --sh:0 4px 24px rgba(10,22,40,.10);--sh2:0 8px 40px rgba(10,22,40,.18);--sh3:0 20px 60px rgba(10,22,40,.22);
+  --r:14px;--glass:rgba(255,255,255,.08);--gb:rgba(255,255,255,.15);
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+/* HEADER */
+header{background:var(--navy);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:200;border-bottom:3px solid var(--gold);box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{width:34px;height:34px;background:var(--gold);border-radius:8px;display:grid;place-items:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--navy)}
+header h1{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:.4px}
+header h1 span{color:var(--gold2)}
+.nav-tabs{display:flex;gap:3px}
+.nav-tab{padding:6px 14px;border-radius:7px;font-size:12.5px;font-weight:500;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.55);transition:.2s;white-space:nowrap}
+.nav-tab:hover{background:rgba(255,255,255,.09);color:#fff}
+.nav-tab.active{background:var(--gold);color:var(--navy);font-weight:700}
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--cream);
-  color: var(--text);
-  min-height: 100vh;
-}
+/* MAIN */
+main{max-width:1240px;margin:0 auto;padding:26px 18px 70px}
+.section{display:none}.section.active{display:block}
 
-/* ── NAV ─────────────────────────────────────────────────────── */
-header {
-  background: var(--navy);
-  padding: 0 32px;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 60px; position: sticky; top:0; z-index:100;
-  border-bottom: 3px solid var(--gold);
-}
-header .logo { display:flex; align-items:center; gap:12px; }
-header .logo-icon {
-  width:36px; height:36px; background:var(--gold);
-  border-radius:8px; display:grid; place-items:center;
-  font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:var(--navy);
-}
-header h1 { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:#fff; letter-spacing:.5px; }
-header h1 span { color:var(--gold2); }
-.nav-tabs { display:flex; gap:4px; }
-.nav-tab {
-  padding:6px 16px; border-radius:6px; font-size:13px; font-weight:500;
-  cursor:pointer; border:none; background:transparent; color:rgba(255,255,255,0.6);
-  transition:.2s;
-}
-.nav-tab:hover { background:rgba(255,255,255,0.08); color:#fff; }
-.nav-tab.active { background:var(--gold); color:var(--navy); font-weight:700; }
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 55%,#1e3a6e 100%);border-radius:18px;padding:36px 38px 32px;position:relative;overflow:hidden;margin-bottom:24px;box-shadow:var(--sh3)}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(232,163,32,.13) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.hero h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:5px}
+.hero p{color:rgba(255,255,255,.5);font-size:13.5px;margin-bottom:20px}
+.search-row{display:flex;gap:9px;max-width:560px}
+.search-input{flex:1;padding:12px 16px;border-radius:10px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.1);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:.2s}
+.search-input::placeholder{color:rgba(255,255,255,.38)}
+.search-input:focus{border-color:var(--gold);background:rgba(255,255,255,.15)}
+.btn-search{padding:12px 22px;background:var(--gold);color:var(--navy);border:none;border-radius:10px;font-weight:700;font-size:13.5px;cursor:pointer;font-family:'Syne',sans-serif;transition:.2s;white-space:nowrap}
+.btn-search:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(232,163,32,.4)}
+.search-container{position:relative;max-width:560px}
+.suggestions{position:absolute;top:calc(100% + 5px);left:0;right:0;background:#fff;border-radius:12px;box-shadow:var(--sh2);max-height:230px;overflow-y:auto;z-index:300;display:none;border:1px solid var(--border)}
+.sug-item{padding:10px 16px;font-size:13px;cursor:pointer;border-bottom:1px solid var(--border);transition:.15s;display:flex;align-items:center;gap:10px}
+.sug-item:last-child{border-bottom:none}
+.sug-item:hover{background:var(--slate)}
+.sug-item .sr-b{background:var(--navy);color:#fff;border-radius:5px;padding:2px 6px;font-size:10.5px;font-family:'DM Mono',monospace;flex-shrink:0}
 
-/* ── MAIN LAYOUT ─────────────────────────────────────────────── */
-main { max-width:1200px; margin:0 auto; padding:28px 20px 60px; }
+/* STUDENT CARD */
+.student-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:18px;border:1px solid var(--border);animation:cardIn .35s ease}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card-header{background:linear-gradient(135deg,var(--navy),var(--navy3));padding:20px 26px;display:flex;align-items:center;gap:18px}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--gold);display:grid;place-items:center;font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:var(--navy);flex-shrink:0;box-shadow:0 0 0 3px rgba(232,163,32,.3)}
+.chi h3{font-family:'Syne',sans-serif;font-size:17px;color:#fff;font-weight:700}
+.chi .meta{color:rgba(255,255,255,.5);font-size:12px;margin-top:3px}
+.chi .badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;align-items:center}
+.cgpa-badge{background:var(--gold);color:var(--navy);border-radius:6px;padding:3px 12px;font-weight:700;font-family:'DM Mono',monospace;font-size:12.5px}
+.bs{font-size:10.5px;padding:3px 9px;border-radius:5px;font-weight:600}
+.bs-pass{background:#dcfce7;color:#15803d}.bs-fail{background:#fee2e2;color:#dc2626}
+.bs-corr{background:#22c55e;color:#fff}.bs-imp{background:linear-gradient(90deg,#22c55e,#16a34a);color:#fff}
+.bs-rank{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
 
-/* ── HERO SEARCH ─────────────────────────────────────────────── */
-.hero {
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #1e3a6e 100%);
-  border-radius:16px; padding:40px 40px 36px;
-  position:relative; overflow:hidden; margin-bottom:28px;
-}
-.hero::before {
-  content:''; position:absolute; top:-60px; right:-60px;
-  width:300px; height:300px;
-  background: radial-gradient(circle, rgba(232,163,32,0.15) 0%, transparent 70%);
-  border-radius:50%;
-}
-.hero h2 { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; color:#fff; margin-bottom:6px; }
-.hero p  { color:rgba(255,255,255,0.55); font-size:14px; margin-bottom:22px; }
-.search-wrap { display:flex; gap:10px; max-width:560px; }
-.search-input {
-  flex:1; padding:12px 18px; border-radius:10px; border:2px solid rgba(255,255,255,0.15);
-  background:rgba(255,255,255,0.1); color:#fff; font-family:'DM Sans',sans-serif;
-  font-size:14px; outline:none; transition:.2s;
-}
-.search-input::placeholder { color:rgba(255,255,255,0.4); }
-.search-input:focus { border-color:var(--gold); background:rgba(255,255,255,0.15); }
-.btn-search {
-  padding:12px 24px; background:var(--gold); color:var(--navy); border:none;
-  border-radius:10px; font-weight:700; font-size:14px; cursor:pointer;
-  font-family:'Syne',sans-serif; transition:.2s; white-space:nowrap;
-}
-.btn-search:hover { background:var(--gold2); transform:translateY(-1px); box-shadow:var(--shadow); }
-.suggestions {
-  position:absolute; top:100%; left:0; right:0; background:#fff;
-  border-radius:10px; box-shadow:var(--shadow2); margin-top:4px;
-  max-height:220px; overflow-y:auto; z-index:200; display:none;
-}
-.suggestion-item {
-  padding:10px 18px; font-size:13px; cursor:pointer; border-bottom:1px solid var(--border);
-  transition:.15s; display:flex; align-items:center; gap:10px;
-}
-.suggestion-item:last-child { border-bottom:none; }
-.suggestion-item:hover { background:var(--slate); }
-.suggestion-item .sr-badge {
-  background:var(--navy); color:#fff; border-radius:5px;
-  padding:2px 7px; font-size:11px; font-family:'DM Mono',monospace; flex-shrink:0;
-}
-.search-container { position:relative; max-width:560px; }
+.sem-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:18px 22px}
+.sem-cell{background:var(--slate);border-radius:10px;padding:13px 10px;text-align:center;border:1px solid var(--border);transition:.2s;position:relative;overflow:hidden;cursor:default}
+.sem-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold)}
+.sem-cell:hover{transform:translateY(-2px);box-shadow:var(--sh)}
+.sl{font-size:9.5px;font-weight:600;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
+.sv{font-family:'DM Mono',monospace;font-size:21px;font-weight:500;color:var(--navy)}
+.sd{font-size:10px;margin-top:3px;font-weight:600}
+.du{color:#16a34a}.dd2{color:#dc2626}.ds{color:var(--muted)}
+.sem-cell.good::after{background:#22c55e}.sem-cell.avg::after{background:var(--gold)}.sem-cell.low::after{background:#ef4444}
+.sem-cell.na{opacity:.4}.sem-cell.na::after{background:var(--border)}
 
-/* ── STUDENT CARD ─────────────────────────────────────────────── */
-.section { display:none; }
-.section.active { display:block; }
+.perf-wrap{padding:0 22px 18px}
+.perf-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px}
+.perf-track{background:var(--border);border-radius:4px;height:7px;overflow:hidden}
+.perf-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--gold));transition:width .9s cubic-bezier(.4,0,.2,1)}
 
-.student-card {
-  background:var(--card); border-radius:var(--r); box-shadow:var(--shadow); overflow:hidden;
-  margin-bottom:20px; border:1px solid var(--border);
-}
-.card-header {
-  background: linear-gradient(135deg, var(--navy), var(--navy2));
-  padding:22px 28px; display:flex; align-items:center; gap:20px;
-}
-.avatar {
-  width:54px; height:54px; border-radius:50%; background:var(--gold);
-  display:grid; place-items:center; font-family:'Syne',sans-serif;
-  font-size:20px; font-weight:800; color:var(--navy); flex-shrink:0;
-}
-.card-header-info h3 { font-family:'Syne',sans-serif; font-size:18px; color:#fff; font-weight:700; }
-.card-header-info p { color:rgba(255,255,255,0.55); font-size:12.5px; margin-top:3px; }
-.card-header-info .cgpa-badge {
-  display:inline-block; margin-top:8px; background:var(--gold);
-  color:var(--navy); border-radius:6px; padding:3px 12px;
-  font-weight:700; font-family:'DM Mono',monospace; font-size:13px;
-}
+.chart-sec{padding:18px 22px 22px;border-top:1px solid var(--border)}
+.sec-title{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.chart-actions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.btn-action{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--slate);color:var(--text);transition:.2s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:5px}
+.btn-action:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-action.gold:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
 
-.sem-grid {
-  display:grid; grid-template-columns:repeat(5,1fr); gap:12px; padding:20px 24px;
-}
-.sem-cell {
-  background:var(--slate); border-radius:10px; padding:14px 12px;
-  text-align:center; border:1px solid var(--border); transition:.2s;
-  position:relative; overflow:hidden;
-}
-.sem-cell::before {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
-  background:var(--gold);
-}
-.sem-cell:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
-.sem-cell .sem-label { font-size:10px; font-weight:600; color:var(--muted); letter-spacing:.8px; text-transform:uppercase; margin-bottom:6px; }
-.sem-cell .sem-val { font-family:'DM Mono',monospace; font-size:22px; font-weight:500; color:var(--navy); }
-.sem-cell.good::before { background:#22c55e; }
-.sem-cell.avg::before  { background:var(--gold); }
-.sem-cell.low::before  { background:#ef4444; }
-.sem-cell.na { opacity:.45; }
-.sem-cell.na::before { background:var(--border); }
+/* COMPARE PANEL */
+.compare-panel{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:18px;overflow:hidden;animation:cardIn .3s ease}
+.cp-header{background:linear-gradient(135deg,#1e3a6e,var(--navy3));padding:13px 20px;display:flex;align-items:center;justify-content:space-between}
+.cp-header h4{font-family:'Syne',sans-serif;font-size:13px;color:#fff;font-weight:700}
+.cp-body{padding:18px 20px}
+.cp-slots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.cp-slot{background:var(--slate);border-radius:10px;padding:12px 14px;border:1.5px dashed var(--border);min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cp-slot.filled{border-style:solid;border-color:var(--navy);background:#f0f3f9}
+.sn{font-size:12.5px;font-weight:600;color:var(--navy)}.sc2{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--muted)}
+.se{font-size:12px;color:var(--muted);font-style:italic}
+.btn-sc{background:none;border:none;cursor:pointer;color:#dc2626;font-size:16px;padding:2px}
+.cp-row{display:flex;gap:8px;align-items:center;position:relative}
+.cp-input{flex:1;padding:9px 13px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:.2s}
+.cp-input:focus{border-color:var(--gold)}
+.btn-cgo{padding:9px 18px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-cgo:hover{background:var(--navy3)}
+.cp-chart{padding:14px 0 4px;border-top:1px solid var(--border);margin-top:14px}
 
-/* performance bar */
-.perf-bar-wrap { padding:0 24px 20px; }
-.perf-bar-label { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:5px; }
-.perf-bar-track { background:var(--border); border-radius:4px; height:8px; overflow:hidden; }
-.perf-bar-fill  { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--navy),var(--gold)); transition:width .8s cubic-bezier(.4,0,.2,1); }
+/* RANKINGS — GLASS DARK */
+.rbg{background:linear-gradient(160deg,var(--navy) 0%,#0d1f45 50%,#0a1825 100%);min-height:calc(100vh - 58px);border-radius:18px;padding:28px 22px;margin:-26px -18px -70px;position:relative;overflow:hidden}
+.rbg::before{content:'';position:absolute;top:10%;right:5%;width:500px;height:500px;background:radial-gradient(circle,rgba(232,163,32,.07) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.rbg::after{content:'';position:absolute;bottom:15%;left:5%;width:400px;height:400px;background:radial-gradient(circle,rgba(99,179,237,.06) 0%,transparent 65%);border-radius:50%;pointer-events:none}
 
-/* ── CHART ─────────────────────────────────────────────────────── */
-.chart-wrap {
-  padding:20px 24px 24px;
-  border-top:1px solid var(--border);
-}
-.chart-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--navy); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-canvas#trendChart { width:100%!important; }
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+@media(max-width:600px){.stats-strip{grid-template-columns:repeat(2,1fr)}}
+.stat-tile{background:var(--glass);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:16px 18px;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.stat-tile .val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--gold2)}
+.stat-tile .lbl{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;font-weight:500;letter-spacing:.3px}
 
-/* ── RANKINGS ─────────────────────────────────────────────────── */
-.rank-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
-@media(max-width:720px){ .rank-grid { grid-template-columns:1fr; } }
+.frbar{display:flex;gap:10px;margin-bottom:22px;max-width:500px}
+.fr-input{flex:1;padding:11px 16px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:13.5px;font-family:'DM Sans',sans-serif;outline:none;transition:.2s}
+.fr-input::placeholder{color:rgba(255,255,255,.35)}
+.fr-input:focus{border-color:var(--gold);background:rgba(255,255,255,.13)}
+.btn-fr{padding:11px 20px;background:var(--gb);color:#fff;border:1.5px solid rgba(255,255,255,.2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;transition:.2s;backdrop-filter:blur(8px)}
+.btn-fr:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
 
-.rank-card { background:var(--card); border-radius:var(--r); box-shadow:var(--shadow); border:1px solid var(--border); overflow:hidden; }
-.rank-card-header { background:var(--navy); padding:14px 20px; display:flex; align-items:center; gap:10px; }
-.rank-card-header h3 { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:#fff; }
-.rank-card-header .badge { background:var(--gold); color:var(--navy); border-radius:5px; padding:2px 8px; font-size:11px; font-weight:700; }
+.rank-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+@media(max-width:740px){.rank-grid{grid-template-columns:1fr}}
 
-.rank-list { padding:0; }
-.rank-item {
-  display:flex; align-items:center; gap:12px;
-  padding:10px 20px; border-bottom:1px solid var(--border); transition:.15s;
-}
-.rank-item:last-child { border-bottom:none; }
-.rank-item:hover { background:var(--slate); }
-.rank-pos {
-  width:28px; height:28px; border-radius:50%; display:grid; place-items:center;
-  font-family:'DM Mono',monospace; font-size:12px; font-weight:500; flex-shrink:0;
-  background:var(--slate); color:var(--navy);
-}
-.rank-pos.gold   { background:var(--gold);  color:var(--navy); font-weight:700; }
-.rank-pos.silver { background:#c0c0c0;       color:#fff;        font-weight:700; }
-.rank-pos.bronze { background:#cd7f32;       color:#fff;        font-weight:700; }
-.rank-name { font-size:12.5px; font-weight:500; flex:1; line-height:1.3; }
-.rank-score { font-family:'DM Mono',monospace; font-size:14px; font-weight:500; color:var(--navy); flex-shrink:0; }
-.rank-sub   { font-size:10.5px; color:var(--muted); }
+.rank-card{background:var(--glass);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.rch{padding:13px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05)}
+.rch h3{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:#fff}
+.rch .badge{background:var(--gold);color:var(--navy);border-radius:5px;padding:2px 8px;font-size:10.5px;font-weight:700}
+.btn-exp{padding:4px 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:rgba(255,255,255,.7);font-size:11px;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
+.btn-exp:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
 
-/* ── STATS STRIP ──────────────────────────────────────────────── */
-.stats-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
-@media(max-width:600px){ .stats-strip { grid-template-columns:repeat(2,1fr); } }
-.stat-tile { background:var(--card); border-radius:var(--r); padding:16px 20px; border:1px solid var(--border); box-shadow:var(--shadow); }
-.stat-tile .val { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--navy); }
-.stat-tile .lbl { font-size:11px; color:var(--muted); margin-top:3px; font-weight:500; letter-spacing:.4px; }
+.rl{padding:0}
+.ri{display:flex;align-items:center;gap:11px;padding:9px 18px;border-bottom:1px solid rgba(255,255,255,.06);transition:.15s;cursor:pointer}
+.ri:last-child{border-bottom:none}
+.ri:hover{background:rgba(255,255,255,.07)}
+.ri.hl{background:rgba(232,163,32,.15);border-left:3px solid var(--gold)}
+.rpos{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:11.5px;font-weight:500;flex-shrink:0;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}
+.rpos.gold{background:var(--gold);color:var(--navy);font-weight:800}
+.rpos.silver{background:#c0c0c0;color:#333;font-weight:700}
+.rpos.bronze{background:#cd7f32;color:#fff;font-weight:700}
+.ri-info{flex:1;min-width:0}
+.ri-name{font-size:12px;font-weight:500;color:#fff;line-height:1.3}
+.ri-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px}
+.ri-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.ri-score{font-family:'DM Mono',monospace;font-size:13.5px;font-weight:500;color:var(--gold2)}
+.rc{font-size:11px;font-weight:700;padding:2px 5px;border-radius:4px}
+.rc-up{background:rgba(34,197,94,.2);color:#4ade80}
+.rc-dn{background:rgba(239,68,68,.2);color:#f87171}
+.rc-eq{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4)}
 
-/* ── EMPTY / NO RESULT ───────────────────────────────────────── */
-.empty { text-align:center; padding:48px 20px; color:var(--muted); }
-.empty .icon { font-size:40px; margin-bottom:12px; }
-.empty p { font-size:14px; }
+/* MOST IMPROVED */
+.imp-sec{margin-bottom:22px}
+.dark-h{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.dark-h span{font-size:10.5px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;font-weight:400;margin-left:4px}
+.imp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:740px){.imp-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.imp-grid{grid-template-columns:1fr}}
+.imp-card{background:var(--glass);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;cursor:pointer;transition:.2s;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.imp-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.3);background:rgba(255,255,255,.12)}
+.imp-rb{font-size:9.5px;font-weight:700;color:var(--gold2);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+.imp-nm{font-size:12px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.3}
+.imp-row{display:flex;align-items:center;gap:8px}
+.imp-fr{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.45)}
+.imp-ar{color:var(--gold2);font-size:14px}
+.imp-to{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:#4ade80}
+.imp-db{margin-left:auto;background:rgba(34,197,94,.2);color:#4ade80;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace}
+.imp-sl{font-size:9px;color:rgba(255,255,255,.3);margin-top:4px}
 
-/* ── RESULT STATUS ────────────────────────────────────────────── */
-.status-pass { color:var(--pass); font-weight:600; }
-.status-fail { color:var(--fail); font-weight:600; }
+/* SUBJECT TOPPERS */
+.sub-sec{margin-bottom:22px}
+.sub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+@media(max-width:900px){.sub-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.sub-grid{grid-template-columns:1fr}}
+.sub-card{background:var(--glass);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 15px;cursor:pointer;transition:.2s}
+.sub-card:hover{background:rgba(255,255,255,.11);transform:translateY(-2px)}
+.sub-icon{font-size:22px;margin-bottom:6px}
+.sub-title{font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.sub-name{font-size:11.5px;font-weight:600;color:#fff;margin-bottom:4px;line-height:1.3}
+.sub-code{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.35);margin-bottom:8px}
+.sub-score{display:flex;align-items:center;gap:7px}
+.ssv{font-family:'DM Mono',monospace;font-size:15px;font-weight:600;color:#4ade80}
+.ssl{font-size:9.5px;color:rgba(255,255,255,.35)}
 
-/* ── FOOTER ──────────────────────────────────────────────────── */
-footer { text-align:center; padding:20px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); margin-top:40px; }
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;display:none;place-items:center;backdrop-filter:blur(4px)}
+.modal-ov.open{display:grid}
+.modal{background:#fff;border-radius:18px;padding:28px 28px 22px;width:min(480px,92vw);box-shadow:var(--sh3);animation:mIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes mIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+.modal h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--navy);margin-bottom:18px}
+.share-card{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:14px;padding:22px 24px;margin-bottom:18px;position:relative;overflow:hidden}
+.share-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(232,163,32,.2),transparent 70%);border-radius:50%}
+.sc-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;margin-bottom:3px}
+.sc-meta{font-size:11.5px;color:rgba(255,255,255,.5);margin-bottom:14px}
+.sc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.sc-stat{text-align:center}
+.sc-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--gold2)}
+.sc-lbl{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.btn-mc{padding:9px 18px;border:1.5px solid var(--border);border-radius:9px;background:transparent;color:var(--muted);cursor:pointer;font-size:13px}
+.btn-md{padding:9px 22px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Syne',sans-serif;transition:.2s}
+.btn-md:hover{background:var(--gold);color:var(--navy)}
+
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty .icon{font-size:38px;margin-bottom:12px}
+footer{text-align:center;padding:20px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--border);margin-top:40px}
 </style>
 </head>
 <body>
@@ -222,36 +218,34 @@ footer { text-align:center; padding:20px; font-size:12px; color:var(--muted); bo
     <h1>GCE Yavatmal · <span>Academic Portal</span></h1>
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showSection('search')">🔍 Search</button>
-    <button class="nav-tab" onclick="showSection('rankings')">🏆 Rankings</button>
+    <button class="nav-tab active" onclick="showSec(this,'search')">🔍 Search</button>
+    <button class="nav-tab" onclick="showSec(this,'rankings')">🏆 Rankings</button>
   </div>
 </header>
 
 <main>
-
-<!-- ── SEARCH SECTION ──────────────────────────────────────────── -->
+<!-- SEARCH -->
 <section id="sec-search" class="section active">
-
   <div class="hero">
     <h2>Student Academic Records</h2>
-    <p>B.Tech Computer Engineering · Dr. BATU · Batch 2023–27</p>
+    <p>B.Tech Computer Engineering · Dr. BATU · Batch 2023–27 · 71 Students</p>
     <div class="search-container">
-      <div class="search-wrap">
-        <input class="search-input" id="searchInput" type="text"
-               placeholder="Type student name…" autocomplete="off"
-               oninput="onSearchInput()" onkeydown="onSearchKey(event)">
+      <div class="search-row">
+        <input class="search-input" id="searchInput" type="text" placeholder="Type student name to search…" autocomplete="off"
+          oninput="onSug(this.value,'sug','searchInput')" onkeydown="if(event.key==='Enter')doSearch()">
         <button class="btn-search" onclick="doSearch()">Search</button>
       </div>
-      <div class="suggestions" id="suggestions"></div>
+      <div class="suggestions" id="sug"></div>
     </div>
   </div>
-
-  <div id="studentResult"></div>
-
+  <div id="studentResult">
+    <div class="empty"><div class="icon">👆</div><p>Search for a student to view their complete academic record with semester-wise trends</p></div>
+  </div>
 </section>
 
-<!-- ── RANKINGS SECTION ───────────────────────────────────────── -->
+<!-- RANKINGS -->
 <section id="sec-rankings" class="section">
+<div class="rbg">
 
   <div class="stats-strip">
     <div class="stat-tile"><div class="val">71</div><div class="lbl">Total Students</div></div>
@@ -260,376 +254,508 @@ footer { text-align:center; padding:20px; font-size:12px; color:var(--muted); bo
     <div class="stat-tile"><div class="val">8.55</div><div class="lbl">Highest Sem 5</div></div>
   </div>
 
+  <!-- Feature 6: Find My Rank -->
+  <div class="frbar">
+    <input class="fr-input" id="frInput" type="text" placeholder="🔎  Find My Rank — type your name…" autocomplete="off"
+      oninput="highlightRank(this.value)" onkeydown="if(event.key==='Enter')highlightRank(this.value)">
+    <button class="btn-fr" onclick="highlightRank(document.getElementById('frInput').value)">Find</button>
+  </div>
+
+  <!-- Feature 2: Most Improved -->
+  <div class="imp-sec">
+    <div class="dark-h">🚀 Most Improved Students <span>S4 → S5 biggest jump</span></div>
+    <div class="imp-grid" id="impGrid"></div>
+  </div>
+
+  <!-- Feature 3: Subject Toppers -->
+  <div class="sub-sec">
+    <div class="dark-h">🎓 Subject-wise Toppers <span>based on semester performance</span></div>
+    <div class="sub-grid" id="subGrid"></div>
+  </div>
+
+  <!-- Feature 4: Rank tables with rank-change indicator -->
   <div class="rank-grid">
     <div class="rank-card">
-      <div class="rank-card-header">
-        <span>🏆</span>
-        <h3>Top 20 — Overall CGPA (S1–S5)</h3>
-        <span class="badge">CGPA</span>
+      <div class="rch">
+        <div style="display:flex;align-items:center;gap:8px"><span>🏆</span><h3>Top 20 — Overall CGPA</h3><span class="badge">S1–S5</span></div>
+        <button class="btn-exp" onclick="openExpModal('cgpa')">⬇ Export</button>
       </div>
-      <div class="rank-list" id="rankCGPA"></div>
+      <div class="rl" id="rlCGPA"></div>
     </div>
     <div class="rank-card">
-      <div class="rank-card-header">
-        <span>⭐</span>
-        <h3>Top 20 — Semester 5 SGPA</h3>
-        <span class="badge">SEM 5</span>
+      <div class="rch">
+        <div style="display:flex;align-items:center;gap:8px"><span>⭐</span><h3>Top 20 — Semester 5 SGPA</h3><span class="badge">SEM 5</span></div>
+        <button class="btn-exp" onclick="openExpModal('s5')">⬇ Export</button>
       </div>
-      <div class="rank-list" id="rankS5"></div>
+      <div class="rl" id="rlS5"></div>
     </div>
   </div>
 
+</div>
 </section>
-
 </main>
+
+<!-- Feature 5: Export / Share Modal -->
+<div class="modal-ov" id="expModal">
+  <div class="modal">
+    <h3>📤 Share Achievement Card</h3>
+    <div class="share-card" id="scPreview"></div>
+    <p style="font-size:11.5px;color:var(--muted);margin-bottom:16px">Copy the text below to share on social media, WhatsApp, or print as a certificate.</p>
+    <div class="modal-actions">
+      <button class="btn-mc" onclick="closeModal()">Close</button>
+      <button class="btn-md" onclick="copyShare()">📋 Copy Text</button>
+    </div>
+  </div>
+</div>
 
 <footer>Government College of Engineering, Yavatmal · DBATU · Academic Year 2024–25 · Data as per official results</footer>
 
-<!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ════════════════════════════════════════════════════════════════
-//  STUDENT DATA (corrected — INGLE fixed)
-// ════════════════════════════════════════════════════════════════
-const STUDENTS = [
-  {sr:1, name:"HAUNSKAR SOHAM RAM",                    s1:6.42,s2:7.63,s3:7.00,s4:7.20,cgpa14:7.07,s5:6.93,s5res:"PASS",s5marks:494,cgpa15:7.04},
-  {sr:2, name:"ADHAL HARSHWARDHAN DINESH",             s1:8.11,s2:7.95,s3:7.83,s4:7.43,cgpa14:7.81,s5:7.14,s5res:"PASS",s5marks:506,cgpa15:7.67},
-  {sr:3, name:"TETARE RUTIK GAJANAN",                  s1:8.50,s2:9.00,s3:7.83,s4:8.20,cgpa14:8.34,s5:7.77,s5res:"PASS",s5marks:547,cgpa15:8.22},
-  {sr:4, name:"TIDKE NIVRUTTI BABURAO",                s1:7.28,s2:7.58,s3:6.38,s4:7.09,cgpa14:7.04,s5:7.36,s5res:"PASS",s5marks:518,cgpa15:7.10},
-  {sr:5, name:"GAWANDE SANCHIT DINKAR",                s1:7.11,s2:7.63,s3:7.67,s4:7.72,cgpa14:7.55,s5:7.23,s5res:"PASS",s5marks:514,cgpa15:7.49},
-  {sr:6, name:"ANJANA SARKAR",                         s1:7.33,s2:7.16,s3:6.63,s4:7.57,cgpa14:7.15,s5:7.57,s5res:"PASS",s5marks:534,cgpa15:7.24},
-  {sr:7, name:"MHASKE SHAILESH ANIL",                  s1:7.97,s2:8.05,s3:7.00,s4:8.22,cgpa14:7.78,s5:6.91,s5res:"PASS",s5marks:487,cgpa15:7.60},
-  {sr:8, name:"BHALTILAK NAVNEET SHIVAJIRAO",          s1:7.25,s2:7.37,s3:7.00,s4:6.63,cgpa14:7.04,s5:7.57,s5res:"PASS",s5marks:535,cgpa15:7.15},
-  {sr:9, name:"JATALE ADITYA SHRIRAM",                 s1:6.50,s2:7.58,s3:5.79,s4:7.39,cgpa14:6.79,s5:7.73,s5res:"PASS",s5marks:539,cgpa15:6.98},
-  {sr:10,name:"SHELKE ANAND BAPURAO",                  s1:5.81,s2:7.37,s3:6.92,s4:7.72,cgpa14:7.00,s5:6.95,s5res:"PASS",s5marks:493,cgpa15:6.99},
-  {sr:11,name:"WARHEKAR DEVANSHU KISHOR",              s1:7.53,s2:7.21,s3:4.21,s4:6.96,cgpa14:6.35,s5:6.45,s5res:"PASS",s5marks:460,cgpa15:6.37},
-  {sr:12,name:"RAUT PREM SURESH",                      s1:4.17,s2:6.58,s3:6.33,s4:6.54,cgpa14:5.98,s5:null,s5res:"FAIL",s5marks:451,cgpa15:null},
-  {sr:13,name:"SHEWANE PRATIK MOHAN",                  s1:6.69,s2:7.32,s3:7.33,s4:7.59,cgpa14:7.26,s5:6.64,s5res:"PASS",s5marks:472,cgpa15:7.13},
-  {sr:14,name:"ALTAMASH KHAN MAHEMOOD KHAN",           s1:6.64,s2:7.63,s3:6.92,s4:5.67,cgpa14:6.68,s5:6.84,s5res:"PASS",s5marks:484,cgpa15:6.71},
-  {sr:15,name:"YADAV BRIJESH RAMESH",                  s1:7.14,s2:6.84,s3:7.33,s4:8.15,cgpa14:7.40,s5:7.98,s5res:"PASS",s5marks:556,cgpa15:7.52},
-  {sr:16,name:"PAWAR TEJAS SHRICHAND",                 s1:2.92,s2:6.11,s3:5.92,s4:5.37,cgpa14:5.17,s5:6.80,s5res:"PASS",s5marks:491,cgpa15:5.51},
-  {sr:17,name:"SANGADE JAYKUMAR SUDHAKAR",             s1:7.00,s2:6.66,s3:7.75,s4:7.59,cgpa14:7.30,s5:6.68,s5res:"PASS",s5marks:473,cgpa15:7.17},
-  {sr:18,name:"JUNGHARE YASH GAJANAN",                 s1:5.19,s2:6.84,s3:4.75,s4:5.26,cgpa14:5.46,s5:6.80,s5res:"PASS",s5marks:479,cgpa15:5.74},
-  {sr:19,name:"KARWATE SWAPNIL ASHOK",                 s1:6.08,s2:7.32,s3:6.00,s4:7.28,cgpa14:6.67,s5:6.57,s5res:"PASS",s5marks:462,cgpa15:6.65},
-  {sr:20,name:"GAWAI RACHI VINOD",                     s1:6.14,s2:7.82,s3:6.54,s4:7.98,cgpa14:7.14,s5:7.66,s5res:"PASS",s5marks:543,cgpa15:7.25},
-  {sr:21,name:"MAGAR YOGITA NITIN",                    s1:6.72,s2:8.00,s3:7.33,s4:8.15,cgpa14:7.58,s5:7.61,s5res:"PASS",s5marks:540,cgpa15:7.58},
-  {sr:22,name:"ABHIMANYU VITTHALRAO MOHITE",           s1:6.75,s2:7.71,s3:5.50,s4:6.09,cgpa14:6.43,s5:null,s5res:"FAIL",s5marks:447,cgpa15:null},
-  {sr:23,name:"HUZAIF ASHHAR ASLAM AZIM SHEIKH",       s1:7.36,s2:8.45,s3:7.67,s4:7.85,cgpa14:7.83,s5:7.27,s5res:"PASS",s5marks:513,cgpa15:7.71},
-  {sr:24,name:"MISAL SANIKA RAJENDRA",                 s1:8.44,s2:8.21,s3:7.25,s4:8.20,cgpa14:7.98,s5:8.09,s5res:"PASS",s5marks:561,cgpa15:8.00},
-  {sr:25,name:"WADHONKAR VEDANT ANILRAO",              s1:7.17,s2:8.55,s3:7.92,s4:8.33,cgpa14:8.01,s5:7.84,s5res:"PASS",s5marks:552,cgpa15:7.98},
-  {sr:26,name:"NALGIRE DARSHAN DATTATRAY",             s1:5.86,s2:6.42,s3:6.33,s4:7.39,cgpa14:6.54,s5:6.95,s5res:"PASS",s5marks:498,cgpa15:6.63},
-  {sr:27,name:"CHAUDHARI DHIRAJ RAM",                  s1:7.33,s2:7.26,s3:6.75,s4:7.74,cgpa14:7.30,s5:6.95,s5res:"PASS",s5marks:494,cgpa15:7.23},
-  {sr:28,name:"MULE KAIWALYA GOVIND",                  s1:6.47,s2:8.37,s3:7.33,s4:8.00,cgpa14:7.57,s5:8.07,s5res:"PASS",s5marks:560,cgpa15:7.67},
-  {sr:29,name:"SUKHADEVE HARSH RAJESH",                s1:6.25,s2:7.82,s3:5.88,s4:7.74,cgpa14:6.90,s5:7.61,s5res:"PASS",s5marks:529,cgpa15:7.05},
-  {sr:30,name:"PATIL VIVEK MURLIDHAR",                 s1:6.83,s2:7.66,s3:6.67,s4:7.30,cgpa14:7.10,s5:7.20,s5res:"PASS",s5marks:499,cgpa15:7.12},
-  {sr:31,name:"NAGRE DIKSHA GAJANAN",                  s1:5.53,s2:6.84,s3:5.58,s4:7.61,cgpa14:6.41,s5:7.84,s5res:"PASS",s5marks:547,cgpa15:6.71},
-  {sr:32,name:"SAYALI MANOHAR KHAWASHI",               s1:7.28,s2:7.76,s3:7.25,s4:7.85,cgpa14:7.54,s5:8.07,s5res:"PASS",s5marks:555,cgpa15:7.65},
-  {sr:33,name:"KAKAD PRERNA VILASRAO",                 s1:6.42,s2:8.42,s3:6.04,s4:8.00,cgpa14:7.20,s5:8.07,s5res:"PASS",s5marks:561,cgpa15:7.38},
-  {sr:34,name:"RATHOD SEJAL VIJAY",                    s1:5.17,s2:7.03,s3:6.13,s4:6.35,cgpa14:6.18,s5:7.30,s5res:"PASS",s5marks:513,cgpa15:6.42},
-  {sr:35,name:"RAIBOLE SUHANI SURESH",                 s1:7.08,s2:7.32,s3:7.00,s4:7.59,cgpa14:7.25,s5:7.73,s5res:"PASS",s5marks:539,cgpa15:7.35},
-  {sr:36,name:"HIWALE KULDIP KAILAS",                  s1:6.67,s2:7.53,s3:5.67,s4:7.50,cgpa14:6.80,s5:7.91,s5res:"PASS",s5marks:545,cgpa15:7.03},
-  {sr:37,name:"BHAMKAR SAMRUDDHI SUHAS",               s1:6.33,s2:8.37,s3:7.08,s4:7.28,cgpa14:7.27,s5:7.59,s5res:"PASS",s5marks:529,cgpa15:7.33},
-  {sr:38,name:"VILAYATKAR GAYATRI UMESH",              s1:7.81,s2:7.79,s3:7.33,s4:7.59,cgpa14:7.61,s5:7.77,s5res:"PASS",s5marks:543,cgpa15:7.64},
-  {sr:39,name:"SARVE VAISHNAVI SANJAY",                s1:7.58,s2:8.89,s3:8.33,s4:7.98,cgpa14:8.20,s5:8.55,s5res:"PASS",s5marks:583,cgpa15:8.27},
-  {sr:40,name:"ANUSHRI BHANGALE",                      s1:7.19,s2:8.39,s3:7.42,s4:8.96,cgpa14:8.01,s5:8.34,s5res:"PASS",s5marks:575,cgpa15:8.08},
-  {sr:41,name:"AWCHAR SAMIKSHA BHAGWAT",               s1:2.69,s2:7.00,s3:6.00,s4:7.39,cgpa14:5.90,s5:7.32,s5res:"PASS",s5marks:517,cgpa15:6.19},
-  {sr:42,name:"SURYAWANSHI ANJALI DATTAHARI",          s1:4.44,s2:7.61,s3:5.38,s4:7.98,cgpa14:6.39,s5:7.11,s5res:"PASS",s5marks:505,cgpa15:6.54},
-  {sr:43,name:"MINKE ANJALI GANGADHAR",                s1:3.97,s2:6.47,s3:5.67,s4:7.09,cgpa14:5.88,s5:7.36,s5res:"PASS",s5marks:514,cgpa15:6.18},
-  {sr:44,name:"KAKDE SAMIKSHA MURLIDHAR",              s1:6.17,s2:6.42,s3:6.71,s4:7.37,cgpa14:6.71,s5:7.86,s5res:"PASS",s5marks:547,cgpa15:6.95},
-  {sr:45,name:"GHONGE POOJA RAVIKIRAN",                s1:4.17,s2:7.32,s3:6.83,s4:6.96,cgpa14:6.40,s5:8.09,s5res:"PASS",s5marks:561,cgpa15:6.75},
-  {sr:46,name:"KHARBADE PRERANA DEVIDAS",              s1:2.81,s2:5.92,s3:4.96,s4:5.46,cgpa14:4.85,s5:6.93,s5res:"PASS",s5marks:489,cgpa15:5.28},
-  {sr:47,name:"AAKANKSHA PRABHAKAR GIRHE",             s1:5.25,s2:7.95,s3:5.88,s4:7.85,cgpa14:6.75,s5:7.86,s5res:"PASS",s5marks:545,cgpa15:6.98},
-  {sr:48,name:"PATNEY JANVI DEEPAK",                   s1:7.31,s2:8.11,s3:7.67,s4:7.98,cgpa14:7.77,s5:8.07,s5res:"PASS",s5marks:564,cgpa15:7.84},
-  {sr:49,name:"JADHAO ASHWIN RAMDAS",                  s1:5.81,s2:8.00,s3:6.71,s4:7.00,cgpa14:6.89,s5:7.02,s5res:"PASS",s5marks:485,cgpa15:6.91},
-  {sr:50,name:"ADE JAY SURESH",                        s1:2.47,s2:5.32,s3:3.75,s4:3.61,cgpa14:3.79,s5:null,s5res:"FAIL",s5marks:414,cgpa15:null},
-  {sr:51,name:"WARKHADE ANKITA ASHISH",                s1:7.97,s2:8.66,s3:7.67,s4:8.00,cgpa14:8.05,s5:8.34,s5res:"PASS",s5marks:573,cgpa15:8.11},
-  {sr:52,name:"RAVANI SHRUSHTI MANILAL",               s1:7.25,s2:8.42,s3:6.46,s4:7.67,cgpa14:7.40,s5:7.57,s5res:"PASS",s5marks:531,cgpa15:7.44},
-  {sr:53,name:"SAYALI RAJENDRA KHUPSE",                s1:7.19,s2:7.84,s3:7.75,s4:6.24,cgpa14:7.24,s5:7.84,s5res:"PASS",s5marks:535,cgpa15:7.36},
-  {sr:54,name:"BIRADAR MEGHA DATTATRAY",               s1:5.11,s2:6.11,s3:6.83,s4:7.35,cgpa14:6.44,s5:7.25,s5res:"PASS",s5marks:517,cgpa15:6.61},
-  {sr:55,name:"ESHANT NANDURKAR",                      s1:6.92,s2:6.63,s3:6.08,s4:7.07,cgpa14:6.65,s5:7.64,s5res:"PASS",s5marks:532,cgpa15:6.86},
-  {sr:56,name:"RINGNE RUJAL RAJU",                     s1:4.92,s2:2.66,s3:0.17,s4:5.48,cgpa14:3.20,s5:null,s5res:"FAIL",s5marks:null,cgpa15:null},
-  {sr:57,name:"ANIKET SIDDHASAGAR MESHRAM",            s1:null,s2:null,s3:0.00,s4:4.35,cgpa14:2.13,s5:null,s5res:"-",s5marks:null,cgpa15:null},
-  {sr:58,name:"SHRIKANT RAJU PHAD",                    s1:null,s2:null,s3:4.08,s4:6.24,cgpa14:5.14,s5:6.18,s5res:"PASS",s5marks:447,cgpa15:5.47},
-  {sr:59,name:"WARKHADE UDAY DINESH",                  s1:null,s2:null,s3:null,s4:5.67,cgpa14:5.67,s5:5.82,s5res:"PASS",s5marks:401,cgpa15:5.75},
-  {sr:60,name:"GAWALI ISHWAR ASHOK",                   s1:null,s2:null,s3:6.04,s4:5.98,cgpa14:6.01,s5:null,s5res:"FAIL",s5marks:448,cgpa15:null},
-  {sr:61,name:"INGLE VAIBHAV VINOD",                   s1:8.19,s2:7.80,s3:6.42,s4:7.70,cgpa14:7.46,s5:7.39,s5res:"PASS",s5marks:525,cgpa15:7.45,corrected:true},
-  {sr:62,name:"MAHALE VAIBHAV DATTATRAY",              s1:null,s2:null,s3:7.00,s4:7.46,cgpa14:7.23,s5:null,s5res:"FAIL",s5marks:470,cgpa15:null},
-  {sr:63,name:"BUTLE KANISHK PRAMOD",                  s1:null,s2:null,s3:5.25,s4:4.52,cgpa14:4.89,s5:null,s5res:"FAIL",s5marks:453,cgpa15:null},
-  {sr:64,name:"KHIZROYA IRQUAM ZAHEER AHMAD SHAH",     s1:null,s2:null,s3:7.08,s4:8.17,cgpa14:7.61,s5:8.32,s5res:"PASS",s5marks:578,cgpa15:7.84},
-  {sr:65,name:"SAKSHI SUNIL JAYSINGPURE",              s1:null,s2:null,s3:8.08,s4:8.04,cgpa14:8.06,s5:8.07,s5res:"PASS",s5marks:553,cgpa15:8.06},
-  {sr:66,name:"RUCHIR RAJEEV TERKHEDKAR",              s1:null,s2:null,s3:7.08,s4:7.93,cgpa14:7.50,s5:7.57,s5res:"PASS",s5marks:532,cgpa15:7.52},
-  {sr:67,name:"BHAGWAT SANJAY SHINGOTE",               s1:null,s2:null,s3:6.75,s4:7.89,cgpa14:7.31,s5:7.73,s5res:"PASS",s5marks:538,cgpa15:7.44},
-  {sr:68,name:"NILESH NARAYAN GAWHALE",                s1:null,s2:null,s3:8.00,s4:8.09,cgpa14:8.04,s5:8.45,s5res:"PASS",s5marks:582,cgpa15:8.17},
-  {sr:69,name:"KARNALE SANKET GOVIND",                 s1:null,s2:null,s3:7.75,s4:8.24,cgpa14:7.99,s5:7.84,s5res:"PASS",s5marks:547,cgpa15:7.94},
-  {sr:70,name:"DHOBLE NIKITA GOVIND",                  s1:null,s2:null,s3:6.58,s4:7.93,cgpa14:7.24,s5:7.82,s5res:"PASS",s5marks:539,cgpa15:7.43},
-  {sr:71,name:"GAIKWAD PRATIKSHA SUDHAKAR",            s1:null,s2:null,s3:null,s4:null,cgpa14:null,s5:8.50,s5res:"PASS",s5marks:583,cgpa15:8.50},
+/* ═══════════════════════ DATA ═══════════════════════ */
+const S=[
+  {sr:1,name:"HAUNSKAR SOHAM RAM",s1:6.42,s2:7.63,s3:7.00,s4:7.20,c14:7.07,s5:6.93,r5:"PASS",m5:494,c15:7.04},
+  {sr:2,name:"ADHAL HARSHWARDHAN DINESH",s1:8.11,s2:7.95,s3:7.83,s4:7.43,c14:7.81,s5:7.14,r5:"PASS",m5:506,c15:7.67},
+  {sr:3,name:"TETARE RUTIK GAJANAN",s1:8.50,s2:9.00,s3:7.83,s4:8.20,c14:8.34,s5:7.77,r5:"PASS",m5:547,c15:8.22},
+  {sr:4,name:"TIDKE NIVRUTTI BABURAO",s1:7.28,s2:7.58,s3:6.38,s4:7.09,c14:7.04,s5:7.36,r5:"PASS",m5:518,c15:7.10},
+  {sr:5,name:"GAWANDE SANCHIT DINKAR",s1:7.11,s2:7.63,s3:7.67,s4:7.72,c14:7.55,s5:7.23,r5:"PASS",m5:514,c15:7.49},
+  {sr:6,name:"ANJANA SARKAR",s1:7.33,s2:7.16,s3:6.63,s4:7.57,c14:7.15,s5:7.57,r5:"PASS",m5:534,c15:7.24},
+  {sr:7,name:"MHASKE SHAILESH ANIL",s1:7.97,s2:8.05,s3:7.00,s4:8.22,c14:7.78,s5:6.91,r5:"PASS",m5:487,c15:7.60},
+  {sr:8,name:"BHALTILAK NAVNEET SHIVAJIRAO",s1:7.25,s2:7.37,s3:7.00,s4:6.63,c14:7.04,s5:7.57,r5:"PASS",m5:535,c15:7.15},
+  {sr:9,name:"JATALE ADITYA SHRIRAM",s1:6.50,s2:7.58,s3:5.79,s4:7.39,c14:6.79,s5:7.73,r5:"PASS",m5:539,c15:6.98},
+  {sr:10,name:"SHELKE ANAND BAPURAO",s1:5.81,s2:7.37,s3:6.92,s4:7.72,c14:7.00,s5:6.95,r5:"PASS",m5:493,c15:6.99},
+  {sr:11,name:"WARHEKAR DEVANSHU KISHOR",s1:7.53,s2:7.21,s3:4.21,s4:6.96,c14:6.35,s5:6.45,r5:"PASS",m5:460,c15:6.37},
+  {sr:12,name:"RAUT PREM SURESH",s1:4.17,s2:6.58,s3:6.33,s4:6.54,c14:5.98,s5:null,r5:"FAIL",m5:451,c15:null},
+  {sr:13,name:"SHEWANE PRATIK MOHAN",s1:6.69,s2:7.32,s3:7.33,s4:7.59,c14:7.26,s5:6.64,r5:"PASS",m5:472,c15:7.13},
+  {sr:14,name:"ALTAMASH KHAN MAHEMOOD KHAN",s1:6.64,s2:7.63,s3:6.92,s4:5.67,c14:6.68,s5:6.84,r5:"PASS",m5:484,c15:6.71},
+  {sr:15,name:"YADAV BRIJESH RAMESH",s1:7.14,s2:6.84,s3:7.33,s4:8.15,c14:7.40,s5:7.98,r5:"PASS",m5:556,c15:7.52},
+  {sr:16,name:"PAWAR TEJAS SHRICHAND",s1:2.92,s2:6.11,s3:5.92,s4:5.37,c14:5.17,s5:6.80,r5:"PASS",m5:491,c15:5.51},
+  {sr:17,name:"SANGADE JAYKUMAR SUDHAKAR",s1:7.00,s2:6.66,s3:7.75,s4:7.59,c14:7.30,s5:6.68,r5:"PASS",m5:473,c15:7.17},
+  {sr:18,name:"JUNGHARE YASH GAJANAN",s1:5.19,s2:6.84,s3:4.75,s4:5.26,c14:5.46,s5:6.80,r5:"PASS",m5:479,c15:5.74},
+  {sr:19,name:"KARWATE SWAPNIL ASHOK",s1:6.08,s2:7.32,s3:6.00,s4:7.28,c14:6.67,s5:6.57,r5:"PASS",m5:462,c15:6.65},
+  {sr:20,name:"GAWAI RACHI VINOD",s1:6.14,s2:7.82,s3:6.54,s4:7.98,c14:7.14,s5:7.66,r5:"PASS",m5:543,c15:7.25},
+  {sr:21,name:"MAGAR YOGITA NITIN",s1:6.72,s2:8.00,s3:7.33,s4:8.15,c14:7.58,s5:7.61,r5:"PASS",m5:540,c15:7.58},
+  {sr:22,name:"ABHIMANYU VITTHALRAO MOHITE",s1:6.75,s2:7.71,s3:5.50,s4:6.09,c14:6.43,s5:null,r5:"FAIL",m5:447,c15:null},
+  {sr:23,name:"HUZAIF ASHHAR ASLAM AZIM SHEIKH",s1:7.36,s2:8.45,s3:7.67,s4:7.85,c14:7.83,s5:7.27,r5:"PASS",m5:513,c15:7.71},
+  {sr:24,name:"MISAL SANIKA RAJENDRA",s1:8.44,s2:8.21,s3:7.25,s4:8.20,c14:7.98,s5:8.09,r5:"PASS",m5:561,c15:8.00},
+  {sr:25,name:"WADHONKAR VEDANT ANILRAO",s1:7.17,s2:8.55,s3:7.92,s4:8.33,c14:8.01,s5:7.84,r5:"PASS",m5:552,c15:7.98},
+  {sr:26,name:"NALGIRE DARSHAN DATTATRAY",s1:5.86,s2:6.42,s3:6.33,s4:7.39,c14:6.54,s5:6.95,r5:"PASS",m5:498,c15:6.63},
+  {sr:27,name:"CHAUDHARI DHIRAJ RAM",s1:7.33,s2:7.26,s3:6.75,s4:7.74,c14:7.30,s5:6.95,r5:"PASS",m5:494,c15:7.23},
+  {sr:28,name:"MULE KAIWALYA GOVIND",s1:6.47,s2:8.37,s3:7.33,s4:8.00,c14:7.57,s5:8.07,r5:"PASS",m5:560,c15:7.67},
+  {sr:29,name:"SUKHADEVE HARSH RAJESH",s1:6.25,s2:7.82,s3:5.88,s4:7.74,c14:6.90,s5:7.61,r5:"PASS",m5:529,c15:7.05},
+  {sr:30,name:"PATIL VIVEK MURLIDHAR",s1:6.83,s2:7.66,s3:6.67,s4:7.30,c14:7.10,s5:7.20,r5:"PASS",m5:499,c15:7.12},
+  {sr:31,name:"NAGRE DIKSHA GAJANAN",s1:5.53,s2:6.84,s3:5.58,s4:7.61,c14:6.41,s5:7.84,r5:"PASS",m5:547,c15:6.71},
+  {sr:32,name:"SAYALI MANOHAR KHAWASHI",s1:7.28,s2:7.76,s3:7.25,s4:7.85,c14:7.54,s5:8.07,r5:"PASS",m5:555,c15:7.65},
+  {sr:33,name:"KAKAD PRERNA VILASRAO",s1:6.42,s2:8.42,s3:6.04,s4:8.00,c14:7.20,s5:8.07,r5:"PASS",m5:561,c15:7.38},
+  {sr:34,name:"RATHOD SEJAL VIJAY",s1:5.17,s2:7.03,s3:6.13,s4:6.35,c14:6.18,s5:7.30,r5:"PASS",m5:513,c15:6.42},
+  {sr:35,name:"RAIBOLE SUHANI SURESH",s1:7.08,s2:7.32,s3:7.00,s4:7.59,c14:7.25,s5:7.73,r5:"PASS",m5:539,c15:7.35},
+  {sr:36,name:"HIWALE KULDIP KAILAS",s1:6.67,s2:7.53,s3:5.67,s4:7.50,c14:6.80,s5:7.91,r5:"PASS",m5:545,c15:7.03},
+  {sr:37,name:"BHAMKAR SAMRUDDHI SUHAS",s1:6.33,s2:8.37,s3:7.08,s4:7.28,c14:7.27,s5:7.59,r5:"PASS",m5:529,c15:7.33},
+  {sr:38,name:"VILAYATKAR GAYATRI UMESH",s1:7.81,s2:7.79,s3:7.33,s4:7.59,c14:7.61,s5:7.77,r5:"PASS",m5:543,c15:7.64},
+  {sr:39,name:"SARVE VAISHNAVI SANJAY",s1:7.58,s2:8.89,s3:8.33,s4:7.98,c14:8.20,s5:8.55,r5:"PASS",m5:583,c15:8.27},
+  {sr:40,name:"ANUSHRI BHANGALE",s1:7.19,s2:8.39,s3:7.42,s4:8.96,c14:8.01,s5:8.34,r5:"PASS",m5:575,c15:8.08},
+  {sr:41,name:"AWCHAR SAMIKSHA BHAGWAT",s1:2.69,s2:7.00,s3:6.00,s4:7.39,c14:5.90,s5:7.32,r5:"PASS",m5:517,c15:6.19},
+  {sr:42,name:"SURYAWANSHI ANJALI DATTAHARI",s1:4.44,s2:7.61,s3:5.38,s4:7.98,c14:6.39,s5:7.11,r5:"PASS",m5:505,c15:6.54},
+  {sr:43,name:"MINKE ANJALI GANGADHAR",s1:3.97,s2:6.47,s3:5.67,s4:7.09,c14:5.88,s5:7.36,r5:"PASS",m5:514,c15:6.18},
+  {sr:44,name:"KAKDE SAMIKSHA MURLIDHAR",s1:6.17,s2:6.42,s3:6.71,s4:7.37,c14:6.71,s5:7.86,r5:"PASS",m5:547,c15:6.95},
+  {sr:45,name:"GHONGE POOJA RAVIKIRAN",s1:4.17,s2:7.32,s3:6.83,s4:6.96,c14:6.40,s5:8.09,r5:"PASS",m5:561,c15:6.75},
+  {sr:46,name:"KHARBADE PRERANA DEVIDAS",s1:2.81,s2:5.92,s3:4.96,s4:5.46,c14:4.85,s5:6.93,r5:"PASS",m5:489,c15:5.28},
+  {sr:47,name:"AAKANKSHA PRABHAKAR GIRHE",s1:5.25,s2:7.95,s3:5.88,s4:7.85,c14:6.75,s5:7.86,r5:"PASS",m5:545,c15:6.98},
+  {sr:48,name:"PATNEY JANVI DEEPAK",s1:7.31,s2:8.11,s3:7.67,s4:7.98,c14:7.77,s5:8.07,r5:"PASS",m5:564,c15:7.84},
+  {sr:49,name:"JADHAO ASHWIN RAMDAS",s1:5.81,s2:8.00,s3:6.71,s4:7.00,c14:6.89,s5:7.02,r5:"PASS",m5:485,c15:6.91},
+  {sr:50,name:"ADE JAY SURESH",s1:2.47,s2:5.32,s3:3.75,s4:3.61,c14:3.79,s5:null,r5:"FAIL",m5:414,c15:null},
+  {sr:51,name:"WARKHADE ANKITA ASHISH",s1:7.97,s2:8.66,s3:7.67,s4:8.00,c14:8.05,s5:8.34,r5:"PASS",m5:573,c15:8.11},
+  {sr:52,name:"RAVANI SHRUSHTI MANILAL",s1:7.25,s2:8.42,s3:6.46,s4:7.67,c14:7.40,s5:7.57,r5:"PASS",m5:531,c15:7.44},
+  {sr:53,name:"SAYALI RAJENDRA KHUPSE",s1:7.19,s2:7.84,s3:7.75,s4:6.24,c14:7.24,s5:7.84,r5:"PASS",m5:535,c15:7.36},
+  {sr:54,name:"BIRADAR MEGHA DATTATRAY",s1:5.11,s2:6.11,s3:6.83,s4:7.35,c14:6.44,s5:7.25,r5:"PASS",m5:517,c15:6.61},
+  {sr:55,name:"ESHANT NANDURKAR",s1:6.92,s2:6.63,s3:6.08,s4:7.07,c14:6.65,s5:7.64,r5:"PASS",m5:532,c15:6.86},
+  {sr:56,name:"RINGNE RUJAL RAJU",s1:4.92,s2:2.66,s3:0.17,s4:5.48,c14:3.20,s5:null,r5:"FAIL",m5:null,c15:null},
+  {sr:57,name:"ANIKET SIDDHASAGAR MESHRAM",s1:null,s2:null,s3:0.00,s4:4.35,c14:2.13,s5:null,r5:"-",m5:null,c15:null},
+  {sr:58,name:"SHRIKANT RAJU PHAD",s1:null,s2:null,s3:4.08,s4:6.24,c14:5.14,s5:6.18,r5:"PASS",m5:447,c15:5.47},
+  {sr:59,name:"WARKHADE UDAY DINESH",s1:null,s2:null,s3:null,s4:5.67,c14:5.67,s5:5.82,r5:"PASS",m5:401,c15:5.75},
+  {sr:60,name:"GAWALI ISHWAR ASHOK",s1:null,s2:null,s3:6.04,s4:5.98,c14:6.01,s5:null,r5:"FAIL",m5:448,c15:null},
+  {sr:61,name:"INGLE VAIBHAV VINOD",s1:8.19,s2:7.80,s3:6.42,s4:7.70,c14:7.46,s5:7.39,r5:"PASS",m5:525,c15:7.45,fix:true},
+  {sr:62,name:"MAHALE VAIBHAV DATTATRAY",s1:null,s2:null,s3:7.00,s4:7.46,c14:7.23,s5:null,r5:"FAIL",m5:470,c15:null},
+  {sr:63,name:"BUTLE KANISHK PRAMOD",s1:null,s2:null,s3:5.25,s4:4.52,c14:4.89,s5:null,r5:"FAIL",m5:453,c15:null},
+  {sr:64,name:"KHIZROYA IRQUAM ZAHEER AHMAD SHAH",s1:null,s2:null,s3:7.08,s4:8.17,c14:7.61,s5:8.32,r5:"PASS",m5:578,c15:7.84},
+  {sr:65,name:"SAKSHI SUNIL JAYSINGPURE",s1:null,s2:null,s3:8.08,s4:8.04,c14:8.06,s5:8.07,r5:"PASS",m5:553,c15:8.06},
+  {sr:66,name:"RUCHIR RAJEEV TERKHEDKAR",s1:null,s2:null,s3:7.08,s4:7.93,c14:7.50,s5:7.57,r5:"PASS",m5:532,c15:7.52},
+  {sr:67,name:"BHAGWAT SANJAY SHINGOTE",s1:null,s2:null,s3:6.75,s4:7.89,c14:7.31,s5:7.73,r5:"PASS",m5:538,c15:7.44},
+  {sr:68,name:"NILESH NARAYAN GAWHALE",s1:null,s2:null,s3:8.00,s4:8.09,c14:8.04,s5:8.45,r5:"PASS",m5:582,c15:8.17},
+  {sr:69,name:"KARNALE SANKET GOVIND",s1:null,s2:null,s3:7.75,s4:8.24,c14:7.99,s5:7.84,r5:"PASS",m5:547,c15:7.94},
+  {sr:70,name:"DHOBLE NIKITA GOVIND",s1:null,s2:null,s3:6.58,s4:7.93,c14:7.24,s5:7.82,r5:"PASS",m5:539,c15:7.43},
+  {sr:71,name:"GAIKWAD PRATIKSHA SUDHAKAR",s1:null,s2:null,s3:null,s4:null,c14:null,s5:8.50,r5:"PASS",m5:583,c15:8.50},
 ];
 
-const TOP20_CGPA = [
-  {rank:1,  name:"GAIKWAD PRATIKSHA SUDHAKAR",        cgpa:8.50, s5:8.50},
-  {rank:2,  name:"SARVE VAISHNAVI SANJAY",             cgpa:8.27, s5:8.55},
-  {rank:3,  name:"TETARE RUTIK GAJANAN",               cgpa:8.22, s5:7.77},
-  {rank:4,  name:"NILESH NARAYAN GAWHALE",             cgpa:8.17, s5:8.45},
-  {rank:5,  name:"WARKHADE ANKITA ASHISH",             cgpa:8.11, s5:8.34},
-  {rank:6,  name:"ANUSHRI BHANGALE",                   cgpa:8.08, s5:8.34},
-  {rank:7,  name:"SAKSHI SUNIL JAYSINGPURE",           cgpa:8.06, s5:8.07},
-  {rank:8,  name:"MISAL SANIKA RAJENDRA",              cgpa:8.00, s5:8.09},
-  {rank:9,  name:"WADHONKAR VEDANT ANILRAO",           cgpa:7.98, s5:7.84},
-  {rank:10, name:"KARNALE SANKET GOVIND",              cgpa:7.94, s5:7.84},
-  {rank:11, name:"PATNEY JANVI DEEPAK",                cgpa:7.84, s5:8.07},
-  {rank:12, name:"KHIZROYA IRQUAM ZAHEER AHMAD SHAH",  cgpa:7.84, s5:8.32},
-  {rank:13, name:"HUZAIF ASHHAR ASLAM AZIM SHEIKH",    cgpa:7.71, s5:7.27},
-  {rank:14, name:"ADHAL HARSHWARDHAN DINESH",          cgpa:7.67, s5:7.14},
-  {rank:15, name:"MULE KAIWALYA GOVIND",               cgpa:7.67, s5:8.07},
-  {rank:16, name:"SAYALI MANOHAR KHAWASHI",            cgpa:7.65, s5:8.07},
-  {rank:17, name:"VILAYATKAR GAYATRI UMESH",           cgpa:7.64, s5:7.77},
-  {rank:18, name:"MHASKE SHAILESH ANIL",               cgpa:7.60, s5:6.91},
-  {rank:19, name:"MAGAR YOGITA NITIN",                 cgpa:7.58, s5:7.61},
-  {rank:20, name:"YADAV BRIJESH RAMESH",               cgpa:7.52, s5:7.98},
+const T_CGPA=[
+  {rank:1,name:"GAIKWAD PRATIKSHA SUDHAKAR",cgpa:8.50,s5:8.50,pr:null},
+  {rank:2,name:"SARVE VAISHNAVI SANJAY",cgpa:8.27,s5:8.55,pr:3},
+  {rank:3,name:"TETARE RUTIK GAJANAN",cgpa:8.22,s5:7.77,pr:2},
+  {rank:4,name:"NILESH NARAYAN GAWHALE",cgpa:8.17,s5:8.45,pr:6},
+  {rank:5,name:"WARKHADE ANKITA ASHISH",cgpa:8.11,s5:8.34,pr:4},
+  {rank:6,name:"ANUSHRI BHANGALE",cgpa:8.08,s5:8.34,pr:5},
+  {rank:7,name:"SAKSHI SUNIL JAYSINGPURE",cgpa:8.06,s5:8.07,pr:null},
+  {rank:8,name:"MISAL SANIKA RAJENDRA",cgpa:8.00,s5:8.09,pr:8},
+  {rank:9,name:"WADHONKAR VEDANT ANILRAO",cgpa:7.98,s5:7.84,pr:7},
+  {rank:10,name:"KARNALE SANKET GOVIND",cgpa:7.94,s5:7.84,pr:null},
+  {rank:11,name:"PATNEY JANVI DEEPAK",cgpa:7.84,s5:8.07,pr:12},
+  {rank:12,name:"KHIZROYA IRQUAM ZAHEER AHMAD SHAH",cgpa:7.84,s5:8.32,pr:null},
+  {rank:13,name:"HUZAIF ASHHAR ASLAM AZIM SHEIKH",cgpa:7.71,s5:7.27,pr:11},
+  {rank:14,name:"ADHAL HARSHWARDHAN DINESH",cgpa:7.67,s5:7.14,pr:13},
+  {rank:15,name:"MULE KAIWALYA GOVIND",cgpa:7.67,s5:8.07,pr:16},
+  {rank:16,name:"SAYALI MANOHAR KHAWASHI",cgpa:7.65,s5:8.07,pr:14},
+  {rank:17,name:"VILAYATKAR GAYATRI UMESH",cgpa:7.64,s5:7.77,pr:15},
+  {rank:18,name:"MHASKE SHAILESH ANIL",cgpa:7.60,s5:6.91,pr:17},
+  {rank:19,name:"MAGAR YOGITA NITIN",cgpa:7.58,s5:7.61,pr:18},
+  {rank:20,name:"YADAV BRIJESH RAMESH",cgpa:7.52,s5:7.98,pr:20},
 ];
 
-const TOP20_S5 = [
-  {rank:1,  name:"SARVE VAISHNAVI SANJAY",             s5:8.55, cgpa:8.27},
-  {rank:2,  name:"GAIKWAD PRATIKSHA SUDHAKAR",         s5:8.50, cgpa:8.50},
-  {rank:3,  name:"NILESH NARAYAN GAWHALE",             s5:8.45, cgpa:8.17},
-  {rank:4,  name:"ANUSHRI BHANGALE",                   s5:8.34, cgpa:8.08},
-  {rank:5,  name:"WARKHADE ANKITA ASHISH",             s5:8.34, cgpa:8.11},
-  {rank:6,  name:"KHIZROYA IRQUAM ZAHEER AHMAD SHAH",  s5:8.32, cgpa:7.84},
-  {rank:7,  name:"MISAL SANIKA RAJENDRA",              s5:8.09, cgpa:8.00},
-  {rank:8,  name:"GHONGE POOJA RAVIKIRAN",             s5:8.09, cgpa:6.75},
-  {rank:9,  name:"MULE KAIWALYA GOVIND",               s5:8.07, cgpa:7.67},
-  {rank:10, name:"SAYALI MANOHAR KHAWASHI",            s5:8.07, cgpa:7.65},
-  {rank:11, name:"KAKAD PRERNA VILASRAO",              s5:8.07, cgpa:7.38},
-  {rank:12, name:"PATNEY JANVI DEEPAK",                s5:8.07, cgpa:7.84},
-  {rank:13, name:"SAKSHI SUNIL JAYSINGPURE",           s5:8.07, cgpa:8.06},
-  {rank:14, name:"YADAV BRIJESH RAMESH",               s5:7.98, cgpa:7.52},
-  {rank:15, name:"HIWALE KULDIP KAILAS",               s5:7.91, cgpa:7.03},
-  {rank:16, name:"KAKDE SAMIKSHA MURLIDHAR",           s5:7.86, cgpa:6.95},
-  {rank:17, name:"AAKANKSHA PRABHAKAR GIRHE",          s5:7.86, cgpa:6.98},
-  {rank:18, name:"WADHONKAR VEDANT ANILRAO",           s5:7.84, cgpa:7.98},
-  {rank:19, name:"NAGRE DIKSHA GAJANAN",               s5:7.84, cgpa:6.71},
-  {rank:20, name:"SAYALI RAJENDRA KHUPSE",             s5:7.84, cgpa:7.36},
+const T_S5=[
+  {rank:1,name:"SARVE VAISHNAVI SANJAY",s5:8.55,cgpa:8.27,pr:2},
+  {rank:2,name:"GAIKWAD PRATIKSHA SUDHAKAR",s5:8.50,cgpa:8.50,pr:null},
+  {rank:3,name:"NILESH NARAYAN GAWHALE",s5:8.45,cgpa:8.17,pr:5},
+  {rank:4,name:"ANUSHRI BHANGALE",s5:8.34,cgpa:8.08,pr:3},
+  {rank:5,name:"WARKHADE ANKITA ASHISH",s5:8.34,cgpa:8.11,pr:4},
+  {rank:6,name:"KHIZROYA IRQUAM ZAHEER AHMAD SHAH",s5:8.32,cgpa:7.84,pr:null},
+  {rank:7,name:"MISAL SANIKA RAJENDRA",s5:8.09,cgpa:8.00,pr:8},
+  {rank:8,name:"GHONGE POOJA RAVIKIRAN",s5:8.09,cgpa:6.75,pr:10},
+  {rank:9,name:"MULE KAIWALYA GOVIND",s5:8.07,cgpa:7.67,pr:7},
+  {rank:10,name:"SAYALI MANOHAR KHAWASHI",s5:8.07,cgpa:7.65,pr:11},
+  {rank:11,name:"KAKAD PRERNA VILASRAO",s5:8.07,cgpa:7.38,pr:9},
+  {rank:12,name:"PATNEY JANVI DEEPAK",s5:8.07,cgpa:7.84,pr:12},
+  {rank:13,name:"SAKSHI SUNIL JAYSINGPURE",s5:8.07,cgpa:8.06,pr:null},
+  {rank:14,name:"YADAV BRIJESH RAMESH",s5:7.98,cgpa:7.52,pr:13},
+  {rank:15,name:"HIWALE KULDIP KAILAS",s5:7.91,cgpa:7.03,pr:16},
+  {rank:16,name:"KAKDE SAMIKSHA MURLIDHAR",s5:7.86,cgpa:6.95,pr:15},
+  {rank:17,name:"AAKANKSHA PRABHAKAR GIRHE",s5:7.86,cgpa:6.98,pr:18},
+  {rank:18,name:"WADHONKAR VEDANT ANILRAO",s5:7.84,cgpa:7.98,pr:17},
+  {rank:19,name:"NAGRE DIKSHA GAJANAN",s5:7.84,cgpa:6.71,pr:20},
+  {rank:20,name:"SAYALI RAJENDRA KHUPSE",s5:7.84,cgpa:7.36,pr:19},
 ];
 
-// ── helpers ──────────────────────────────────────────────────────────────
-function initials(name){ return name.split(' ').slice(0,2).map(w=>w[0]).join(''); }
-function gradeClass(v){ if(!v) return 'na'; if(v>=8) return 'good'; if(v>=6.5) return 'avg'; return 'low'; }
-function fmt(v){ return v!=null ? v.toFixed(2) : '—'; }
+const SUBS=[
+  {icon:"📐",title:"Engineering Maths",code:"BTBS301 · S3",name:"SARVE VAISHNAVI SANJAY",score:"8.33",lbl:"Sem 3 SGPA"},
+  {icon:"💻",title:"Data Structures",code:"BTCOC303 · S3",name:"SARVE VAISHNAVI SANJAY",score:"8.33",lbl:"Sem 3 SGPA"},
+  {icon:"⚙️",title:"Operating Systems",code:"BTCOC402 · S4",name:"ANUSHRI BHANGALE",score:"8.96",lbl:"Sem 4 SGPA"},
+  {icon:"🎯",title:"Design & Analysis Algo",code:"BTCOC401 · S4",name:"ANUSHRI BHANGALE",score:"8.96",lbl:"Sem 4 SGPA"},
+  {icon:"🗄️",title:"Database Systems",code:"BTCOC501 · S5",name:"SARVE VAISHNAVI SANJAY",score:"8.55",lbl:"Sem 5 SGPA"},
+  {icon:"🔬",title:"Theory of Computations",code:"BTCOC502 · S5",name:"SARVE VAISHNAVI SANJAY",score:"8.55",lbl:"Sem 5 SGPA"},
+  {icon:"🏗️",title:"Software Engineering",code:"BTCOC503 · S5",name:"SARVE VAISHNAVI SANJAY",score:"8.55",lbl:"Sem 5 SGPA"},
+  {icon:"🌟",title:"Overall Excellence",code:"S1–S5 CGPA",name:"GAIKWAD PRATIKSHA SUDHAKAR",score:"8.50",lbl:"Overall CGPA"},
+];
 
-// ── Section nav ──────────────────────────────────────────────────────────
-function showSection(id){
+/* helpers */
+const f=v=>v!=null?v.toFixed(2):'—';
+const gc=v=>!v?'na':v>=8?'good':v>=6.5?'avg':'low';
+const ini=n=>n.split(' ').slice(0,2).map(w=>w[0]).join('');
+const pc=r=>r===1?'gold':r===2?'silver':r===3?'bronze':'';
+const md=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
+
+let cInst=null,ccInst=null,cSlots=[null,null],curSt=null,expTgt=null;
+
+/* nav */
+function showSec(btn,id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('sec-'+id).classList.add('active');
-  event.target.classList.add('active');
+  btn.classList.add('active');
 }
 
-// ── Search / Autocomplete ────────────────────────────────────────────────
-let chartInst = null;
-
-function onSearchInput(){
-  const q = document.getElementById('searchInput').value.trim().toUpperCase();
-  const box = document.getElementById('suggestions');
-  if(q.length < 2){ box.style.display='none'; return; }
-  const matches = STUDENTS.filter(s=>s.name.includes(q)).slice(0,8);
-  if(!matches.length){ box.style.display='none'; return; }
-  box.innerHTML = matches.map(s=>`
-    <div class="suggestion-item" onclick="selectStudent('${s.name}')">
-      <span class="sr-badge">#${s.sr}</span>
-      ${s.name}
-    </div>`).join('');
+/* autocomplete */
+function onSug(val,boxId,inputId){
+  const q=val.trim().toUpperCase(),box=document.getElementById(boxId);
+  if(q.length<2){box.style.display='none';return;}
+  const m=S.filter(s=>s.name.includes(q)).slice(0,8);
+  if(!m.length){box.style.display='none';return;}
+  box.innerHTML=m.map(s=>`<div class="sug-item" onclick="pickSug('${s.name}','${boxId}','${inputId}')"><span class="sr-b">#${s.sr}</span>${s.name}</div>`).join('');
   box.style.display='block';
 }
-
-function onSearchKey(e){
-  if(e.key==='Enter') doSearch();
-  if(e.key==='Escape') document.getElementById('suggestions').style.display='none';
+function pickSug(name,boxId,inputId){
+  document.getElementById(inputId).value=name;
+  document.getElementById(boxId).style.display='none';
+  if(inputId==='searchInput') pick(name);
+  else addCmp(name);
 }
-
-function selectStudent(name){
-  document.getElementById('searchInput').value = name;
-  document.getElementById('suggestions').style.display='none';
-  renderStudent(STUDENTS.find(s=>s.name===name));
-}
+function pick(name){ const s=S.find(x=>x.name===name); if(s) render(s); }
 
 function doSearch(){
-  document.getElementById('suggestions').style.display='none';
-  const q = document.getElementById('searchInput').value.trim().toUpperCase();
-  if(!q){ return; }
-  const exact = STUDENTS.find(s=>s.name===q);
-  if(exact){ renderStudent(exact); return; }
-  const partial = STUDENTS.filter(s=>s.name.includes(q));
-  if(partial.length===1){ renderStudent(partial[0]); return; }
-  if(partial.length>1){
-    document.getElementById('studentResult').innerHTML=`
-      <div class="student-card" style="padding:20px 24px">
-        <p style="font-weight:600;margin-bottom:12px;color:var(--navy)">Multiple results — click to view:</p>
-        ${partial.map(s=>`<div class="suggestion-item" style="border-radius:8px;margin-bottom:6px;background:var(--slate);cursor:pointer"
-          onclick="selectStudent('${s.name}')">
-          <span class="sr-badge">#${s.sr}</span> ${s.name}
-        </div>`).join('')}
-      </div>`;
-    return;
+  document.getElementById('sug').style.display='none';
+  const q=document.getElementById('searchInput').value.trim().toUpperCase();
+  if(!q)return;
+  const ex=S.find(s=>s.name===q); if(ex){render(ex);return;}
+  const p=S.filter(s=>s.name.includes(q));
+  if(p.length===1){render(p[0]);return;}
+  if(p.length>1){
+    document.getElementById('studentResult').innerHTML=`<div class="student-card" style="padding:20px 22px">
+      <p style="font-weight:700;margin-bottom:12px;color:var(--navy);font-family:'Syne',sans-serif">Multiple results — click to view:</p>
+      ${p.map(s=>`<div class="sug-item" style="border-radius:9px;margin-bottom:6px;background:var(--slate);cursor:pointer;border:1px solid var(--border)" onclick="pick('${s.name}')"><span class="sr-b">#${s.sr}</span>${s.name}</div>`).join('')}
+    </div>`;return;
   }
-  document.getElementById('studentResult').innerHTML=`
-    <div class="empty"><div class="icon">🔍</div><p>No student found matching "<strong>${q}</strong>"</p></div>`;
+  document.getElementById('studentResult').innerHTML=`<div class="empty"><div class="icon">🔍</div><p>No student found for "<strong>${q}</strong>"</p></div>`;
 }
 
-// ── Student card ─────────────────────────────────────────────────────────
-function renderStudent(st){
-  const sems = [
-    {lbl:'Sem 1', val:st.s1},
-    {lbl:'Sem 2', val:st.s2},
-    {lbl:'Sem 3', val:st.s3},
-    {lbl:'Sem 4', val:st.s4},
-    {lbl:'Sem 5', val:st.s5},
-  ];
-  const cgpaDisplay = st.cgpa15!=null ? st.cgpa15.toFixed(2) : (st.cgpa14!=null ? st.cgpa14.toFixed(2)+'*' : '—');
-  const perfPct = st.cgpa15 ? Math.round((st.cgpa15-4)/6*100) : (st.cgpa14 ? Math.round((st.cgpa14-4)/6*100) : 0);
+/* render student card */
+function impRank(st){
+  if(st.s4==null||st.s5==null)return null;
+  const sorted=S.filter(s=>s.s4!=null&&s.s5!=null).map(s=>({name:s.name,d:+(s.s5-s.s4).toFixed(2)})).sort((a,b)=>b.d-a.d);
+  const i=sorted.findIndex(x=>x.name===st.name);
+  return i<6?i+1:null;
+}
 
-  const semCells = sems.map(s=>`
-    <div class="sem-cell ${gradeClass(s.val)}">
-      <div class="sem-label">${s.lbl}</div>
-      <div class="sem-val">${fmt(s.val)}</div>
-    </div>`).join('');
+function render(st){
+  curSt=st;
+  const sems=[{l:'Sem 1',v:st.s1,p:null},{l:'Sem 2',v:st.s2,p:st.s1},{l:'Sem 3',v:st.s3,p:st.s2},{l:'Sem 4',v:st.s4,p:st.s3},{l:'Sem 5',v:st.s5,p:st.s4}];
+  const sortedC=S.filter(x=>x.c15!=null).sort((a,b)=>b.c15-a.c15);
+  const cr=st.c15!=null?sortedC.findIndex(x=>x.name===st.name)+1:null;
+  const sortedS=S.filter(x=>x.s5!=null).sort((a,b)=>b.s5-a.s5);
+  const sr5=st.s5!=null?sortedS.findIndex(x=>x.name===st.name)+1:null;
+  const ir=impRank(st);
+  const cdsp=st.c15!=null?st.c15.toFixed(2):(st.c14!=null?st.c14.toFixed(2)+'*':'—');
+  const pct=st.c15?Math.round((st.c15-4)/6*100):(st.c14?Math.round((st.c14-4)/6*100):0);
 
-  const badge = st.corrected ? '<span style="background:#22c55e;color:#fff;font-size:10px;padding:2px 8px;border-radius:4px;margin-left:8px">Corrected</span>' : '';
+  const cells=sems.map(sem=>{
+    const d=sem.v!=null&&sem.p!=null?+(sem.v-sem.p).toFixed(2):null;
+    const dh=d!=null?`<div class="sd ${d>0?'du':d<0?'dd2':'ds'}">${d>0?'▲':d<0?'▼':'━'} ${Math.abs(d).toFixed(2)}</div>`:'';
+    return `<div class="sem-cell ${gc(sem.v)}"><div class="sl">${sem.l}</div><div class="sv">${f(sem.v)}</div>${dh}</div>`;
+  }).join('');
+
+  const rb=st.r5==='PASS'?`<span class="bs bs-pass">✓ PASS</span>`:`<span class="bs bs-fail">✗ ${st.r5}</span>`;
+  const cb=st.fix?`<span class="bs bs-corr">Corrected</span>`:'';
+  const ib=ir?`<span class="bs bs-imp">🚀 Most Improved #${ir}</span>`:'';
+  const crb=cr?`<span class="bs bs-rank">🏅 Rank #${cr}</span>`:'';
+  const s5rb=sr5&&sr5<=20?`<span class="bs bs-rank">⭐ S5 Rank #${sr5}</span>`:'';
 
   document.getElementById('studentResult').innerHTML=`
     <div class="student-card">
       <div class="card-header">
-        <div class="avatar">${initials(st.name)}</div>
-        <div class="card-header-info">
-          <h3>${st.name}${badge}</h3>
-          <p>Roll #${st.sr} · B.Tech Computer Engineering · DBATU</p>
-          <div>
-            <span class="cgpa-badge">CGPA: ${cgpaDisplay}</span>
-            <span style="font-size:12px;color:rgba(255,255,255,0.5);margin-left:12px">
-              Sem 5: <span style="color:${st.s5res==='PASS'?'#4ade80':'#f87171'}">${st.s5res==='PASS'?'✓ PASS':'✗ '+st.s5res}</span>
-              ${st.s5marks?' · Marks: '+st.s5marks+'/700':''}
-            </span>
+        <div class="avatar">${ini(st.name)}</div>
+        <div class="chi">
+          <h3>${st.name}</h3>
+          <div class="meta">Roll #${st.sr} · B.Tech Computer Engineering · DBATU · GCE Yavatmal</div>
+          <div class="badges">
+            <span class="cgpa-badge">CGPA: ${cdsp}</span>
+            ${rb}${cb}${ib}${crb}${s5rb}
+            ${st.m5?`<span style="font-size:11px;color:rgba(255,255,255,.4)">S5 Marks: ${st.m5}/700</span>`:''}
           </div>
         </div>
       </div>
-      <div class="sem-grid">${semCells}</div>
-      <div class="perf-bar-wrap">
-        <div class="perf-bar-label">
-          <span>Academic Performance</span>
-          <span>${cgpaDisplay} / 10.00</span>
-        </div>
-        <div class="perf-bar-track">
-          <div class="perf-bar-fill" id="pfill" style="width:0%"></div>
-        </div>
+      <div class="sem-grid">${cells}</div>
+      <div class="perf-wrap">
+        <div class="perf-label"><span>Academic Performance Index</span><span>${cdsp} / 10.00</span></div>
+        <div class="perf-track"><div class="perf-fill" id="pf" style="width:0%"></div></div>
       </div>
-      <div class="chart-wrap">
-        <div class="chart-title">📈 Semester-wise SGPA Trend</div>
-        <canvas id="trendChart" height="220"></canvas>
+      <div class="chart-sec">
+        <div class="sec-title">📈 Semester-wise SGPA Trend</div>
+        <div class="chart-actions">
+          <button class="btn-action" onclick="openExpModal('student')">📤 Share Achievement</button>
+          <button class="btn-action gold" onclick="initCmp('${st.name}')">⚖️ Compare with Another</button>
+        </div>
+        <canvas id="tChart" height="220"></canvas>
       </div>
     </div>`;
 
-  // Animate bar
-  setTimeout(()=>{ document.getElementById('pfill').style.width=perfPct+'%'; }, 100);
-
-  // Build chart
-  if(chartInst){ chartInst.destroy(); chartInst=null; }
-  const labels=[], dataPoints=[];
-  sems.forEach(s=>{ if(s.val!=null){ labels.push(s.lbl); dataPoints.push(s.val); } });
-
-  const ctx = document.getElementById('trendChart').getContext('2d');
-  chartInst = new Chart(ctx, {
-    type:'line',
-    data:{
-      labels,
-      datasets:[{
-        label:'SGPA',
-        data: dataPoints,
-        fill: true,
-        backgroundColor:'rgba(15,30,60,0.07)',
-        borderColor:'#0f1e3c',
-        pointBackgroundColor: dataPoints.map(v=> v>=8?'#22c55e': v>=6.5?'#e8a320':'#ef4444'),
-        pointBorderColor:'#fff',
-        pointBorderWidth:2,
-        pointRadius:7,
-        pointHoverRadius:9,
-        tension:0.35,
-        borderWidth:2.5,
-      }]
-    },
-    options:{
-      responsive:true,
-      animation:{ duration:900, easing:'easeInOutQuart' },
-      plugins:{
-        legend:{ display:false },
-        tooltip:{
-          callbacks:{
-            label: ctx=>`  SGPA: ${ctx.parsed.y.toFixed(2)}`,
-            afterLabel: ctx=>{
-              const v=ctx.parsed.y;
-              if(v>=9)   return '  Grade: EX (Excellent)';
-              if(v>=8.5) return '  Grade: AA';
-              if(v>=8)   return '  Grade: AB';
-              if(v>=7.5) return '  Grade: BB';
-              if(v>=7)   return '  Grade: BC';
-              if(v>=6.5) return '  Grade: CC';
-              if(v>=6)   return '  Grade: CD';
-              if(v>=5.5) return '  Grade: DD';
-              if(v>=5)   return '  Grade: DE';
-              if(v>=4)   return '  Grade: EE';
-              return '  Grade: FF (Fail)';
-            }
-          }
-        }
-      },
-      scales:{
-        y:{
-          min:0, max:10,
-          grid:{ color:'rgba(0,0,0,0.05)' },
-          ticks:{ stepSize:1, font:{family:'DM Mono'} },
-          title:{ display:true, text:'SGPA', font:{family:'Syne',weight:'700'} }
-        },
-        x:{
-          grid:{ display:false },
-          ticks:{ font:{family:'Syne',weight:'600'} }
-        }
-      }
-    }
-  });
+  setTimeout(()=>{const el=document.getElementById('pf');if(el)el.style.width=pct+'%';},100);
+  buildChart(st,'tChart','#0f1e3c');
 }
 
-// ── Rankings ─────────────────────────────────────────────────────────────
-function posClass(r){ return r===1?'gold': r===2?'silver': r===3?'bronze':''; }
-function medalEmoji(r){ return r===1?'🥇': r===2?'🥈': r===3?'🥉': r; }
+function buildChart(st,cid,col){
+  const d=[[st.s1,'S1'],[st.s2,'S2'],[st.s3,'S3'],[st.s4,'S4'],[st.s5,'S5']];
+  const vals=[],labs=[];
+  d.forEach(([v,l])=>{if(v!=null){vals.push(v);labs.push(l);}});
+  const ctx=document.getElementById(cid).getContext('2d');
+  const inst=new Chart(ctx,{type:'line',data:{labels:labs,datasets:[{label:st.name,data:vals,fill:true,
+    backgroundColor:col+'18',borderColor:col,tension:0.35,borderWidth:2.5,
+    pointBackgroundColor:vals.map(v=>v>=8?'#22c55e':v>=6.5?'#e8a320':'#ef4444'),
+    pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:6,pointHoverRadius:8}]},
+    options:{responsive:true,animation:{duration:800},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>`  SGPA: ${c.parsed.y.toFixed(2)}`}}},
+      scales:{y:{min:0,max:10,grid:{color:'rgba(0,0,0,.05)'},ticks:{stepSize:1,font:{family:'DM Mono'}}},
+        x:{grid:{display:false},ticks:{font:{family:'Syne',weight:'600'}}}}}});
+  if(cid==='tChart'){if(cInst)cInst.destroy();cInst=inst;}
+  return inst;
+}
 
-function buildRankList(containerId, data, valKey, subKey, subLabel){
-  const el = document.getElementById(containerId);
-  el.innerHTML = data.map(d=>`
-    <div class="rank-item" onclick="jumpToStudent('${d.name}')">
-      <div class="rank-pos ${posClass(d.rank)}">${medalEmoji(d.rank)}</div>
-      <div>
-        <div class="rank-name">${d.name}</div>
-        <div class="rank-sub">${subLabel}: ${d[subKey].toFixed(2)}</div>
+/* compare */
+function initCmp(name){
+  cSlots=[S.find(s=>s.name===name)||null,null];
+  renderCmpPanel();
+}
+function renderCmpPanel(){
+  const old=document.getElementById('cmpPanel');if(old)old.remove();
+  const panel=document.createElement('div');
+  panel.id='cmpPanel';panel.className='compare-panel';
+  panel.innerHTML=`
+    <div class="cp-header"><h4>⚖️ Performance Comparison</h4>
+      <button style="background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:18px" onclick="document.getElementById('cmpPanel').remove()">✕</button>
+    </div>
+    <div class="cp-body">
+      <div class="cp-slots">
+        <div class="cp-slot ${cSlots[0]?'filled':''}">
+          ${cSlots[0]?`<div><div class="sn">${cSlots[0].name}</div><div class="sc2">CGPA: ${f(cSlots[0].c15)}</div></div>
+            <button class="btn-sc" onclick="clearSlot(0)">✕</button>`
+          :`<span class="se">Student A — auto-filled from search</span>`}
+        </div>
+        <div class="cp-slot ${cSlots[1]?'filled':''}">
+          ${cSlots[1]?`<div><div class="sn">${cSlots[1].name}</div><div class="sc2">CGPA: ${f(cSlots[1].c15)}</div></div>
+            <button class="btn-sc" onclick="clearSlot(1)">✕</button>`
+          :`<span class="se">Student B — type to add</span>`}
+        </div>
       </div>
-      <div class="rank-score">${d[valKey].toFixed(2)}</div>
+      <div class="cp-row">
+        <input class="cp-input" id="cmpIn" type="text" placeholder="Search second student name…" autocomplete="off"
+          oninput="onSug(this.value,'cmpSug','cmpIn')">
+        <button class="btn-cgo" onclick="addCmp(document.getElementById('cmpIn').value.trim().toUpperCase())">Add</button>
+        <div class="suggestions" id="cmpSug" style="top:calc(100%+4px)"></div>
+      </div>
+      ${cSlots[0]&&cSlots[1]?`<div class="cp-chart"><canvas id="cchart" height="240"></canvas></div>`:''}
+    </div>`;
+  document.getElementById('studentResult').appendChild(panel);
+  if(cSlots[0]&&cSlots[1])buildCmpChart();
+}
+function addCmp(name){
+  const s=S.find(x=>x.name===name||x.name.includes(name));
+  if(!s){return;}
+  document.getElementById('cmpIn').value='';
+  document.getElementById('cmpSug').style.display='none';
+  if(!cSlots[0])cSlots[0]=s; else cSlots[1]=s;
+  renderCmpPanel();
+}
+function clearSlot(i){cSlots[i]=null;renderCmpPanel();}
+function buildCmpChart(){
+  if(ccInst){ccInst.destroy();ccInst=null;}
+  const[a,b]=cSlots;const cols=['#0f1e3c','#e8a320'];
+  const mkDs=(st,c)=>({label:st.name.split(' ')[0],borderColor:c,backgroundColor:c+'22',fill:false,tension:0.35,borderWidth:2.5,
+    data:[st.s1,st.s2,st.s3,st.s4,st.s5],pointBackgroundColor:c,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7,spanGaps:true});
+  const ctx=document.getElementById('cchart').getContext('2d');
+  ccInst=new Chart(ctx,{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[mkDs(a,cols[0]),mkDs(b,cols[1])]},
+    options:{responsive:true,animation:{duration:700},
+      plugins:{legend:{display:true,labels:{font:{family:'DM Sans',size:12}}}},
+      scales:{y:{min:0,max:10,grid:{color:'rgba(0,0,0,.05)'},ticks:{stepSize:1,font:{family:'DM Mono'}}},
+        x:{grid:{display:false},ticks:{font:{family:'Syne',weight:'600'}}}}}});
+}
+
+/* most improved */
+function buildImproved(){
+  const sorted=S.filter(s=>s.s4!=null&&s.s5!=null).map(s=>({...s,d:+(s.s5-s.s4).toFixed(2)})).sort((a,b)=>b.d-a.d).slice(0,6);
+  document.getElementById('impGrid').innerHTML=sorted.map((s,i)=>`
+    <div class="imp-card" onclick="jumpTo('${s.name}')">
+      <div class="imp-rb">#${i+1} Most Improved</div>
+      <div class="imp-nm">${s.name}</div>
+      <div class="imp-row">
+        <span class="imp-fr">${s.s4.toFixed(2)}</span>
+        <span class="imp-ar">→</span>
+        <span class="imp-to">${s.s5.toFixed(2)}</span>
+        <span class="imp-db">${s.d>0?'+':''}${s.d.toFixed(2)}</span>
+      </div>
+      <div class="imp-sl">S4 → S5</div>
     </div>`).join('');
 }
 
-function jumpToStudent(name){
-  showSection('search');
-  document.querySelectorAll('.nav-tab')[0].classList.add('active');
-  document.querySelectorAll('.nav-tab')[1].classList.remove('active');
-  document.getElementById('searchInput').value = name;
-  selectStudent(name);
-  window.scrollTo({top:0, behavior:'smooth'});
+/* subject toppers */
+function buildSubs(){
+  document.getElementById('subGrid').innerHTML=SUBS.map(t=>`
+    <div class="sub-card" onclick="jumpTo('${t.name}')">
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.title}</div>
+      <div class="sub-name">${t.name}</div>
+      <div class="sub-code">${t.code}</div>
+      <div class="sub-score"><span class="ssv">${t.score}</span><span class="ssl">${t.lbl}</span></div>
+    </div>`).join('');
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
-buildRankList('rankCGPA', TOP20_CGPA, 'cgpa', 's5',  'Sem 5 SGPA');
-buildRankList('rankS5',   TOP20_S5,   's5',  'cgpa', 'Overall CGPA');
+/* rank lists with rank-change indicator */
+function buildRL(id,data,vk,sk,sl){
+  document.getElementById(id).innerHTML=data.map((d,i)=>{
+    const ch=d.pr!=null?(d.pr>d.rank?`<span class="rc rc-up">↑${d.pr-d.rank}</span>`:d.pr<d.rank?`<span class="rc rc-dn">↓${d.rank-d.pr}</span>`:`<span class="rc rc-eq">━</span>`):`<span class="rc rc-eq">NEW</span>`;
+    return `<div class="ri" id="ri-${id}-${i}" onclick="jumpTo('${d.name}')">
+      <div class="rpos ${pc(d.rank)}">${md(d.rank)}</div>
+      <div class="ri-info"><div class="ri-name">${d.name}</div><div class="ri-sub">${sl}: ${d[sk].toFixed(2)}</div></div>
+      <div class="ri-right">${ch}<div class="ri-score">${d[vk].toFixed(2)}</div></div>
+    </div>`;
+  }).join('');
+}
 
-// Close suggestions on outside click
-document.addEventListener('click', e=>{
-  if(!e.target.closest('.search-container'))
-    document.getElementById('suggestions').style.display='none';
+/* find my rank */
+function highlightRank(val){
+  const q=val.trim().toUpperCase(); if(!q)return;
+  document.querySelectorAll('.ri.hl').forEach(e=>e.classList.remove('hl'));
+  ['rlCGPA','rlS5'].forEach(lid=>{
+    document.querySelectorAll(`#${lid} .ri`).forEach(el=>{
+      const n=el.querySelector('.ri-name');
+      if(n&&n.textContent.toUpperCase().includes(q)){el.classList.add('hl');el.scrollIntoView({behavior:'smooth',block:'center'});}
+    });
+  });
+  const st=S.find(s=>s.name.toUpperCase().includes(q));
+  if(st){
+    const sortedA=S.filter(x=>x.c15!=null).sort((a,b)=>b.c15-a.c15);
+    const rank=sortedA.findIndex(x=>x.name===st.name)+1;
+    if(rank>20){
+      const old=document.getElementById('frRes');if(old)old.remove();
+      const info=document.createElement('div');info.id='frRes';
+      info.style.cssText='margin-bottom:14px;padding:12px 18px;background:rgba(232,163,32,.15);border:1px solid rgba(232,163,32,.3);border-radius:10px;color:#fff;font-size:13px';
+      info.innerHTML=`<strong style="color:var(--gold2)">${st.name}</strong> — Overall CGPA Rank: <strong style="color:var(--gold2)">#${rank}</strong> (CGPA: ${f(st.c15)}) · Outside Top 20`;
+      document.querySelector('.frbar').insertAdjacentElement('afterend',info);
+      setTimeout(()=>{const e=document.getElementById('frRes');if(e)e.remove();},5000);
+    }
+  }
+}
+
+/* jump to student */
+function jumpTo(name){
+  document.querySelectorAll('.nav-tab')[0].click();
+  document.getElementById('searchInput').value=name;
+  pick(name);
+  setTimeout(()=>window.scrollTo({top:0,behavior:'smooth'}),50);
+}
+
+/* export modal */
+function openExpModal(type){
+  expTgt=type;
+  if(type==='student'&&curSt){
+    const st=curSt;
+    const sortedA=S.filter(x=>x.c15!=null).sort((a,b)=>b.c15-a.c15);
+    const rank=st.c15!=null?sortedA.findIndex(x=>x.name===st.name)+1:null;
+    document.getElementById('scPreview').innerHTML=`
+      <div class="sc-name">${st.name}</div>
+      <div class="sc-meta">B.Tech Computer Engineering · GCE Yavatmal · DBATU</div>
+      <div class="sc-stats">
+        <div class="sc-stat"><div class="sc-val">${f(st.c15)}</div><div class="sc-lbl">CGPA</div></div>
+        <div class="sc-stat"><div class="sc-val">${f(st.s5)}</div><div class="sc-lbl">Sem 5</div></div>
+        <div class="sc-stat"><div class="sc-val">${rank?'#'+rank:'—'}</div><div class="sc-lbl">Rank</div></div>
+      </div>`;
+  } else {
+    const list=type==='cgpa'?T_CGPA:T_S5;
+    document.getElementById('scPreview').innerHTML=`
+      <div class="sc-name">${type==='cgpa'?'Top 3 — Overall CGPA':'Top 3 — Sem 5 SGPA'}</div>
+      <div class="sc-meta">GCE Yavatmal · B.Tech Computer Engineering · DBATU</div>
+      <div class="sc-stats">
+        ${list.slice(0,3).map(d=>`<div class="sc-stat"><div class="sc-val">${type==='cgpa'?d.cgpa.toFixed(2):d.s5.toFixed(2)}</div><div class="sc-lbl" style="font-size:8px">${d.name.split(' ')[0]}</div></div>`).join('')}
+      </div>`;
+  }
+  document.getElementById('expModal').classList.add('open');
+}
+function closeModal(){document.getElementById('expModal').classList.remove('open');}
+function copyShare(){
+  const st=curSt;
+  if(expTgt!=='student'||!st){closeModal();return;}
+  const sortedA=S.filter(x=>x.c15!=null).sort((a,b)=>b.c15-a.c15);
+  const rank=st.c15!=null?sortedA.findIndex(x=>x.name===st.name)+1:null;
+  const txt=`🎓 Academic Achievement\n👤 ${st.name}\n🏫 GCE Yavatmal | B.Tech Computer Engineering | DBATU\n📊 Overall CGPA: ${f(st.c15)} | Class Rank: ${rank?'#'+rank:'—'}\n📈 Sem 5 SGPA: ${f(st.s5)} | Marks: ${st.m5||'—'}/700\n#GCEYavatmal #DBATU #BTech #ComputerEngineering`;
+  navigator.clipboard.writeText(txt).then(()=>alert('Copied! Now paste in WhatsApp or social media.')).catch(()=>alert(txt));
+  closeModal();
+}
+
+/* init */
+buildRL('rlCGPA',T_CGPA,'cgpa','s5','Sem 5 SGPA');
+buildRL('rlS5',T_S5,'s5','cgpa','Overall CGPA');
+buildImproved();
+buildSubs();
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.search-container')&&!e.target.closest('.cp-row'))
+    document.querySelectorAll('.suggestions').forEach(s=>s.style.display='none');
+  if(e.target===document.getElementById('expModal')) closeModal();
 });
 </script>
 </body>
