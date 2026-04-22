@@ -155,8 +155,13 @@ main{max-width:1240px;margin:0 auto;padding:26px 18px 70px}
 
 /* MOST IMPROVED */
 .imp-sec{margin-bottom:22px}
-.dark-h{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.dark-h{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .dark-h span{font-size:10.5px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;font-weight:400;margin-left:4px}
+/* Semester tabs */
+.imp-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.imp-tab{padding:6px 14px;border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);transition:.2s;font-family:'DM Mono',monospace;white-space:nowrap}
+.imp-tab:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
+.imp-tab.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:700}
 .imp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media(max-width:740px){.imp-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.imp-grid{grid-template-columns:1fr}}
@@ -170,6 +175,8 @@ main{max-width:1240px;margin:0 auto;padding:26px 18px 70px}
 .imp-to{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:#4ade80}
 .imp-db{margin-left:auto;background:rgba(34,197,94,.2);color:#4ade80;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace}
 .imp-sl{font-size:9px;color:rgba(255,255,255,.3);margin-top:4px}
+.imp-dn .imp-to{color:#f87171}
+.imp-dn .imp-db{background:rgba(239,68,68,.2);color:#f87171}
 
 /* SUBJECT TOPPERS */
 .sub-sec{margin-bottom:22px}
@@ -261,9 +268,16 @@ footer{text-align:center;padding:20px;font-size:11.5px;color:var(--muted);border
     <button class="btn-fr" onclick="highlightRank(document.getElementById('frInput').value)">Find</button>
   </div>
 
-  <!-- Feature 2: Most Improved -->
+  <!-- Feature 2: Most Improved — semester-wise tabs -->
   <div class="imp-sec">
-    <div class="dark-h">🚀 Most Improved Students <span>S4 → S5 biggest jump</span></div>
+    <div class="dark-h">🚀 Most Improved Students <span>top jump in selected semester transition</span></div>
+    <div class="imp-tabs">
+      <button class="imp-tab" onclick="switchImpTab('s1s2',this)">S1 → S2</button>
+      <button class="imp-tab" onclick="switchImpTab('s2s3',this)">S2 → S3</button>
+      <button class="imp-tab" onclick="switchImpTab('s3s4',this)">S3 → S4</button>
+      <button class="imp-tab active" onclick="switchImpTab('s4s5',this)">S4 → S5</button>
+      <button class="imp-tab" onclick="switchImpTab('overall',this)">S1→S5 Overall</button>
+    </div>
     <div class="imp-grid" id="impGrid"></div>
   </div>
 
@@ -550,7 +564,7 @@ function render(st){
           <button class="btn-action" onclick="openExpModal('student')">📤 Share Achievement</button>
           <button class="btn-action gold" onclick="initCmp('${st.name}')">⚖️ Compare with Another</button>
         </div>
-        <canvas id="tChart" height="220"></canvas>
+        <canvas id="tChart"></canvas>
       </div>
     </div>`;
 
@@ -562,16 +576,26 @@ function buildChart(st,cid,col){
   const d=[[st.s1,'S1'],[st.s2,'S2'],[st.s3,'S3'],[st.s4,'S4'],[st.s5,'S5']];
   const vals=[],labs=[];
   d.forEach(([v,l])=>{if(v!=null){vals.push(v);labs.push(l);}});
+  // Compact scale: zoom into actual data range with small padding
+  const minV=Math.max(0,Math.floor(Math.min(...vals)*2)/2-0.5);
+  const maxV=Math.min(10,Math.ceil(Math.max(...vals)*2)/2+0.5);
   const ctx=document.getElementById(cid).getContext('2d');
   const inst=new Chart(ctx,{type:'line',data:{labels:labs,datasets:[{label:st.name,data:vals,fill:true,
-    backgroundColor:col+'18',borderColor:col,tension:0.35,borderWidth:2.5,
+    backgroundColor:col+'15',borderColor:col,tension:0.4,borderWidth:2.5,
     pointBackgroundColor:vals.map(v=>v>=8?'#22c55e':v>=6.5?'#e8a320':'#ef4444'),
     pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:6,pointHoverRadius:8}]},
-    options:{responsive:true,animation:{duration:800},
+    options:{responsive:true,maintainAspectRatio:true,aspectRatio:5,
+      animation:{duration:800},
       plugins:{legend:{display:false},
         tooltip:{callbacks:{label:c=>`  SGPA: ${c.parsed.y.toFixed(2)}`}}},
-      scales:{y:{min:0,max:10,grid:{color:'rgba(0,0,0,.05)'},ticks:{stepSize:1,font:{family:'DM Mono'}}},
-        x:{grid:{display:false},ticks:{font:{family:'Syne',weight:'600'}}}}}});
+      scales:{
+        y:{min:minV,max:maxV,
+          grid:{color:'rgba(0,0,0,.05)',drawBorder:false},
+          ticks:{stepSize:0.5,font:{family:'DM Mono',size:10},
+            callback:v=>v.toFixed(1),maxTicksLimit:6},
+          title:{display:false}},
+        x:{grid:{display:false},
+          ticks:{font:{family:'Syne',weight:'600',size:11},padding:4}}}}});
   if(cid==='tChart'){if(cInst)cInst.destroy();cInst=inst;}
   return inst;
 }
@@ -635,21 +659,61 @@ function buildCmpChart(){
         x:{grid:{display:false},ticks:{font:{family:'Syne',weight:'600'}}}}}});
 }
 
-/* most improved */
+/* most improved — semester-wise */
+let curImpTab='s4s5';
+// Rule: both "from" and "to" SGPA must be >= 5.5 to be considered for Most Improved
+const MIN_VALID = 5.5;
+const IMP_PAIRS={
+  s1s2:{from:'s1',to:'s2',label:'S1 → S2',
+    filter:s=>s.s1!=null&&s.s2!=null&&s.s1>=MIN_VALID&&s.s2>=MIN_VALID,
+    delta:s=>+(s.s2-s.s1).toFixed(2)},
+  s2s3:{from:'s2',to:'s3',label:'S2 → S3',
+    filter:s=>s.s2!=null&&s.s3!=null&&s.s2>=MIN_VALID&&s.s3>=MIN_VALID,
+    delta:s=>+(s.s3-s.s2).toFixed(2)},
+  s3s4:{from:'s3',to:'s4',label:'S3 → S4',
+    filter:s=>s.s3!=null&&s.s4!=null&&s.s3>=MIN_VALID&&s.s4>=MIN_VALID,
+    delta:s=>+(s.s4-s.s3).toFixed(2)},
+  s4s5:{from:'s4',to:'s5',label:'S4 → S5',
+    filter:s=>s.s4!=null&&s.s5!=null&&s.s4>=MIN_VALID&&s.s5>=MIN_VALID,
+    delta:s=>+(s.s5-s.s4).toFixed(2)},
+  overall:{from:'s1',to:'s5',label:'S1 → S5',
+    filter:s=>s.s1!=null&&s.s5!=null&&s.s1>=MIN_VALID&&s.s5>=MIN_VALID&&s.c15!=null,
+    delta:s=>+(s.s5-s.s1).toFixed(2)},
+};
+function switchImpTab(tab,btn){
+  curImpTab=tab;
+  document.querySelectorAll('.imp-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  buildImproved();
+}
 function buildImproved(){
-  const sorted=S.filter(s=>s.s4!=null&&s.s5!=null).map(s=>({...s,d:+(s.s5-s.s4).toFixed(2)})).sort((a,b)=>b.d-a.d).slice(0,6);
-  document.getElementById('impGrid').innerHTML=sorted.map((s,i)=>`
-    <div class="imp-card" onclick="jumpTo('${s.name}')">
-      <div class="imp-rb">#${i+1} Most Improved</div>
+  const p=IMP_PAIRS[curImpTab];
+  // Filter: both sems must be >= 5.5 (already in filter), then sort by biggest positive jump only
+  const eligible=S.filter(p.filter).map(s=>({...s,d:p.delta(s)}));
+  // Show only improvements (positive delta), sorted descending
+  const improved=eligible.filter(s=>s.d>0).sort((a,b)=>b.d-a.d).slice(0,6);
+  if(!improved.length){
+    document.getElementById('impGrid').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:28px;color:rgba(255,255,255,.4);font-size:13px">
+      No eligible improvements found for ${p.label} <br><span style="font-size:11px">(Both semesters must be ≥ 5.5 SGPA)</span></div>`;
+    return;
+  }
+  document.getElementById('impGrid').innerHTML=improved.map((s,i)=>{
+    const fromV=s[p.from],toV=s[p.to],d=s.d;
+    // Color-code delta badge by size of jump
+    const badgeColor=d>=1.0?'rgba(34,197,94,.35)':d>=0.5?'rgba(232,163,32,.3)':'rgba(99,179,237,.25)';
+    const badgeText=d>=1.0?'#4ade80':d>=0.5?'var(--gold2)':'#93c5fd';
+    return `<div class="imp-card" onclick="jumpTo('${s.name}')">
+      <div class="imp-rb">#${i+1} Most Improved · ${p.label}</div>
       <div class="imp-nm">${s.name}</div>
       <div class="imp-row">
-        <span class="imp-fr">${s.s4.toFixed(2)}</span>
+        <span class="imp-fr">${fromV.toFixed(2)}</span>
         <span class="imp-ar">→</span>
-        <span class="imp-to">${s.s5.toFixed(2)}</span>
-        <span class="imp-db">${s.d>0?'+':''}${s.d.toFixed(2)}</span>
+        <span class="imp-to">${toV.toFixed(2)}</span>
+        <span class="imp-db" style="background:${badgeColor};color:${badgeText}">+${d.toFixed(2)}</span>
       </div>
-      <div class="imp-sl">S4 → S5</div>
-    </div>`).join('');
+      <div class="imp-sl">${p.label} jump · Both ≥ 5.5 ✓</div>
+    </div>`;
+  }).join('');
 }
 
 /* subject toppers */
