@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIS Exam Portal – DBATU CSE Sem VI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS VARIABLES ===== */
+:root[data-theme="dark"] {
+  --bg: #0a0e1a;
+  --bg2: #0f1629;
+  --bg3: #151e35;
+  --card: #111827;
+  --card2: #1a2540;
+  --border: #1e2d4a;
+  --border2: #253353;
+  --text: #e8edf8;
+  --text2: #8fa3c8;
+  --text3: #5a7099;
+  --accent: #3b82f6;
+  --accent2: #60a5fa;
+  --accent3: #93c5fd;
+  --green: #10b981;
+  --green2: #34d399;
+  --amber: #f59e0b;
+  --purple: #8b5cf6;
+  --red: #ef4444;
+  --cyan: #06b6d4;
+  --glow: rgba(59,130,246,0.15);
+  --glow2: rgba(59,130,246,0.08);
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow2: 0 2px 12px rgba(0,0,0,0.3);
+  --diagram-bg: #0d1930;
+  --diagram-border: #1e3a5f;
+  --code-bg: #080d1a;
+  --tag-bg: rgba(59,130,246,0.12);
+  --search-bg: #0d1425;
+  --hero-grad: linear-gradient(135deg, #0a0e1a 0%, #0f1e3d 50%, #0a1628 100%);
+}
+:root[data-theme="light"] {
+  --bg: #f0f4ff;
+  --bg2: #e8eef8;
+  --bg3: #dce6f5;
+  --card: #ffffff;
+  --card2: #f5f8ff;
+  --border: #d1ddf0;
+  --border2: #b8ccec;
+  --text: #0f172a;
+  --text2: #334870;
+  --text3: #6b87b8;
+  --accent: #1d4ed8;
+  --accent2: #2563eb;
+  --accent3: #3b82f6;
+  --green: #059669;
+  --green2: #10b981;
+  --amber: #d97706;
+  --purple: #7c3aed;
+  --red: #dc2626;
+  --cyan: #0891b2;
+  --glow: rgba(29,78,216,0.08);
+  --glow2: rgba(29,78,216,0.04);
+  --shadow: 0 4px 24px rgba(15,23,42,0.12);
+  --shadow2: 0 2px 12px rgba(15,23,42,0.08);
+  --diagram-bg: #eef3ff;
+  --diagram-border: #bdd0f0;
+  --code-bg: #e8eeff;
+  --tag-bg: rgba(29,78,216,0.08);
+  --search-bg: #ffffff;
+  --hero-grad: linear-gradient(135deg, #e8f0ff 0%, #dbeafe 50%, #eff6ff 100%);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+
+/* ===== BACKGROUND GRID ===== */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.3;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ===== HEADER ===== */
+header {
+  position: sticky;
+  top:0;
+  z-index: 100;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--text);
+  line-height: 1;
+}
+.logo-sub {
+  font-size: 10px;
+  color: var(--text3);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.header-search {
+  flex: 1;
+  position: relative;
+  max-width: 480px;
+}
+.header-search input {
+  width: 100%;
+  background: var(--search-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 16px 9px 40px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow);
+}
+.header-search input::placeholder { color: var(--text3); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3);
+  font-size: 15px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.theme-toggle {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--glow);
+}
+.badge {
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-family: 'Syne', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--hero-grad);
+  padding: 64px 24px 48px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  border-bottom: 1px solid var(--border);
+}
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent2) 50%, var(--purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  font-size: 15px;
+  color: var(--text2);
+  max-width: 560px;
+  margin: 0 auto 32px;
+  line-height: 1.7;
+}
+.hero-search-wrap {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+}
+.hero-search {
+  width: 100%;
+  padding: 16px 56px 16px 20px;
+  background: var(--search-bg);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+.hero-search:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--glow), var(--shadow);
+}
+.hero-search::placeholder { color: var(--text3); }
+.hero-search-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.2s;
+}
+.hero-search-btn:hover { opacity: 0.85; }
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.hero-tag {
+  background: var(--tag-bg);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.hero-tag:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* ===== STATS BAR ===== */
+.stats-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  position: relative;
+  z-index: 1;
+}
+.stats-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent2);
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text3);
+}
+.stat-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+
+/* ===== MAIN LAYOUT ===== */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== FILTER TABS ===== */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.filter-tab {
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.filter-tab:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.filter-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.results-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text3);
+  align-self: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== QUESTION CARDS ===== */
+.questions-grid { display: flex; flex-direction: column; gap: 20px; }
+
+.q-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: var(--shadow2);
+}
+.q-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), var(--shadow);
+  transform: translateY(-1px);
+}
+.q-card.hidden { display: none; }
+
+.q-header {
+  padding: 20px 24px 16px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  cursor: pointer;
+  user-select: none;
+}
+.q-num {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.q-num.unit1 { background: rgba(59,130,246,0.15); color: var(--accent2); border: 1px solid rgba(59,130,246,0.3); }
+.q-num.unit2 { background: rgba(16,185,129,0.15); color: var(--green2); border: 1px solid rgba(16,185,129,0.3); }
+.q-num.unit3 { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+.q-num.unit4 { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.q-num.unit5 { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+.q-meta { flex: 1; }
+.q-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.q-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.q-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+}
+.q-tag.year { background: rgba(59,130,246,0.1); color: var(--accent2); border: 1px solid rgba(59,130,246,0.2); }
+.q-tag.marks { background: rgba(16,185,129,0.1); color: var(--green2); border: 1px solid rgba(16,185,129,0.2); }
+.q-tag.unit-tag { background: rgba(139,92,246,0.1); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.2); }
+.q-tag.freq { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+
+.q-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.toggle-detail {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: var(--card2);
+  color: var(--text2);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.toggle-detail:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.toggle-detail.short-mode {
+  background: rgba(245,158,11,0.1);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+.expand-btn {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--card2);
+  color: var(--text3);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.expand-btn:hover { border-color: var(--accent); color: var(--accent); }
+.expand-btn.open { transform: rotate(180deg); color: var(--accent); border-color: var(--accent); }
+
+/* ===== ANSWER BODY ===== */
+.q-body {
+  display: none;
+  border-top: 1px solid var(--border);
+}
+.q-body.open { display: block; }
+
+.answer-content {
+  padding: 28px 28px 24px;
+}
+.answer-content.short-view .detail-only { display: none; }
+.answer-content.short-view .short-summary { display: block !important; }
+
+.short-summary {
+  display: none;
+  background: var(--diagram-bg);
+  border: 1px solid var(--diagram-border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+.short-summary p {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+/* Answer sections */
+.ans-section { margin-bottom: 24px; }
+.ans-h2 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ans-h2::before {
+  content:'';
+  width: 3px;
+  height: 16px;
+  background: linear-gradient(180deg, var(--accent), var(--purple));
+  border-radius: 2px;
+}
+.ans-h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  margin: 14px 0 8px;
+  padding-left: 10px;
+  border-left: 2px solid var(--accent);
+}
+.ans-p {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.75;
+  margin-bottom: 10px;
+}
+.ans-ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.ans-ul li {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.6;
+  padding-left: 20px;
+  position: relative;
+}
+.ans-ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 11px;
+  top: 3px;
+}
+.ans-ul li strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Diagram Box */
+.diagram-box {
+  background: var(--diagram-bg);
+  border: 1px solid var(--diagram-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+.diagram-header {
+  padding: 10px 16px;
+  background: var(--card2);
+  border-bottom: 1px solid var(--diagram-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
+.diagram-header::before {
+  content:'';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+}
+.diagram-img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  padding: 16px;
+  background: var(--diagram-bg);
+  display: block;
+}
+.diagram-fallback {
+  padding: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.8;
+  white-space: pre;
+  overflow-x: auto;
+}
+.diagram-caption {
+  padding: 10px 16px;
+  font-size: 11px;
+  color: var(--text3);
+  border-top: 1px solid var(--diagram-border);
+  font-style: italic;
+}
+
+/* Table */
+.ans-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 12px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.ans-table th {
+  background: var(--card2);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.ans-table td {
+  padding: 9px 14px;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ans-table tr:last-child td { border-bottom: none; }
+.ans-table tr:nth-child(even) td { background: var(--bg2); }
+
+/* Example Box */
+.example-box {
+  background: rgba(16,185,129,0.07);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 12px 0;
+}
+.example-box-title {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--green2);
+  font-weight: 500;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.example-box p, .example-box li {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.formula-box {
+  background: var(--code-bg);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 12px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--cyan);
+  text-align: center;
+  line-height: 2;
+}
+
+/* Conclusion */
+.conclusion-box {
+  background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.06));
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 16px;
+}
+.conclusion-box p {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+/* ===== SEARCH RESULTS ===== */
+.no-results {
+  text-align: center;
+  padding: 60px 24px;
+  display: none;
+}
+.no-results-icon { font-size: 48px; margin-bottom: 16px; }
+.no-results h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+.no-results p { font-size: 14px; color: var(--text3); }
+
+/* ===== HIGHLIGHT ===== */
+mark {
+  background: rgba(245,158,11,0.3);
+  color: var(--amber);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+footer p { font-size: 12px; color: var(--text3); }
+footer strong { color: var(--accent2); }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.q-card { animation: fadeIn 0.4s ease both; }
+.q-card:nth-child(1){animation-delay:0.05s}
+.q-card:nth-child(2){animation-delay:0.1s}
+.q-card:nth-child(3){animation-delay:0.15s}
+.q-card:nth-child(4){animation-delay:0.2s}
+.q-card:nth-child(5){animation-delay:0.25s}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .header-search { display: none; }
+  .stats-inner { gap: 16px; }
+  .stat-divider { display: none; }
+  .q-header { padding: 16px; }
+  .answer-content { padding: 20px 16px; }
+  .ans-table { font-size: 12px; }
+  .diagram-fallback { font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">🌍</div>
+      <div>
+        <div class="logo-text">GIS Portal</div>
+        <div class="logo-sub">DBATU · CSE · Sem VI</div>
+      </div>
+    </a>
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="headerSearch" placeholder="Search GIS topics, PYQs..." autocomplete="off">
+    </div>
+    <div class="header-right">
+      <span class="badge">BTCOE604A</span>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-eyebrow">// DBATU B.Tech Computer Engineering</div>
+  <h1>GIS Exam Preparation<br>Portal</h1>
+  <p>Complete 6-mark answers for all PYQ topics from 2022, 2023 & 2024 papers. Toggle between detailed and summary views.</p>
+  <div class="hero-search-wrap">
+    <input type="text" id="heroSearch" class="hero-search" placeholder="e.g. Raster vs Vector, DEM, Kriging, Chain Coding..." autocomplete="off">
+    <button class="hero-search-btn">🔍</button>
+  </div>
+  <div class="hero-tags">
+    <span class="hero-tag" onclick="filterByTag('GIS Components')">GIS Components</span>
+    <span class="hero-tag" onclick="filterByTag('Raster')">Raster Data</span>
+    <span class="hero-tag" onclick="filterByTag('Vector')">Vector Data</span>
+    <span class="hero-tag" onclick="filterByTag('TIN')">TIN Model</span>
+    <span class="hero-tag" onclick="filterByTag('DEM')">DEM</span>
+    <span class="hero-tag" onclick="filterByTag('Interpolation')">Interpolation</span>
+    <span class="hero-tag" onclick="filterByTag('Projection')">Map Projections</span>
+    <span class="hero-tag" onclick="filterByTag('Error')">GIS Errors</span>
+    <span class="hero-tag" onclick="filterByTag('Compression')">Compression</span>
+    <span class="hero-tag" onclick="filterByTag('Database')">Spatial DB</span>
+  </div>
+</section>
+
+<!-- ===== STATS BAR ===== -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <span class="stat-num">13</span>
+      <span class="stat-label">Complete Answers</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">5</span>
+      <span class="stat-label">GIS Units</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">3</span>
+      <span class="stat-label">Exam Years</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">6M</span>
+      <span class="stat-label">Per Question</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item" id="visibleCount">
+      <span class="stat-num" id="countNum">13</span>
+      <span class="stat-label">Showing</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="filterUnit('all',this)">All Units</button>
+    <button class="filter-tab" onclick="filterUnit('unit1',this)">Unit 1 · Data Models</button>
+    <button class="filter-tab" onclick="filterUnit('unit2',this)">Unit 2 · Attributes & DB</button>
+    <button class="filter-tab" onclick="filterUnit('unit3',this)">Unit 3 · Projections & DEM</button>
+    <button class="filter-tab" onclick="filterUnit('unit4',this)">Unit 4 · Quality & Analysis</button>
+    <button class="filter-tab" onclick="filterUnit('unit5',this)">Unit 5 · Applications & Errors</button>
+    <span class="results-count" id="resultsLabel">Showing 13 of 13</span>
+  </div>
+
+  <!-- No results -->
+  <div class="no-results" id="noResults">
+    <div class="no-results-icon">🔍</div>
+    <h3>No results found</h3>
+    <p>Try different keywords like "raster", "DEM", "Kriging", or "errors"</p>
+  </div>
+
+  <!-- Questions Grid -->
+  <div class="questions-grid" id="questionsGrid">
+
+    <!-- ===================== Q1 ===================== -->
+    <div class="q-card" data-unit="unit1" data-keywords="gis geographic information system components hardware software data people methods application areas what is">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit1">Q1</div>
+        <div class="q-meta">
+          <div class="q-title">What is GIS? Explain Key Components and Application Areas</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 1</span>
+            <span class="q-tag freq">⭐ High Freq</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>GIS</strong> is a computer-based system to <strong>capture, store, analyze, manage, and display</strong> geographically referenced data. 5 components: <strong>Hardware, Software, Data (Spatial + Attribute), People, Methods</strong>. Applications: Urban planning, Disaster management, Agriculture, Transport, Environment.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">A <strong>Geographic Information System (GIS)</strong> is an integrated computer-based system designed to capture, store, manipulate, analyze, manage, and visualize all types of geographically referenced data. GIS links <em>spatial data</em> (WHERE — geometry, location) with <em>attribute data</em> (WHAT — characteristics, properties) to support decision-making across diverse domains.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Five Key Components of GIS</div>
+            <div class="diagram-box">
+              <div class="diagram-header">📐 GIS Components – Layer Model</div>
+              <img class="diagram-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/GIS_layers.png/400px-GIS_layers.png" alt="GIS Components Diagram" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="diagram-fallback" style="display:none">
+         ┌─────────────────────────────────────┐
+         │           GIS SYSTEM                │
+         ├──────────┬──────────┬───────────────┤
+         │ HARDWARE │ SOFTWARE │     DATA       │
+         │ Computers│ ArcGIS, │ Spatial +     │
+         │ GPS, etc │  QGIS   │ Attribute     │
+         ├──────────┴──────────┴───────────────┤
+         │       PEOPLE        METHODS          │
+         │  (Analysts, Users)  (Procedures)    │
+         └─────────────────────────────────────┘</div>
+              <div class="diagram-caption">Fig: Five pillars of GIS — all components must work together</div>
+            </div>
+
+            <div class="ans-h3">1. Hardware</div>
+            <ul class="ans-ul">
+              <li><strong>Computers:</strong> Workstations, servers for geospatial processing</li>
+              <li><strong>Input:</strong> GPS receivers, scanners, digitizing tablets, remote sensors</li>
+              <li><strong>Output:</strong> High-res monitors, plotters, printers</li>
+            </ul>
+            <div class="ans-h3">2. Software</div>
+            <ul class="ans-ul">
+              <li>GIS tools: <strong>ArcGIS, QGIS, MapInfo, Google Earth Engine</strong></li>
+              <li>Functions: Data input, spatial analysis, visualization, database management</li>
+            </ul>
+            <div class="ans-h3">3. Data (Most Critical)</div>
+            <ul class="ans-ul">
+              <li><strong>Spatial Data:</strong> Geometry — points, lines, polygons, rasters</li>
+              <li><strong>Attribute Data:</strong> Characteristics — population, land use, road name</li>
+              <li><strong>Metadata:</strong> Data about data — source, accuracy, coordinate system</li>
+            </ul>
+            <div class="ans-h3">4. People</div>
+            <ul class="ans-ul">
+              <li>GIS analysts, cartographers, database administrators</li>
+              <li>End users: Urban planners, environmentalists, government officials</li>
+            </ul>
+            <div class="ans-h3">5. Methods/Procedures</div>
+            <ul class="ans-ul">
+              <li>Standardized workflows for data collection, georeferencing, and analysis</li>
+              <li>Quality assurance protocols, digitization standards, SOPs</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Application Areas</div>
+            <table class="ans-table">
+              <thead><tr><th>Domain</th><th>GIS Application</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Urban Planning</strong></td><td>Land use mapping, zoning, infrastructure planning</td></tr>
+                <tr><td><strong>Disaster Management</strong></td><td>Flood/earthquake risk maps, evacuation routes</td></tr>
+                <tr><td><strong>Agriculture</strong></td><td>Crop monitoring, soil analysis, precision farming</td></tr>
+                <tr><td><strong>Transportation</strong></td><td>Route optimization, traffic management, logistics</td></tr>
+                <tr><td><strong>Environment</strong></td><td>Forest cover, pollution tracking, wildlife habitat</td></tr>
+                <tr><td><strong>Healthcare</strong></td><td>Epidemiology mapping, hospital site planning</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World Example</div>
+            <p>During the <strong>2018 Kerala Floods</strong>, GIS was used to: map affected villages (raster satellite data), identify evacuation routes (vector road networks), coordinate relief distribution using population density layers, and predict further flood zones using Digital Elevation Models (DEM).</p>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>GIS is a powerful multi-disciplinary platform that transforms raw geographic data into actionable intelligence. All five components must work in harmony. It is indispensable in modern governance, environmental science, and urban development.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q2 ===================== -->
+    <div class="q-card" data-unit="unit1" data-keywords="raster vector data model compare contrast advantages disadvantages difference types">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit1">Q2</div>
+        <div class="q-meta">
+          <div class="q-title">Compare Raster vs Vector Data Models – Advantages & Disadvantages</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 1 & 2</span>
+            <span class="q-tag freq">⭐ High Freq</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>Vector:</strong> Points/Lines/Polygons, precise coordinates, small size, good for discrete features (roads, boundaries). <strong>Raster:</strong> Grid of pixels, each cell = one value, large size, good for continuous data (elevation, satellite imagery). Key difference: Vector is exact; Raster is cell-approximated.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">GIS uses two fundamental data models to represent the real world. <strong>Vector data</strong> represents features using geometric primitives. <strong>Raster data</strong> divides space into a regular grid of cells. Both are complementary — modern GIS uses them together.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Visual Comparison</div>
+            <div class="diagram-box">
+              <div class="diagram-header">📐 Vector vs Raster Representation</div>
+              <img class="diagram-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Raster_vector_tikz.png/500px-Raster_vector_tikz.png" alt="Raster vs Vector" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <div class="diagram-fallback" style="display:none">
+  VECTOR MODEL              RASTER MODEL
+  ┌───────────────┐         ┌──┬──┬──┬──┐
+  │  • Point      │         │0 │0 │1 │0 │
+  │  ──── Line    │         ├──┼──┼──┼──┤
+  │  ▭ Polygon    │         │0 │1 │1 │0 │
+  │  Exact coords │         ├──┼──┼──┼──┤
+  └───────────────┘         │1 │1 │0 │0 │
+                            └──┴──┴──┴──┘
+  Road = clean line         Road = pixel band</div>
+              <div class="diagram-caption">Fig: Vector shows exact geometry; Raster approximates with grid cells</div>
+            </div>
+
+            <table class="ans-table">
+              <thead><tr><th>Parameter</th><th>Vector</th><th>Raster</th></tr></thead>
+              <tbody>
+                <tr><td>Data Structure</td><td>Points, Lines, Polygons</td><td>Grid of cells/pixels</td></tr>
+                <tr><td>Accuracy</td><td>High – exact coordinates</td><td>Depends on resolution</td></tr>
+                <tr><td>File Size</td><td>Smaller</td><td>Large (for high res)</td></tr>
+                <tr><td>Analysis Type</td><td>Network, topology analysis</td><td>Surface, overlay analysis</td></tr>
+                <tr><td>Visualization</td><td>Crisp, scalable graphics</td><td>Pixelated when zoomed</td></tr>
+                <tr><td>Best For</td><td>Roads, boundaries, utilities</td><td>DEM, satellite imagery</td></tr>
+                <tr><td>Software</td><td>ArcGIS, QGIS, MapInfo</td><td>ERDAS Imagine, ArcGIS</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Advantages & Disadvantages</div>
+            <div class="ans-h3">Vector — Advantages</div>
+            <ul class="ans-ul">
+              <li>Precise boundary representation with exact coordinates</li>
+              <li>Compact file size — only store feature vertices</li>
+              <li>Supports topology relationships (adjacency, connectivity)</li>
+              <li>Easy attribute linkage to each discrete feature</li>
+            </ul>
+            <div class="ans-h3">Vector — Disadvantages</div>
+            <ul class="ans-ul">
+              <li>Complex data structure — topology rules required</li>
+              <li>Not ideal for continuous surface data (elevation, temperature)</li>
+              <li>Computationally heavy overlay operations</li>
+            </ul>
+            <div class="ans-h3">Raster — Advantages</div>
+            <ul class="ans-ul">
+              <li>Simple matrix structure — easy to implement</li>
+              <li>Efficient for surface analysis (slope, viewshed, DEM)</li>
+              <li>Easy overlay — cell-by-cell operations</li>
+              <li>Compatible with remote sensing data (satellite images)</li>
+            </ul>
+            <div class="ans-h3">Raster — Disadvantages</div>
+            <ul class="ans-ul">
+              <li>Large file sizes at high resolution</li>
+              <li>Loss of precision at feature boundaries (mixed pixel problem)</li>
+              <li>All cells must be same size — no variable density</li>
+            </ul>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World Example: Smart City GIS – Pune</div>
+            <ul class="ans-ul" style="margin:0">
+              <li><strong>Vector:</strong> Road network (lines), building footprints (polygons), bus stops (points)</li>
+              <li><strong>Raster:</strong> Satellite image, elevation model, land surface temperature map</li>
+              <li>Combined analysis identifies optimal locations for new bus stops</li>
+            </ul>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>Vector and Raster are <strong>complementary, not competing</strong>. Modern GIS integrates both — Vector for discrete features needing precise boundaries, Raster for continuous phenomena like elevation and temperature. The choice depends on the nature of geographic data and the type of analysis required.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q3 ===================== -->
+    <div class="q-card" data-unit="unit1" data-keywords="TIN triangulated irregular network data model terminologies nodes edges faces breaklines mass points">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit1">Q3</div>
+        <div class="q-meta">
+          <div class="q-title">TIN (Triangulated Irregular Network) Data Model – Terminologies & Comparison</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 1</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>TIN</strong> = Vector-based 3D surface model using irregularly spaced triangles. Key terms: <strong>Node</strong> (x,y,z point), <strong>Edge</strong> (triangle side), <strong>Face</strong> (triangle surface), <strong>Breakline</strong> (ridges/valleys), <strong>Delaunay triangulation</strong>. Advantage over raster DEM: Variable density — more detail in complex terrain.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">A <strong>Triangulated Irregular Network (TIN)</strong> is a vector-based surface representation model used to model terrain in 3D. TIN divides geographic space into a network of non-overlapping contiguous triangles formed from irregularly spaced sample points, each carrying <em>x</em> (longitude), <em>y</em> (latitude), and <em>z</em> (elevation) coordinates.</p>
+          </div>
+
+          <div class="diagram-box detail-only">
+            <div class="diagram-header">📐 TIN Structure Diagram</div>
+            <img class="diagram-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Delaunay_triangulation.png/400px-Delaunay_triangulation.png" alt="TIN Diagram" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <div class="diagram-fallback" style="display:none">
+  P1(x1,y1,150m)           P4(x4,y4,200m)
+   *─────────────────────────*
+   |  ╲         T2         ╱ |
+   |    ╲                ╱   |
+   |  T1  ╲            ╱  T4 |
+   |        ╲   T3   ╱      |
+   |         P3(180m)        |
+   *──────────*──────────────*
+  P2(120m)             P5(100m)
+
+  P = Node(x,y,z)  T = Triangle Face  Lines = Edges</div>
+            <div class="diagram-caption">Fig: TIN with nodes (elevation points), edges, and triangular faces</div>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Key Terminologies</div>
+            <ul class="ans-ul">
+              <li><strong>Node/Vertex:</strong> Sample point with known (x, y, z) — the building block of TIN</li>
+              <li><strong>Edge:</strong> Line connecting two adjacent nodes forming triangle side</li>
+              <li><strong>Face/Triangle:</strong> 3D planar surface formed by 3 connected nodes</li>
+              <li><strong>Delaunay Triangulation:</strong> Algorithm to form triangles — maximizes minimum angles to avoid slivers</li>
+              <li><strong>Voronoi Diagram:</strong> Dual graph of TIN — areas closest to each node</li>
+              <li><strong>Breaklines:</strong> Force triangle edges along ridges, valleys, or cliff lines for accuracy</li>
+              <li><strong>Mass Points:</strong> Additional elevation points added to improve surface accuracy</li>
+              <li><strong>Hull:</strong> Outer boundary of the entire TIN network</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">TIN vs Raster DEM Comparison</div>
+            <table class="ans-table">
+              <thead><tr><th>Feature</th><th>TIN</th><th>Raster DEM</th></tr></thead>
+              <tbody>
+                <tr><td>Variable point density</td><td>✅ Yes — adapts to terrain</td><td>❌ Fixed uniform grid</td></tr>
+                <tr><td>Breakline support</td><td>✅ Yes — exact ridges</td><td>❌ Approximated</td></tr>
+                <tr><td>Accuracy (rugged)</td><td>High (more triangles)</td><td>Resolution-dependent</td></tr>
+                <tr><td>Storage</td><td>Efficient (variable)</td><td>Fixed grid size</td></tr>
+                <tr><td>3D modeling</td><td>Excellent</td><td>Good</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World Example: Flood Modeling</div>
+            <p>Civil engineers use TIN to model river valleys — breaklines along banks give precise channel shape; variable triangle density provides detail near steep banks and fewer triangles in flat floodplains, making flood simulation more accurate than raster DEM.</p>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>TIN is the preferred model for terrain analysis when accuracy matters, especially for hydrology, civil engineering grade estimation, and landslide modeling. Its variable density makes it both accurate and storage-efficient for complex 3D surfaces.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q4 ===================== -->
+    <div class="q-card" data-unit="unit2" data-keywords="raster compression chain coding block encoding run length encoding quadtree techniques">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit2">Q4</div>
+        <div class="q-meta">
+          <div class="q-title">Raster Data Compression Techniques – Chain Coding & Block Encoding</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 2</span>
+            <span class="q-tag freq">⭐ High Freq</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>Chain Coding:</strong> Encodes boundary direction using 8-directional codes (0–7). Stores starting point + direction sequence. Good for boundary shapes. <strong>Block Encoding:</strong> Finds largest uniform square blocks in raster; stores (row, col, size, value). Good for large uniform areas. Both are lossless.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">1. Chain Coding (Freeman Chain Code)</div>
+            <p class="ans-p">Chain coding compresses raster data by encoding the <strong>boundary</strong> of a region using directional codes. Instead of storing every cell coordinate, it traces the perimeter using 8-directional step codes.</p>
+
+            <div class="diagram-box">
+              <div class="diagram-header">📐 Freeman Chain Code Direction System</div>
+              <div class="diagram-fallback">
+  8-Directional Freeman Chain Code:
+  
+       3  2  1
+        \ | /
+     4 ── * ── 0    (0=East,  1=NE, 2=North, 3=NW,
+        / | \        4=West,  5=SW, 6=South, 7=SE)
+       5  6  7
+  
+  Example boundary trace → right→up→right→down:
+  Chain Code: 0, 2, 0, 6   (4 values vs 8 coords!)
+  
+  Draw: Polygon on grid with arrows showing direction codes</div>
+              <div class="diagram-caption">Fig: 8-directional chain code; each step = 1 code instead of 2 coordinates</div>
+            </div>
+
+            <div class="ans-h3">Process</div>
+            <ul class="ans-ul">
+              <li>Step 1: Identify starting cell on boundary of region</li>
+              <li>Step 2: Trace boundary clockwise, record direction code at each step</li>
+              <li>Step 3: Store: starting point coordinates + sequence of direction codes</li>
+              <li>Step 4: Decode by following direction codes from start</li>
+            </ul>
+            <div class="ans-h3">Advantages & Disadvantages</div>
+            <ul class="ans-ul">
+              <li>✅ Efficient for compact shapes with smooth boundaries</li>
+              <li>✅ Preserves shape information with minimal data</li>
+              <li>❌ Only encodes boundaries, not interior fill</li>
+              <li>❌ Less efficient for highly irregular boundaries</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">2. Block Encoding</div>
+            <p class="ans-p">Block encoding divides the raster into <strong>square blocks of uniform value</strong> and stores block position, size, and value instead of individual cells. It is a 2D extension of Run-Length Encoding (RLE).</p>
+
+            <div class="diagram-box">
+              <div class="diagram-header">📐 Block Encoding Example</div>
+              <div class="diagram-fallback">
+  Original 5×5 Raster:       Block Encoded:
+  ┌──┬──┬──┬──┬──┐           Block 1: (1,1, size=3, val=A)
+  │A │A │A │B │B │           Block 2: (1,4, size=2, val=B)
+  ├──┼──┼──┼──┼──┤           Block 3: (4,1, size=2, val=C)
+  │A │A │A │B │B │           Block 4: (4,3, size=1, val=D)
+  ├──┼──┼──┼──┼──┤
+  │A │A │A │D │D │           Original:  25 values stored
+  ├──┼──┼──┼──┼──┤           Encoded:    6 records only!
+  │C │C │D │D │D │
+  └──┴──┴──┴──┴──┘
+  Draw: Color-coded grid showing uniform blocks with dashed borders</div>
+              <div class="diagram-caption">Fig: Large uniform blocks stored as single records — significant compression</div>
+            </div>
+
+            <div class="ans-h3">Process</div>
+            <ul class="ans-ul">
+              <li>Step 1: Scan raster from top-left to bottom-right</li>
+              <li>Step 2: Identify largest possible square block of uniform value</li>
+              <li>Step 3: Record: (Row, Column, Block Size, Value)</li>
+              <li>Step 4: Advance to next unprocessed area and repeat</li>
+            </ul>
+            <div class="ans-h3">Advantages & Disadvantages</div>
+            <ul class="ans-ul">
+              <li>✅ Highly effective for large uniform areas (ocean, desert, forest)</li>
+              <li>✅ Simple to implement and decode</li>
+              <li>❌ Less effective for heterogeneous rasters (many small patches)</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Comparison Table</div>
+            <table class="ans-table">
+              <thead><tr><th>Feature</th><th>Chain Coding</th><th>Block Encoding</th></tr></thead>
+              <tbody>
+                <tr><td>What it stores</td><td>Boundary direction codes</td><td>Block pos, size, value</td></tr>
+                <tr><td>Dimensionality</td><td>1D (boundary trace)</td><td>2D (area blocks)</td></tr>
+                <tr><td>Best for</td><td>Object boundaries</td><td>Uniform area regions</td></tr>
+                <tr><td>Data type</td><td>Lossless</td><td>Lossless</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World Example: ISRO Satellite Imagery</div>
+            <p>Block encoding compresses large uniform land cover classes (ocean=blue, desert=yellow, forest=green) reducing a 500MB raster to ~50MB. Chain coding precisely traces coastlines and administrative boundaries. Used together in national-scale GIS databases.</p>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>Chain Coding and Block Encoding are <strong>complementary lossless compression methods</strong>. Chain coding excels at boundary representation; block encoding efficiently compresses homogeneous regions. Both reduce storage without any data loss, making them critical for large raster GIS datasets.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q5 ===================== -->
+    <div class="q-card" data-unit="unit2" data-keywords="non spatial data attributes nominal ordinal interval ratio types">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit2">Q5</div>
+        <div class="q-meta">
+          <div class="q-title">Non-Spatial Data Attributes – Types: Nominal, Ordinal, Interval, Ratio</div>
+          <div class="q-tags">
+            <span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 2</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>4 Types:</strong> (1) <strong>Nominal</strong> – categories, no order (land type = residential/commercial). (2) <strong>Ordinal</strong> – ranked but unequal intervals (risk = low/medium/high). (3) <strong>Interval</strong> – equal intervals, no true zero (temperature °C). (4) <strong>Ratio</strong> – equal intervals + true zero (area m², population). Hierarchy: Nominal → Ordinal → Interval → Ratio.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p"><strong>Non-spatial attribute data</strong> in GIS describes WHAT geographic features are — their characteristics, measurements, and properties. Stored in relational tables linked to spatial geometry via unique IDs. Classified into 4 measurement scales with increasing analytical power.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Four Types of Attribute Data</div>
+
+            <div class="ans-h3">1. Nominal (Categorical)</div>
+            <ul class="ans-ul">
+              <li>Categories/names with <strong>no inherent order or magnitude</strong></li>
+              <li>Only classifies features into distinct groups</li>
+              <li><strong>GIS Examples:</strong> Land use type (residential/commercial/agricultural), soil type, road classification (highway/local/rural)</li>
+              <li>Analysis: Count frequency, find mode, query by category</li>
+              <li>Map type: Qualitative colors — each category has distinct hue</li>
+            </ul>
+
+            <div class="ans-h3">2. Ordinal (Ranked)</div>
+            <ul class="ans-ul">
+              <li>Places features in <strong>meaningful order</strong>, but intervals between ranks are NOT equal</li>
+              <li><strong>GIS Examples:</strong> Road quality (Excellent/Good/Fair/Poor), risk level (Low/Medium/High), stream order (1st, 2nd, 3rd)</li>
+              <li>Analysis: Rank, sort, compare relative position</li>
+              <li>Map type: Sequential color scheme (light → dark)</li>
+            </ul>
+
+            <div class="ans-h3">3. Interval</div>
+            <ul class="ans-ul">
+              <li>Equal intervals between values, but <strong>no true zero</strong> (zero is arbitrary)</li>
+              <li>Ratios are meaningless: 40°C is NOT twice as hot as 20°C</li>
+              <li><strong>GIS Examples:</strong> Temperature in °C, calendar year, elevation from arbitrary datum</li>
+              <li>Analysis: Addition, subtraction valid; multiplication/division NOT</li>
+              <li>Map type: Diverging color scheme (e.g., blue-white-red for temperature)</li>
+            </ul>
+
+            <div class="ans-h3">4. Ratio (Highest Level)</div>
+            <ul class="ans-ul">
+              <li>Equal intervals <strong>AND true zero</strong> — zero = absence of the quantity</li>
+              <li>All mathematical operations valid (including ratios and percentages)</li>
+              <li><strong>GIS Examples:</strong> Population count, area in m², distance, rainfall in mm, income, crop yield</li>
+              <li>Analysis: Mean, standard deviation, ratios, percentages — all valid</li>
+              <li>Map type: Proportional symbols or graduated colors</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Hierarchy & Summary</div>
+            <div class="formula-box">NOMINAL → ORDINAL → INTERVAL → RATIO
+  (Categories) → (Ranked) → (Equal Intervals) → (True Zero)
+  Each level inherits ALL properties of levels below it</div>
+            <table class="ans-table">
+              <thead><tr><th>Property</th><th>Nominal</th><th>Ordinal</th><th>Interval</th><th>Ratio</th></tr></thead>
+              <tbody>
+                <tr><td>Named categories</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Ordered/ranked</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Equal intervals</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td></tr>
+                <tr><td>True zero</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Example</td><td>Land type</td><td>Risk level</td><td>Temp °C</td><td>Area m²</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World Example: PMRDA Pune Land Parcel GIS</div>
+            <ul class="ans-ul" style="margin:0">
+              <li><strong>Nominal:</strong> Zone type = Residential / Commercial / Industrial / Green</li>
+              <li><strong>Ordinal:</strong> Development priority = High / Medium / Low</li>
+              <li><strong>Interval:</strong> Year of construction = 1990, 2005, 2018</li>
+              <li><strong>Ratio:</strong> Plot area = 500 m², 1200 m² (half plot = half area — meaningful)</li>
+            </ul>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>Understanding attribute data types is fundamental to correct GIS analysis. Selecting the wrong analysis method for a data type (e.g., calculating mean of nominal data) produces meaningless results. The four-level hierarchy guides which statistical operations are valid.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q6 ===================== -->
+    <div class="q-card" data-unit="unit2" data-keywords="spatial database system types object relational nosql postgis oracle">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit2">Q6</div>
+        <div class="q-meta">
+          <div class="q-title">Spatial Database Systems in GIS – Types and Functionalities</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 2</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>Spatial Database System (SDBS)</strong> = DBMS extended to handle geometry + attributes. Types: (1) Object-Relational: PostGIS, Oracle Spatial (most common); (2) Object-Oriented: GemStone; (3) NoSQL: MongoDB with GeoJSON; (4) File-based: Shapefile, GeoPackage; (5) Raster DB: PostGIS Raster. Key feature: Spatial indexing (R-Tree) + SQL spatial functions.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">A <strong>Spatial Database System (SDBS)</strong> is a DBMS extended to store, manage, query, and analyze both spatial (geographic geometry) and non-spatial (attribute) data. Unlike conventional databases, spatial DBs understand geometry, location, and spatial relationships.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Types of Spatial Database Systems</div>
+
+            <div class="ans-h3">1. Object-Relational SDBS (Most Common)</div>
+            <ul class="ans-ul">
+              <li>Extends relational DBMS with spatial data types and functions</li>
+              <li><strong>Examples:</strong> PostGIS (PostgreSQL), Oracle Spatial, SQL Server Spatial, IBM DB2 Spatial</li>
+              <li>Uses SQL with spatial extensions (ISO SQL/MM standard)</li>
+              <li>Spatial functions: ST_Distance(), ST_Buffer(), ST_Intersects(), ST_Union()</li>
+            </ul>
+
+            <div class="ans-h3">2. Object-Oriented SDBS</div>
+            <ul class="ans-ul">
+              <li>Stores geographic features as objects with attributes AND methods</li>
+              <li><strong>Examples:</strong> GemStone, ObjectStore</li>
+              <li>Best for complex 3D GIS and CAD/GIS integration</li>
+            </ul>
+
+            <div class="ans-h3">3. NoSQL Spatial Databases</div>
+            <ul class="ans-ul">
+              <li>MongoDB: Stores spatial data as GeoJSON documents</li>
+              <li>Apache Cassandra: For large-scale distributed IoT spatial data</li>
+              <li>Best for web-scale, high-volume real-time spatial applications</li>
+            </ul>
+
+            <div class="ans-h3">4. File-Based Spatial Storage</div>
+            <ul class="ans-ul">
+              <li><strong>Shapefile (.shp):</strong> Most common simple format — ESRI standard</li>
+              <li><strong>GeoPackage (.gpkg):</strong> SQLite-based, OGC open standard</li>
+              <li><strong>Geodatabase (.gdb):</strong> ESRI proprietary — complex relationships</li>
+            </ul>
+
+            <div class="ans-h3">5. Raster Databases</div>
+            <ul class="ans-ul">
+              <li>PostGIS Raster, Oracle GeoRaster, ESRI Raster Catalog</li>
+              <li>Stores satellite imagery and DEMs alongside attribute data</li>
+            </ul>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World Example: BBMP Bangalore Smart City GIS</div>
+            <p>Uses <strong>PostGIS</strong> (PostgreSQL + PostGIS extension). Query: <em>"SELECT roads WHERE ST_DWithin(geom, pothole_location, 500)"</em> → finds roads within 500m of reported potholes for maintenance priority. Field staff update via mobile GIS apps connected to PostGIS server in real-time.</p>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>Object-Relational databases like PostGIS and Oracle Spatial are the most widely adopted, combining full SQL capability with robust spatial analysis. The best SDBS choice depends on scale, infrastructure, performance needs, and analytical requirements.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q7 ===================== -->
+    <div class="q-card" data-unit="unit3" data-keywords="map projection types cylindrical conical azimuthal mercator utm lambert albers conformal equal area">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit3">Q7</div>
+        <div class="q-meta">
+          <div class="q-title">Map Projections in GIS – Types, Properties & Applications</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 3</span>
+            <span class="q-tag freq">⭐ High Freq</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>Map projection</strong> = mathematical transformation of 3D Earth onto 2D flat plane. 3 surface types: <strong>Cylindrical</strong> (Mercator, UTM), <strong>Conical</strong> (Lambert, Albers), <strong>Azimuthal/Planar</strong> (Stereographic). 4 properties: Conformal (shape), Equal Area (area), Equidistant (distance), Azimuthal (direction). NO projection preserves all four simultaneously.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">Map projection is the mathematical transformation of Earth's curved 3D surface onto a flat 2D plane. Since Earth is a geoid/ellipsoid, ALL projections introduce distortions in shape, area, distance, or direction. No single projection preserves all four properties simultaneously.</p>
+          </div>
+
+          <div class="diagram-box detail-only">
+            <div class="diagram-header">📐 Three Types of Projection Surfaces</div>
+            <img class="diagram-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Comparison_of_cartography_surface_development.svg/500px-Comparison_of_cartography_surface_development.svg.png" alt="Map Projections" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <div class="diagram-fallback" style="display:none">
+  Cylindrical:      Conical:         Azimuthal/Planar:
+  ┌──────────┐         /\              ─────────────
+  │          │        /  \             |      *     |
+  │  🌍      │       / 🌍 \            |  flat     |
+  │ cylinder │      /──────\           |  plane    |
+  └──────────┘     / tangent\          ─────────────
+  →Rectangle map  →Fan map            →Circular map</div>
+            <div class="diagram-caption">Fig: Three developable surfaces for map projection</div>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Classification</div>
+            <div class="ans-h3">By Surface Type</div>
+            <table class="ans-table">
+              <thead><tr><th>Type</th><th>Surface</th><th>Examples</th><th>Best For</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Cylindrical</strong></td><td>Cylinder around globe</td><td>Mercator, UTM</td><td>Equatorial regions</td></tr>
+                <tr><td><strong>Conical</strong></td><td>Cone over globe</td><td>Lambert, Albers</td><td>Mid-latitude countries</td></tr>
+                <tr><td><strong>Azimuthal</strong></td><td>Flat plane on globe</td><td>Stereographic, Orthographic</td><td>Polar regions</td></tr>
+              </tbody>
+            </table>
+            <div class="ans-h3">By Property Preserved</div>
+            <ul class="ans-ul">
+              <li><strong>Conformal (Orthomorphic):</strong> Preserves shape/angles — Mercator, Lambert Conformal Conic</li>
+              <li><strong>Equal Area (Equivalent):</strong> Preserves area — Albers Equal Area, Sinusoidal</li>
+              <li><strong>Equidistant:</strong> Preserves distance from center — Plate Carrée, Azimuthal Equidistant</li>
+              <li><strong>Azimuthal:</strong> Preserves direction from center — Lambert Azimuthal Equal Area</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Major GIS Projection Systems</div>
+            <div class="ans-h3">1. Mercator (Cylindrical Conformal)</div>
+            <ul class="ans-ul">
+              <li>Preserves shape and angles (rhumb lines are straight)</li>
+              <li>Severely distorts area near poles (Greenland ≈ Africa in size)</li>
+              <li><strong>Application:</strong> Navigation charts, Google Maps (Web Mercator)</li>
+            </ul>
+            <div class="ans-h3">2. UTM – Universal Transverse Mercator</div>
+            <ul class="ans-ul">
+              <li>Divides world into 60 north-south zones, each 6° wide</li>
+              <li>High accuracy for north-south oriented areas</li>
+              <li><strong>Application:</strong> India topographic maps (UTM Zones 43–46N)</li>
+            </ul>
+            <div class="ans-h3">3. Lambert Conformal Conic</div>
+            <ul class="ans-ul">
+              <li>Preserves shape in mid-latitudes; two standard parallels</li>
+              <li><strong>Application:</strong> Survey of India maps, aeronautical charts</li>
+            </ul>
+            <div class="ans-h3">4. Albers Equal Area Conic</div>
+            <ul class="ans-ul">
+              <li>Preserves area — suited for E-W extent countries</li>
+              <li><strong>Application:</strong> National land use and census thematic maps</li>
+            </ul>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World Examples</div>
+            <ul class="ans-ul" style="margin:0">
+              <li><strong>Google Maps:</strong> Web Mercator (EPSG:3857) — shapes correct, area distorted near poles</li>
+              <li><strong>Survey of India:</strong> Lambert Conformal Conic (12°N and 32°N standard parallels)</li>
+              <li><strong>ISRO Bhuvan:</strong> WGS84 Geographic Coordinate System</li>
+              <li><strong>Land records (PMRDA):</strong> Albers Equal Area for accurate plot area measurement</li>
+            </ul>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>Projection selection is critical in GIS. Choose based on: location (latitude of study area), purpose (navigation vs area calculation), and spatial extent. Every projection distorts something — know what's distorted and whether it matters for your analysis.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q8 ===================== -->
+    <div class="q-card" data-unit="unit3" data-keywords="spatial interpolation IDW inverse distance weighting kriging techniques methods">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit3">Q8</div>
+        <div class="q-meta">
+          <div class="q-title">Spatial Interpolation Techniques – IDW and Kriging</div>
+          <div class="q-tags">
+            <span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 3</span>
+            <span class="q-tag freq">⭐ High Freq</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>IDW:</strong> Deterministic; weight = 1/distance^p; no error estimation; fast; bull's eye effect; best for dense uniform data. <strong>Kriging:</strong> Geostatistical; uses variogram (Nugget, Sill, Range); provides error/uncertainty map; optimal unbiased estimator; best for spatially correlated data (mining, groundwater). Kriging > IDW in accuracy but more complex.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">Spatial interpolation estimates unknown values at unsampled locations from known sample points. Based on <strong>Tobler's First Law of Geography:</strong> "Nearby things are more similar than distant things." Two major techniques: IDW (deterministic) and Kriging (geostatistical).</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">1. Inverse Distance Weighting (IDW)</div>
+            <p class="ans-p">IDW estimates unknown values as a weighted average of known points, where weight is <strong>inversely proportional to distance raised to power p</strong>.</p>
+
+            <div class="formula-box">Z* = Σ(Zᵢ / dᵢᵖ) / Σ(1 / dᵢᵖ)
+
+Z* = Estimated value    Zᵢ = Known value at point i
+dᵢ = Distance to point i    p = Power (usually p = 2)</div>
+
+            <div class="ans-h3">Key Characteristics</div>
+            <ul class="ans-ul">
+              <li><strong>Deterministic:</strong> No statistical error estimation</li>
+              <li><strong>Bull's Eye Effect:</strong> Values cluster around known points creating concentric rings</li>
+              <li><strong>Power p:</strong> Higher p → nearby points dominate more; lower p → smoother surface</li>
+              <li><strong>When to use:</strong> Dense, evenly distributed sample data (rainfall, temperature)</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">2. Kriging (Geostatistical Interpolation)</div>
+            <p class="ans-p">Kriging uses statistical models (variogram) to estimate unknown values AND provide uncertainty estimates. It considers both distance AND the spatial autocorrelation structure of data — making it the <strong>Best Linear Unbiased Estimator (BLUE)</strong>.</p>
+
+            <div class="diagram-box">
+              <div class="diagram-header">📐 Variogram (Semivariogram) – Core of Kriging</div>
+              <div class="diagram-fallback">
+  VARIOGRAM:
+  Semivariance
+      |                         ─── Sill (max variability)
+      |                   ─────
+      |              ─────
+      |         ─────
+      |    ─────
+      |────
+      +──────────────────────── Distance (Lag)
+      |    |
+      |  Range (where autocorrelation ends)
+    Nugget (error at zero distance)
+
+  Nugget: measurement error  Sill: max variability  Range: autocorrelation limit</div>
+              <div class="diagram-caption">Fig: Semivariogram shows how spatial similarity decreases with distance</div>
+            </div>
+
+            <div class="ans-h3">Types of Kriging</div>
+            <ul class="ans-ul">
+              <li><strong>Ordinary Kriging:</strong> Most common; assumes stationary mean</li>
+              <li><strong>Simple Kriging:</strong> Known constant mean across domain</li>
+              <li><strong>Universal Kriging:</strong> Accounts for spatial trend</li>
+              <li><strong>Co-Kriging:</strong> Uses multiple correlated variables</li>
+              <li><strong>Indicator Kriging:</strong> For categorical data and probabilities</li>
+            </ul>
+
+            <div class="ans-h3">Kriging Process</div>
+            <ul class="ans-ul">
+              <li>Step 1: Compute experimental variogram from sample data</li>
+              <li>Step 2: Fit theoretical model (spherical/Gaussian/exponential) to variogram</li>
+              <li>Step 3: Use variogram model to compute optimal kriging weights</li>
+              <li>Step 4: Apply weights → estimated value + prediction variance (error map)</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">IDW vs Kriging Comparison</div>
+            <table class="ans-table">
+              <thead><tr><th>Feature</th><th>IDW</th><th>Kriging</th></tr></thead>
+              <tbody>
+                <tr><td>Type</td><td>Deterministic</td><td>Geostatistical</td></tr>
+                <tr><td>Error estimation</td><td>❌ No</td><td>✅ Yes (variance map)</td></tr>
+                <tr><td>Autocorrelation</td><td>❌ Not considered</td><td>✅ Variogram models it</td></tr>
+                <tr><td>Complexity</td><td>Low — fast</td><td>High — complex</td></tr>
+                <tr><td>Accuracy</td><td>Moderate</td><td>Higher (optimal)</td></tr>
+                <tr><td>Best for</td><td>Dense uniform data</td><td>Spatially correlated data</td></tr>
+                <tr><td>Applications</td><td>Rainfall, temperature</td><td>Mining, groundwater</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World Example: Maharashtra</div>
+            <ul class="ans-ul" style="margin:0">
+              <li><strong>IDW:</strong> IMD interpolates rainfall from 200 weather stations — fast, works for dense stations</li>
+              <li><strong>Kriging:</strong> Hydrogeology maps groundwater depth in Marathwada drought zone — provides uncertainty maps for risk assessment decisions</li>
+            </ul>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>IDW is simpler and faster for dense, evenly distributed data. Kriging is statistically rigorous, providing optimal estimates with uncertainty quantification — preferred for scientific and precision applications like mining, hydrology, and environmental monitoring.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q9 ===================== -->
+    <div class="q-card" data-unit="unit3" data-keywords="digital elevation model DEM applications slope watershed flood viewshed DSM DTM difference">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit3">Q9</div>
+        <div class="q-meta">
+          <div class="q-title">Digital Elevation Model (DEM) – Definition, Applications & Comparison with DSM/DTM</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 3 & 4</span>
+            <span class="q-tag freq">⭐ High Freq</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>DEM</strong> = Raster grid where each cell = elevation above sea level (bare ground only). Sources: SRTM (30m), LiDAR (1m), ASTER. Applications: slope, watershed, flood mapping, viewshed, road planning. <strong>DEM</strong> = bare earth; <strong>DSM</strong> = includes buildings/trees; <strong>DTM</strong> = terrain + vector features.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">A <strong>Digital Elevation Model (DEM)</strong> is a digital raster representation of the Earth's bare-ground topographic surface. Each cell stores the elevation value in meters above mean sea level. DEMs are the foundational dataset for all terrain analysis in GIS and remote sensing.</p>
+          </div>
+
+          <div class="diagram-box detail-only">
+            <div class="diagram-header">📐 DEM Grid & 3D Terrain Visualization</div>
+            <img class="diagram-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/DEM_shaded_terrain.jpg/400px-DEM_shaded_terrain.jpg" alt="DEM Visualization" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <div class="diagram-fallback" style="display:none">
+  DEM GRID (elevation in meters):    3D Surface:
+  ┌─────┬─────┬─────┬─────┐              *
+  │ 150 │ 160 │ 180 │ 200 │             /|\
+  ├─────┼─────┼─────┼─────┤            / | \
+  │ 140 │ 155 │ 175 │ 190 │           /  |  \
+  ├─────┼─────┼─────┼─────┤          *───────*
+  │ 120 │ 130 │ 150 │ 170 │
+  ├─────┼─────┼─────┼─────┤  Derived Products:
+  │ 100 │ 110 │ 120 │ 140 │  Slope, Aspect, Hillshade,
+  └─────┴─────┴─────┴─────┘  Watershed, Contour lines
+  Color: Dark=Low, Bright=High</div>
+            <div class="diagram-caption">Fig: DEM raster grid and derived 3D terrain surface</div>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Applications of DEM</div>
+            <ul class="ans-ul">
+              <li><strong>Slope & Aspect Analysis:</strong> Terrain steepness and direction for erosion and land use planning</li>
+              <li><strong>Watershed Delineation:</strong> Drainage basin boundaries for hydrological modeling</li>
+              <li><strong>Flood Zone Mapping:</strong> Simulate inundation at various water levels</li>
+              <li><strong>Road Planning:</strong> Optimal route design avoiding steep unstable terrain</li>
+              <li><strong>Viewshed Analysis:</strong> Visible areas from telecom towers, military posts</li>
+              <li><strong>Volume Calculations:</strong> Cut-and-fill for construction, dam capacity</li>
+              <li><strong>Landslide Risk:</strong> Identify unstable steep slopes in mountainous terrain</li>
+              <li><strong>Climate Modeling:</strong> Elevation-dependent temperature and rainfall patterns</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">DEM vs DSM vs DTM</div>
+            <table class="ans-table">
+              <thead><tr><th>Feature</th><th>DEM</th><th>DSM</th><th>DTM</th></tr></thead>
+              <tbody>
+                <tr><td>Full Name</td><td>Digital Elevation Model</td><td>Digital Surface Model</td><td>Digital Terrain Model</td></tr>
+                <tr><td>Represents</td><td>Bare ground only</td><td>All surfaces (incl. trees, buildings)</td><td>Terrain + vector features</td></tr>
+                <tr><td>Includes buildings</td><td>❌ Filtered out</td><td>✅ Yes</td><td>❌ No (bare earth)</td></tr>
+                <tr><td>Common source</td><td>SRTM, LiDAR</td><td>LiDAR, SAR</td><td>LiDAR + photogrammetry</td></tr>
+                <tr><td>Use case</td><td>Hydrology, slope</td><td>Urban 3D modeling</td><td>Contour mapping</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Freely Available DEMs</div>
+            <ul class="ans-ul">
+              <li><strong>SRTM:</strong> 30m global resolution by NASA/USGS — most widely used</li>
+              <li><strong>ASTER GDEM:</strong> 30m global by NASA/METI Japan</li>
+              <li><strong>ALOS World 3D:</strong> 30m by JAXA Japan — better accuracy than SRTM</li>
+              <li><strong>Cartosat DEM:</strong> 30m by ISRO — best for Indian terrain</li>
+              <li><strong>LiDAR DEMs:</strong> Sub-meter resolution — expensive but most accurate</li>
+            </ul>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World: Uttarakhand Flash Flood 2021</div>
+            <p>ISRO used 30m Cartosat DEM to model the Rishiganga river valley. DEM-derived slope maps identified high-risk debris flow zones. Watershed analysis showed drainage paths toward Tapovan tunnel. Pre vs post-event DEM differencing quantified sediment volume deposited by the flood.</p>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>DEM is the foundational dataset for terrain analysis. While DEM = bare earth, DSM includes above-ground features and DTM adds vector breaklines. SRTM remains the most widely used global DEM; LiDAR provides sub-meter accuracy where high precision is needed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q10 ===================== -->
+    <div class="q-card" data-unit="unit4" data-keywords="quality assessment DEM freely available SRTM ASTER RMSE accuracy vertical horizontal">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit4">Q10</div>
+        <div class="q-meta">
+          <div class="q-title">Quality Assessment of Freely Available DEMs</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 4</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p>Quality of DEMs assessed via: <strong>Vertical accuracy</strong> (RMSE against ground truth GPS), <strong>Horizontal accuracy</strong>, <strong>Spatial resolution</strong> (30m SRTM vs 1m LiDAR), <strong>Void coverage</strong>, <strong>Vegetation/building effects</strong>. Common DEMs: SRTM (RMSE ±16m), ASTER (RMSE ±10–25m), Cartosat (RMSE ±8m), LiDAR (&lt;±0.15m). LiDAR = most accurate; SRTM = most accessible.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">Quality assessment of DEMs involves evaluating how accurately a DEM represents the actual terrain. Several freely available global DEMs exist, each with different accuracy levels. Quality is assessed through vertical accuracy, horizontal accuracy, resolution, and coverage completeness.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Quality Assessment Parameters</div>
+            <div class="ans-h3">1. Vertical Accuracy (Most Important)</div>
+            <ul class="ans-ul">
+              <li>Measured using <strong>RMSE (Root Mean Square Error)</strong> against GPS ground control points</li>
+              <li>RMSE = √(Σ(DEM_elevation − GPS_elevation)² / n)</li>
+              <li>Lower RMSE = Higher accuracy</li>
+            </ul>
+            <div class="ans-h3">2. Horizontal (Positional) Accuracy</div>
+            <ul class="ans-ul">
+              <li>Accuracy of x,y location of terrain features in the DEM</li>
+              <li>Evaluated against high-precision GPS or optical imagery</li>
+            </ul>
+            <div class="ans-h3">3. Spatial Resolution</div>
+            <ul class="ans-ul">
+              <li>Cell size determines level of terrain detail captured</li>
+              <li>30m SRTM cannot capture features smaller than 30m × 30m</li>
+            </ul>
+            <div class="ans-h3">4. Data Voids & Artifacts</div>
+            <ul class="ans-ul">
+              <li>Voids: Missing data over steep terrain or radar shadow areas (SRTM)</li>
+              <li>Artifacts: Striping noise, speckle, vegetation bias</li>
+              <li>Evaluated by: visual inspection, histogram analysis, cross-section profiles</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Comparison of Freely Available DEMs</div>
+            <table class="ans-table">
+              <thead><tr><th>DEM</th><th>Resolution</th><th>Vertical RMSE</th><th>Coverage</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td><strong>SRTM</strong></td><td>30m (1-arc sec)</td><td>±16m globally</td><td>56°S–60°N</td><td>NASA/USGS</td></tr>
+                <tr><td><strong>ASTER GDEM</strong></td><td>30m</td><td>±10–25m</td><td>83°N–83°S</td><td>NASA/METI</td></tr>
+                <tr><td><strong>ALOS AW3D30</strong></td><td>30m</td><td>±5m</td><td>Global</td><td>JAXA</td></tr>
+                <tr><td><strong>Cartosat DEM</strong></td><td>30m</td><td>±8m India</td><td>India</td><td>ISRO</td></tr>
+                <tr><td><strong>LiDAR DEM</strong></td><td>0.25–1m</td><td>±0.1–0.3m</td><td>Local</td><td>Various</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Quality Assessment Methods</div>
+            <ul class="ans-ul">
+              <li><strong>GPS Ground Truth:</strong> Compare DEM elevation at known GPS points → compute RMSE</li>
+              <li><strong>Cross-Section Profiles:</strong> Extract elevation transects and compare with field survey</li>
+              <li><strong>Histogram Analysis:</strong> Detect data voids and outlier elevations</li>
+              <li><strong>Contour Overlay:</strong> Derive contours from DEM and compare with official topo maps</li>
+              <li><strong>Error Raster:</strong> Generate difference raster (DEM − reference) to visualize error distribution</li>
+            </ul>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World: ISRO DEM Comparison Study</div>
+            <p>ISRO compared SRTM, ASTER, and Cartosat DEMs over the Western Ghats. Result: Cartosat DEM showed lowest RMSE (±8m) due to optical stereo pair data. SRTM had voids over steep valleys due to radar shadowing. LiDAR DEM used for high-priority micro-watershed studies showed RMSE &lt; 0.5m.</p>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>No single freely available DEM is perfect for all applications. SRTM is the most accessible but has voids and ±16m vertical error. ALOS AW3D30 offers better accuracy for free. LiDAR is the gold standard but expensive. Quality assessment before use is mandatory for critical applications.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q11 ===================== -->
+    <div class="q-card" data-unit="unit4" data-keywords="GIS analysis steps workflow problem data collection preprocessing overlay buffer network">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit4">Q11</div>
+        <div class="q-meta">
+          <div class="q-title">GIS Analysis – Steps, Types and Workflow</div>
+          <div class="q-tags">
+            <span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 4 & 5</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>7 Steps:</strong> (1) Problem formulation → (2) Data collection → (3) Pre-processing (georef, clean) → (4) Data management (DB) → (5) Spatial analysis (overlay, buffer, network) → (6) Output (maps, reports) → (7) Interpretation/Decision. Analysis types: Overlay, Buffer, Network, Terrain, Statistical, Interpolation.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">GIS Analysis Workflow (7 Steps)</div>
+
+            <div class="diagram-box">
+              <div class="diagram-header">📐 GIS Analysis Workflow</div>
+              <div class="diagram-fallback">
+  [Problem Definition]
+         ↓
+  [Data Collection: Satellite, GPS, Census, Survey]
+         ↓
+  [Pre-processing: Georeferencing, Cleaning, Projection]
+         ↓
+  [Data Management: GIS Database / Organize Layers]
+         ↓
+  [Spatial Analysis: Buffer, Overlay, Network, Terrain]
+         ↓
+  [Output Generation: Maps, Reports, Charts, Web GIS]
+         ↓
+  [Interpretation → Decision Making]
+         ↓
+  [Feedback Loop: Refine and Iterate]</div>
+              <div class="diagram-caption">Fig: 7-step GIS analysis workflow — iterative process</div>
+            </div>
+
+            <div class="ans-h3">Step 1: Problem Formulation</div>
+            <ul class="ans-ul">
+              <li>Define the spatial question clearly: What decision needs to be made?</li>
+              <li>Specify study area boundary and time period</li>
+              <li><em>Example: "Find best location for hospital in Pune serving max population"</em></li>
+            </ul>
+            <div class="ans-h3">Step 2: Data Collection & Input</div>
+            <ul class="ans-ul">
+              <li>Sources: Satellite imagery, GPS field survey, census data, existing maps</li>
+              <li>Formats: Shapefile, GeoTIFF, KML, GeoJSON</li>
+            </ul>
+            <div class="ans-h3">Step 3: Data Pre-processing</div>
+            <ul class="ans-ul">
+              <li>Georeferencing: Assign real-world coordinates</li>
+              <li>Coordinate system: Transform all layers to common projection</li>
+              <li>Data cleaning: Fix topology errors, fill gaps, remove duplicates</li>
+            </ul>
+            <div class="ans-h3">Step 4: Data Management</div>
+            <ul class="ans-ul">
+              <li>Store in GIS geodatabase (PostGIS, ESRI Geodatabase)</li>
+              <li>Organize as thematic layers: Roads, buildings, boundaries, utilities</li>
+            </ul>
+            <div class="ans-h3">Step 5: Spatial Analysis</div>
+            <ul class="ans-ul">
+              <li><strong>Overlay Analysis:</strong> Combine layers to find spatial relationships</li>
+              <li><strong>Buffer Analysis:</strong> Create distance zones (500m hospital catchment)</li>
+              <li><strong>Network Analysis:</strong> Shortest path, service area, travel time</li>
+              <li><strong>Terrain Analysis:</strong> Slope, aspect, viewshed from DEM</li>
+              <li><strong>Spatial Statistics:</strong> Hotspot analysis, kernel density, clustering</li>
+            </ul>
+            <div class="ans-h3">Steps 6 & 7: Output & Decision</div>
+            <ul class="ans-ul">
+              <li>Generate thematic maps, reports, charts, dashboards</li>
+              <li>Validate against ground truth; present to decision-makers</li>
+            </ul>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World: School Site Selection – Nagpur</div>
+            <ul class="ans-ul" style="margin:0">
+              <li>Problem: Find location for school serving 10,000 children</li>
+              <li>Data: Population census, road network, existing schools</li>
+              <li>Analysis: Buffer 1km around existing schools + overlay with population density</li>
+              <li>Output: Map showing underserved high-density areas</li>
+              <li>Decision: Select optimal site from shortlisted locations</li>
+            </ul>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>GIS analysis is a systematic, iterative workflow transforming raw geographic data into actionable insights. Each step builds upon the previous. The quality of output depends entirely on the quality of input data and the appropriateness of analysis methods chosen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q12 ===================== -->
+    <div class="q-card" data-unit="unit5" data-keywords="errors GIS types positional attribute topological undershoot overshoot sliver polygon">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit5">Q12</div>
+        <div class="q-meta">
+          <div class="q-title">Errors in GIS – Types, Causes and Impact on Analysis</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span><span class="q-tag year">2024</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 5</span>
+            <span class="q-tag freq">⭐ High Freq</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p><strong>GIS Error Types:</strong> (1) Source: outdated/incomplete data. (2) Positional: wrong coordinates. (3) Attribute: wrong values. (4) Topological: undershoot, overshoot, sliver polygon, dangling node. (5) Processing: projection, interpolation, rounding errors. (6) Raster: mixed pixel, georeferencing, classification error. Detection: topology rules, GPS validation, metadata review.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">GIS errors are discrepancies between real-world geographic features and their digital representation. They propagate through analysis operations and can lead to incorrect conclusions. Errors must be detected and minimized through rigorous quality control.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Types of GIS Errors</div>
+
+            <div class="ans-h3">1. Source / Input Errors</div>
+            <ul class="ans-ul">
+              <li><strong>Age/Currency:</strong> Outdated data not reflecting current reality</li>
+              <li><strong>Coverage:</strong> Incomplete spatial coverage — some areas missing</li>
+              <li><strong>Scale Error:</strong> Small-scale data lacks detail needed for large-scale analysis</li>
+              <li><strong>Generalization:</strong> Features simplified or omitted during mapping</li>
+            </ul>
+
+            <div class="ans-h3">2. Positional (Geometric) Errors</div>
+            <ul class="ans-ul">
+              <li>Features placed at wrong geographic coordinates due to GPS error or poor digitizing</li>
+              <li>GPS accuracy: Standard GPS ±5m; DGPS ±2cm</li>
+            </ul>
+
+            <div class="ans-h3">3. Attribute Errors</div>
+            <ul class="ans-ul">
+              <li>Wrong attribute values assigned to spatially correct features</li>
+              <li>Example: Plot ownership incorrectly entered in cadastral GIS database</li>
+            </ul>
+
+            <div class="ans-h3">4. Topological Errors (Critical for Vector)</div>
+            <div class="diagram-box">
+              <div class="diagram-header">📐 Common Topology Errors</div>
+              <div class="diagram-fallback">
+  TOPOLOGY ERRORS:
+
+  Undershoot:        Overshoot:         Sliver Polygon:
+  ─────              ──────────         ┌──┬──────────┐
+       |                      |         │  │ sliver   │
+       | ← gap            ─────         │  └──────────┘
+  ─────             ↑ extends past      └─────────────
+  Line doesn't       intersection       Thin false polygon
+  reach junction                        from overlay error
+
+  Dangling node: Line ending without connecting to another
+  Self-intersection: Polygon boundary crosses itself</div>
+              <div class="diagram-caption">Fig: Common topology errors in vector GIS data</div>
+            </div>
+
+            <div class="ans-h3">5. Processing Errors</div>
+            <ul class="ans-ul">
+              <li><strong>Projection Error:</strong> Wrong coordinate transformation → layers misaligned by meters/km</li>
+              <li><strong>Interpolation Error:</strong> Poor variogram → inaccurate surface estimates</li>
+              <li><strong>Rounding Error:</strong> Loss of coordinate precision during computation</li>
+              <li><strong>Overlay Error:</strong> Sliver polygons from imperfect boundary alignment</li>
+            </ul>
+
+            <div class="ans-h3">6. Raster-Specific Errors</div>
+            <ul class="ans-ul">
+              <li><strong>Mixed Pixel Problem:</strong> Boundary cells contain multiple land cover types</li>
+              <li><strong>Georeferencing Error:</strong> Raster misaligned with true ground coordinates</li>
+              <li><strong>Classification Error:</strong> Remote sensing image classified into wrong land cover class</li>
+            </ul>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Impact & Detection</div>
+            <table class="ans-table">
+              <thead><tr><th>Error Type</th><th>GIS Operation Affected</th><th>Consequence</th></tr></thead>
+              <tbody>
+                <tr><td>Positional</td><td>Overlay, Buffer</td><td>Wrong catchment areas delineated</td></tr>
+                <tr><td>Topological</td><td>Network Analysis</td><td>Wrong shortest path calculated</td></tr>
+                <tr><td>Attribute</td><td>Query, Classification</td><td>Wrong statistics reported</td></tr>
+                <tr><td>Classification</td><td>Change Detection</td><td>False land cover change</td></tr>
+                <tr><td>Projection</td><td>Multi-layer Analysis</td><td>Layers misaligned by 100s of meters</td></tr>
+              </tbody>
+            </table>
+            <div class="ans-h3">Detection Methods</div>
+            <ul class="ans-ul">
+              <li>Topology rules in ArcGIS: Check undershoots, overshoots, gaps</li>
+              <li>GPS ground truth validation: Compare DEM or vector data with field measurements</li>
+              <li>Metadata review: Check source, scale, coordinate system of input data</li>
+              <li>Visual inspection: Overlay with reference data to spot misalignment</li>
+            </ul>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World: Land Title Disputes – Urban India</div>
+            <p>Positional errors in cadastral maps cause boundary disputes between adjacent plots. Sliver polygons from overlay of municipal and revenue boundaries create 'no man's land' zones with unclear jurisdiction. Solution: DGPS surveys with ±2cm accuracy for cadastral GIS correction.</p>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>GIS errors are inevitable but manageable. They originate from data sources, measurement processes, and analysis operations. Rigorous quality control — topology checks, metadata documentation, and ground truth validation — minimizes error propagation and ensures reliable GIS-based decision-making.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Q13 ===================== -->
+    <div class="q-card" data-unit="unit5" data-keywords="key elements map title scale legend north arrow graticule inset">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num unit5">Q13</div>
+        <div class="q-meta">
+          <div class="q-title">Key Elements of a Map (Map Furniture)</div>
+          <div class="q-tags">
+            <span class="q-tag year">2022</span><span class="q-tag year">2023</span>
+            <span class="q-tag marks">6 Marks</span>
+            <span class="q-tag unit-tag">Unit 5</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="toggle-detail" onclick="toggleDetail(event,this)">📋 Summary</button>
+          <button class="expand-btn" onclick="toggleCard(this.parentElement.parentElement.querySelector('.q-header'))">▼</button>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="answer-content">
+          <div class="short-summary">
+            <p>9 essential map elements: <strong>Title</strong> (what and where), <strong>Scale</strong> (RF/bar/verbal), <strong>Legend/Key</strong> (symbol meaning), <strong>North Arrow</strong> (orientation), <strong>Graticule/Grid</strong> (coordinates), <strong>Inset Map</strong> (location context), <strong>Data Source & Date</strong>, <strong>Projection Info</strong> (CRS), <strong>Neat Line/Border</strong>. Without these, a map is ambiguous.</p>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Introduction</div>
+            <p class="ans-p">A map must include specific cartographic elements called <strong>Map Furniture</strong> to be readable, accurate, and professionally usable. These allow any reader to correctly interpret spatial information without needing additional context.</p>
+          </div>
+
+          <div class="diagram-box detail-only">
+            <div class="diagram-header">📐 Standard Map Layout Template</div>
+            <div class="diagram-fallback">
+  ┌─────────────────────────────────────────────────────┐
+  │                  MAP TITLE                     [N↑] │
+  │──────────────────────────────────────────────────── │
+  │  ┌──────────────────────────┐  ┌────────────────┐  │
+  │  │                          │  │   LEGEND       │  │
+  │  │   MAIN MAP AREA          │  │ ■ Forest       │  │
+  │  │  (Geographic features,   │  │ ~ River        │  │
+  │  │   layers, symbology)     │  │ ● City         │  │
+  │  │                          │  │ □ Boundary     │  │
+  │  │  [Graticule/Grid lines]  │  └────────────────┘  │
+  │  └──────────────────────────┘  ┌────────────────┐  │
+  │  Scale: |──── 1 km ────|       │  INSET MAP     │  │
+  │  Source: SOI 2023              │  [India map]   │  │
+  │  Projection: WGS84 UTM 43N     └────────────────┘  │
+  └─────────────────────────────────────────────────────┘</div>
+            <div class="diagram-caption">Fig: Standard map layout showing all key elements/furniture</div>
+          </div>
+
+          <div class="ans-section detail-only">
+            <div class="ans-h2">Nine Key Map Elements</div>
+            <div class="ans-h3">1. Title</div>
+            <ul class="ans-ul">
+              <li>Identifies subject and geographic area; placed prominently at top center</li>
+              <li><em>Example: "Land Use Map of Pune Municipal Corporation – 2024"</em></li>
+            </ul>
+            <div class="ans-h3">2. Scale</div>
+            <ul class="ans-ul">
+              <li><strong>Representative Fraction (RF):</strong> 1:50,000 → 1 unit on map = 50,000 on ground</li>
+              <li><strong>Graphic Scale Bar:</strong> Visual bar with ground distances — best for resized maps</li>
+              <li><strong>Verbal Scale:</strong> "1 cm = 500 m"</li>
+            </ul>
+            <div class="ans-h3">3. Legend / Key</div>
+            <ul class="ans-ul">
+              <li>Explains ALL symbols, colors, patterns used on the map</li>
+              <li>Must be complete — every symbol must be explained</li>
+            </ul>
+            <div class="ans-h3">4. North Arrow / Compass Rose</div>
+            <ul class="ans-ul">
+              <li>Shows map orientation; essential for navigation and spatial reasoning</li>
+              <li>Simple N arrow or full decorative compass rose</li>
+            </ul>
+            <div class="ans-h3">5. Graticule / Grid Reference</div>
+            <ul class="ans-ul">
+              <li>Latitude/longitude lines (geographic) or UTM grid (projected coordinates)</li>
+              <li>Enables precise feature location referencing</li>
+            </ul>
+            <div class="ans-h3">6. Inset Map</div>
+            <ul class="ans-ul">
+              <li>Small overview map showing where the main map fits in larger context</li>
+              <li><em>Example: India outline with Maharashtra highlighted → Pune highlighted</em></li>
+            </ul>
+            <div class="ans-h3">7. Data Source & Date</div>
+            <ul class="ans-ul">
+              <li>Credits data sources; date crucial for assessing currency of information</li>
+              <li><em>Example: "Source: Survey of India, 2022 | Cartosat DEM 30m"</em></li>
+            </ul>
+            <div class="ans-h3">8. Projection Information</div>
+            <ul class="ans-ul">
+              <li>States coordinate reference system (CRS) used</li>
+              <li><em>Example: "WGS 84, UTM Zone 43N, EPSG:32643"</em></li>
+            </ul>
+            <div class="ans-h3">9. Neat Line / Border</div>
+            <ul class="ans-ul">
+              <li>Rectangular frame separating map content from surrounding map elements</li>
+            </ul>
+          </div>
+
+          <div class="example-box detail-only">
+            <div class="example-box-title">🌍 Real-World: ISRO Bhuvan Maps</div>
+            <ul class="ans-ul" style="margin:0">
+              <li>Title: "Vegetation Cover Map – India 2023"</li>
+              <li>Scale bar: 0–500–1000 km</li>
+              <li>Legend: NDVI color scale (dark red=dense to yellow=sparse)</li>
+              <li>Source: Resourcesat-2 LISS-III | Date: October 2023 | WGS84</li>
+            </ul>
+          </div>
+
+          <div class="conclusion-box detail-only">
+            <p>All key map elements together make a map self-explanatory, accurate, and universally readable. Without these elements, a map becomes ambiguous or misleading. In professional GIS, map layout design is as important as the spatial analysis itself.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end questions-grid -->
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>GIS Exam Portal · <strong>DBATU B.Tech CSE Semester VI</strong> · BTCOE604(A) Geographic Information System · 2022–2024 PYQs</p>
+  <p style="margin-top:6px">Use for academic preparation only · All content for exam reference</p>
+</footer>
+
+<script>
+// ===== THEME TOGGLE =====
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+let dark = true;
+themeBtn.addEventListener('click', () => {
+  dark = !dark;
+  html.setAttribute('data-theme', dark ? 'dark' : 'light');
+  themeBtn.textContent = dark ? '🌙' : '☀️';
+});
+
+// ===== EXPAND/COLLAPSE CARDS =====
+function toggleCard(header) {
+  const card = header.closest('.q-card');
+  const body = card.querySelector('.q-body');
+  const btn = card.querySelector('.expand-btn');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// ===== DETAIL/SUMMARY TOGGLE =====
+function toggleDetail(e, btn) {
+  e.stopPropagation();
+  const card = btn.closest('.q-card');
+  const content = card.querySelector('.answer-content');
+  const body = card.querySelector('.q-body');
+  const isShort = content.classList.contains('short-view');
+  content.classList.toggle('short-view', !isShort);
+  btn.classList.toggle('short-mode', !isShort);
+  btn.textContent = isShort ? '📋 Summary' : '📖 Detailed';
+  // Auto open body if not open
+  if (!body.classList.contains('open')) {
+    body.classList.add('open');
+    card.querySelector('.expand-btn').classList.add('open');
+  }
+}
+
+// ===== SEARCH LOGIC =====
+function performSearch(query) {
+  const q = query.toLowerCase().trim();
+  const cards = document.querySelectorAll('.q-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const title = card.querySelector('.q-title').textContent.toLowerCase();
+    const keywords = card.dataset.keywords || '';
+    const unit = card.dataset.unit || '';
+    const match = !q || title.includes(q) || keywords.includes(q) || unit.includes(q);
+    card.classList.toggle('hidden', !match);
+    if (match) visible++;
+  });
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  document.getElementById('countNum').textContent = visible;
+  document.getElementById('resultsLabel').textContent = `Showing ${visible} of 13`;
+  // Highlight
+  if (q) highlightText(q);
+  else removeHighlights();
+}
+
+function highlightText(q) {
+  removeHighlights();
+  document.querySelectorAll('.q-card:not(.hidden) .q-title').forEach(el => {
+    const text = el.textContent;
+    const reg = new RegExp(`(${q})`, 'gi');
+    el.innerHTML = text.replace(reg, '<mark>$1</mark>');
+  });
+}
+
+function removeHighlights() {
+  document.querySelectorAll('mark').forEach(m => {
+    m.replaceWith(m.textContent);
+  });
+}
+
+// ===== FILTER BY UNIT =====
+function filterUnit(unit, btn) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const cards = document.querySelectorAll('.q-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const match = unit === 'all' || card.dataset.unit === unit;
+    card.classList.toggle('hidden', !match);
+    if (match) visible++;
+  });
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  document.getElementById('countNum').textContent = visible;
+  document.getElementById('resultsLabel').textContent = `Showing ${visible} of 13`;
+  // Sync search
+  const hs = document.getElementById('heroSearch');
+  const hsh = document.getElementById('headerSearch');
+  hs.value = ''; hsh.value = '';
+  removeHighlights();
+}
+
+// ===== FILTER BY TAG =====
+function filterByTag(tag) {
+  document.getElementById('heroSearch').value = tag;
+  document.getElementById('headerSearch').value = tag;
+  performSearch(tag);
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.filter-tab').classList.add('active');
+  window.scrollTo({ top: document.querySelector('.main').offsetTop - 80, behavior: 'smooth' });
+}
+
+// ===== EVENT LISTENERS =====
+document.getElementById('heroSearch').addEventListener('input', e => {
+  document.getElementById('headerSearch').value = e.target.value;
+  performSearch(e.target.value);
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.filter-tab').classList.add('active');
+});
+
+document.getElementById('headerSearch').addEventListener('input', e => {
+  document.getElementById('heroSearch').value = e.target.value;
+  performSearch(e.target.value);
+});
+
+document.querySelector('.hero-search-btn').addEventListener('click', () => {
+  performSearch(document.getElementById('heroSearch').value);
+});
+
+// ===== AUTO EXPAND ON SEARCH =====
+document.getElementById('heroSearch').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    performSearch(e.target.value);
+    const visible = document.querySelectorAll('.q-card:not(.hidden)');
+    if (visible.length === 1) {
+      const body = visible[0].querySelector('.q-body');
+      const btn = visible[0].querySelector('.expand-btn');
+      body.classList.add('open');
+      btn.classList.add('open');
+      visible[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+});
+
+// Keyboard shortcut: / to focus search
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && e.target.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('heroSearch').focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+</script>
+</body>
+</html>
