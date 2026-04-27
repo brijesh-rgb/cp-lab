@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIS Complete Study Guide – BATU Lonere</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --surface: #111827;
+  --surface2: #1a2235;
+  --border: #1e2d45;
+  --accent: #00d4ff;
+  --accent2: #7c3aed;
+  --accent3: #10b981;
+  --accent4: #f59e0b;
+  --accent5: #ef4444;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7;overflow-x:hidden;}
+
+/* SIDEBAR */
+#sidebar{position:fixed;left:0;top:0;width:260px;height:100vh;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:100;transition:transform .3s;}
+.sidebar-header{padding:20px 16px 12px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-family:var(--display);font-size:13px;font-weight:800;color:var(--accent);letter-spacing:2px;text-transform:uppercase;}
+.sidebar-sub{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+.nav-section{padding:8px 0;}
+.nav-label{padding:6px 16px;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:var(--mono);}
+.nav-item{display:block;padding:7px 16px 7px 22px;color:#94a3b8;font-size:13px;text-decoration:none;transition:all .2s;border-left:2px solid transparent;cursor:pointer;}
+.nav-item:hover,.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,212,255,0.05);}
+.nav-sub{padding-left:32px;font-size:12px;color:var(--muted);}
+.nav-sub:hover{color:var(--accent3);}
+
+/* MAIN */
+#main{margin-left:260px;min-height:100vh;}
+
+/* HERO */
+.hero{padding:60px 48px 40px;background:linear-gradient(135deg,var(--surface) 0%,var(--bg) 100%);border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,212,255,0.08) 0%,transparent 70%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-80px;left:200px;width:300px;height:300px;background:radial-gradient(circle,rgba(124,58,237,0.06) 0%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-block;padding:4px 12px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:20px;font-size:11px;font-family:var(--mono);color:var(--accent);letter-spacing:1px;margin-bottom:16px;}
+.hero h1{font-family:var(--display);font-size:42px;font-weight:800;line-height:1.1;margin-bottom:12px;}
+.hero h1 span{color:var(--accent);}
+.hero p{color:var(--muted);font-size:14px;max-width:600px;}
+.hero-stats{display:flex;gap:32px;margin-top:28px;}
+.stat{text-align:center;}
+.stat-num{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--accent);}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+
+/* SEARCH */
+.search-bar{margin:0 48px;padding:20px 0;border-bottom:1px solid var(--border);}
+.search-input{width:100%;padding:12px 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--sans);font-size:14px;outline:none;transition:border .2s;}
+.search-input:focus{border-color:var(--accent);}
+.search-input::placeholder{color:var(--muted);}
+
+/* CONTENT */
+.content{padding:0 48px 80px;}
+
+/* SECTION */
+.section{margin-top:48px;}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:28px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.unit-badge{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;font-family:var(--mono);font-size:12px;font-weight:700;}
+.u1{background:rgba(0,212,255,0.15);color:var(--accent);}
+.u2{background:rgba(124,58,237,0.15);color:#a78bfa;}
+.u3{background:rgba(16,185,129,0.15);color:var(--accent3);}
+.u4{background:rgba(245,158,11,0.15);color:var(--accent4);}
+.u5{background:rgba(239,68,68,0.15);color:var(--accent5);}
+.upyq{background:rgba(236,72,153,0.15);color:#f472b6;}
+.section-title{font-family:var(--display);font-size:22px;font-weight:700;}
+.section-hours{font-size:11px;color:var(--muted);font-family:var(--mono);margin-left:auto;padding:3px 10px;border:1px solid var(--border);border-radius:4px;}
+
+/* TOPIC CARD */
+.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden;transition:border .2s;}
+.topic-card:hover{border-color:rgba(0,212,255,0.3);}
+.topic-header{padding:18px 24px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;}
+.topic-title{font-family:var(--display);font-size:16px;font-weight:600;}
+.topic-meta{display:flex;align-items:center;gap:10px;}
+.pyq-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-family:var(--mono);background:rgba(236,72,153,0.15);color:#f472b6;border:1px solid rgba(236,72,153,0.3);}
+.marks-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-family:var(--mono);background:rgba(245,158,11,0.12);color:var(--accent4);border:1px solid rgba(245,158,11,0.25);}
+.chevron{transition:transform .3s;color:var(--muted);font-size:18px;}
+.topic-body{display:none;padding:0 24px 24px;border-top:1px solid var(--border);}
+.topic-body.open{display:block;}
+.topic-body p{color:#94a3b8;margin-bottom:12px;}
+.topic-body h4{font-family:var(--display);font-size:14px;font-weight:600;color:var(--accent);margin:16px 0 6px;}
+.topic-body ul{padding-left:20px;color:#94a3b8;}
+.topic-body li{margin-bottom:6px;}
+.topic-body strong{color:var(--text);}
+.topic-body .formula{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px 16px;color:var(--accent3);font-size:13px;margin:12px 0;}
+.topic-body table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;}
+.topic-body th{background:var(--surface2);color:var(--accent);padding:10px 14px;text-align:left;font-family:var(--mono);font-size:11px;border:1px solid var(--border);}
+.topic-body td{padding:9px 14px;border:1px solid var(--border);color:#94a3b8;}
+.topic-body tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+
+/* DIAGRAM */
+.diagram-wrap{margin:20px 0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.diagram-label{padding:8px 16px;font-size:11px;font-family:var(--mono);color:var(--muted);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+.diagram-label::before{content:'◉';color:var(--accent);}
+.diagram-label::after{content:'';flex:1;}
+.diagram-inner{padding:16px;overflow-x:auto;}
+.diagram-inner svg{display:block;margin:auto;}
+
+/* PYQ SECTION */
+.pyq-card{background:var(--surface);border:1px solid rgba(236,72,153,0.3);border-radius:12px;margin-bottom:16px;overflow:hidden;}
+.pyq-card-header{padding:14px 20px;background:rgba(236,72,153,0.05);border-bottom:1px solid rgba(236,72,153,0.15);display:flex;align-items:center;gap:10px;}
+.pyq-year{font-family:var(--mono);font-size:11px;color:#f472b6;padding:2px 8px;border:1px solid rgba(236,72,153,0.3);border-radius:4px;}
+.pyq-q{font-size:13px;color:var(--text);font-weight:500;}
+.pyq-body{padding:16px 20px;}
+.pyq-ans-label{font-size:10px;font-family:var(--mono);color:var(--accent3);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;color:var(--text);}
+
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  .hamburger{display:block;}
+  .hero{padding:60px 24px 32px;}
+  .content{padding:0 20px 60px;}
+  .search-bar{margin:0 20px;}
+  .hero h1{font-size:28px;}
+}
+
+/* TABS for PYQ */
+.tabs{display:flex;gap:4px;margin-bottom:16px;padding:4px;background:var(--surface2);border-radius:8px;width:fit-content;}
+.tab{padding:6px 16px;border-radius:6px;font-size:12px;font-family:var(--mono);cursor:pointer;color:var(--muted);transition:all .2s;}
+.tab.active{background:var(--accent);color:#000;font-weight:700;}
+
+/* Highlight box */
+.highlight-box{border-left:3px solid var(--accent);background:rgba(0,212,255,0.05);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px;color:#94a3b8;}
+.highlight-box.green{border-left-color:var(--accent3);background:rgba(16,185,129,0.05);}
+.highlight-box.amber{border-left-color:var(--accent4);background:rgba(245,158,11,0.05);}
+.highlight-box.purple{border-left-color:#a78bfa;background:rgba(124,58,237,0.05);}
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">GIS Study Guide</div>
+    <div class="sidebar-sub">BATU Lonere · BTCOE604A</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Units</div>
+    <a class="nav-item" onclick="goTo('unit1')">Unit 1 · Basics of GIS</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-gis')">↳ What is GIS?</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-components')">↳ Components of GIS</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-vector')">↳ Vector Data Types</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-raster')">↳ Raster Data Models</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-tin')">↳ TIN Data Model</a>
+    <a class="nav-item" onclick="goTo('unit2')">Unit 2 · Data Models</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-nonspatial')">↳ Non-Spatial Attributes</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-compression')">↳ Compression Techniques</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-formats')">↳ Raster File Formats</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-spatialdb')">↳ Spatial DB Systems</a>
+    <a class="nav-item" onclick="goTo('unit3')">Unit 3 · Processing</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-preprocess')">↳ Pre-processing</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-projection')">↳ Map Projections</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-interpolation')">↳ Interpolation</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-resolution')">↳ Resolutions</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-dem')">↳ DEM</a>
+    <a class="nav-item" onclick="goTo('unit4')">Unit 4 · Quality &amp; Analysis</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-quality')">↳ Quality Assessment</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-analysis')">↳ GIS Analysis</a>
+    <a class="nav-item" onclick="goTo('unit5')">Unit 5 · Applications</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-errors')">↳ Errors in GIS</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-mapelements')">↳ Key Elements of Map</a>
+    <a class="nav-item nav-sub" onclick="goTo('t-overlay')">↳ Vector Overlay</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">PYQs</div>
+    <a class="nav-item" onclick="goTo('pyq-section')">All PYQs (2022–2024)</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">BTCOE604A · SEM VI · CSE</div>
+  <h1>Geographic<br><span>Information Systems</span></h1>
+  <p>Complete study guide for BATU Lonere — all 5 units, detailed answers, diagrams, and PYQs from 2022, 2023 &amp; 2024.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Units</div></div>
+    <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Topics</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">PYQ Papers</div></div>
+    <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Diagrams</div></div>
+  </div>
+</div>
+
+<div class="search-bar">
+  <input class="search-input" type="text" placeholder="🔍  Search topics, questions, keywords..." oninput="searchTopics(this.value)">
+</div>
+
+<div class="content" id="content">
+
+<!-- ===================== UNIT 1 ===================== -->
+<div class="section" id="unit1">
+  <div class="section-header">
+    <div class="unit-badge u1">U1</div>
+    <div class="section-title">Unit 1 — Basics of GIS</div>
+    <div class="section-hours">6 Hours</div>
+  </div>
+
+  <!-- GIS Definition -->
+  <div class="topic-card" id="t-gis">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">What is Geographic Information System (GIS)?</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <h4>Definition</h4>
+      <p>A <strong>Geographic Information System (GIS)</strong> is a computer-based system designed to capture, store, manipulate, analyze, manage, and display all types of geographically referenced data. It integrates hardware, software, data, people, and procedures to help organizations make informed, location-based decisions.</p>
+      <div class="highlight-box">
+        <strong>Dueker &amp; Kjerne:</strong> "GIS is a system of hardware, software, data, people, organizations and institutional arrangements for collecting, storing, analyzing and disseminating information about areas of the earth."
+      </div>
+      <p>In simple terms, GIS is a <strong>smart map</strong> — it not only displays WHERE things are, but also WHAT they are, WHY they are there, and WHAT WILL HAPPEN if conditions change.</p>
+
+      <h4>Application Areas of GIS</h4>
+      <table>
+        <tr><th>Domain</th><th>Application</th></tr>
+        <tr><td>Urban Planning</td><td>Land use mapping, infrastructure planning, zoning</td></tr>
+        <tr><td>Environment</td><td>Forest monitoring, pollution tracking, disaster management</td></tr>
+        <tr><td>Agriculture</td><td>Soil mapping, crop yield prediction, irrigation planning</td></tr>
+        <tr><td>Transportation</td><td>Route optimization, traffic analysis, logistics</td></tr>
+        <tr><td>Health</td><td>Disease mapping, epidemiology, hospital accessibility</td></tr>
+        <tr><td>Military</td><td>Target analysis, battlefield mapping, logistics</td></tr>
+        <tr><td>Utilities</td><td>Power grid, water pipeline, telecom network management</td></tr>
+        <tr><td>Geology</td><td>Mineral exploration, earthquake risk mapping</td></tr>
+      </table>
+
+      <div class="diagram-wrap">
+        <div class="diagram-label">GIS Application Areas Overview</div>
+        <div class="diagram-inner">
+          <svg width="640" height="300" viewBox="0 0 640 300">
+            <defs><marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#00d4ff" stroke-width="1.5"/></marker></defs>
+            <!-- Center -->
+            <ellipse cx="320" cy="150" rx="68" ry="40" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1.5"/>
+            <text x="320" y="145" text-anchor="middle" font-family="Syne" font-size="13" fill="#00d4ff" font-weight="700">GIS</text>
+            <text x="320" y="162" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#94a3b8">Applications</text>
+            <!-- Nodes -->
+            <g>
+              <rect x="30" y="20" width="120" height="36" rx="8" fill="rgba(124,58,237,0.15)" stroke="#7c3aed" stroke-width="0.8"/>
+              <text x="90" y="43" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#a78bfa">Urban Planning</text>
+              <line x1="150" y1="38" x2="255" y2="120" stroke="#7c3aed" stroke-width="0.8" marker-end="url(#a1)" opacity="0.6"/>
+            </g>
+            <g>
+              <rect x="490" y="20" width="120" height="36" rx="8" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="0.8"/>
+              <text x="550" y="43" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#10b981">Environment</text>
+              <line x1="490" y1="38" x2="388" y2="120" stroke="#10b981" stroke-width="0.8" marker-end="url(#a1)" opacity="0.6"/>
+            </g>
+            <g>
+              <rect x="30" y="130" width="120" height="36" rx="8" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="0.8"/>
+              <text x="90" y="153" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#f59e0b">Agriculture</text>
+              <line x1="150" y1="148" x2="252" y2="150" stroke="#f59e0b" stroke-width="0.8" marker-end="url(#a1)" opacity="0.6"/>
+            </g>
+            <g>
+              <rect x="490" y="130" width="120" height="36" rx="8" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="0.8"/>
+              <text x="550" y="153" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#ef4444">Transport</text>
+              <line x1="490" y1="148" x2="388" y2="150" stroke="#ef4444" stroke-width="0.8" marker-end="url(#a1)" opacity="0.6"/>
+            </g>
+            <g>
+              <rect x="30" y="240" width="120" height="36" rx="8" fill="rgba(236,72,153,0.15)" stroke="#ec4899" stroke-width="0.8"/>
+              <text x="90" y="263" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#f472b6">Health/Medical</text>
+              <line x1="150" y1="258" x2="255" y2="180" stroke="#ec4899" stroke-width="0.8" marker-end="url(#a1)" opacity="0.6"/>
+            </g>
+            <g>
+              <rect x="490" y="240" width="120" height="36" rx="8" fill="rgba(20,184,166,0.15)" stroke="#14b8a6" stroke-width="0.8"/>
+              <text x="550" y="263" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#2dd4bf">Military/Defense</text>
+              <line x1="490" y1="258" x2="385" y2="180" stroke="#14b8a6" stroke-width="0.8" marker-end="url(#a1)" opacity="0.6"/>
+            </g>
+            <g>
+              <rect x="260" y="245" width="160" height="36" rx="8" fill="rgba(99,102,241,0.15)" stroke="#6366f1" stroke-width="0.8"/>
+              <text x="340" y="268" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#818cf8">Utility Management</text>
+              <line x1="340" y1="245" x2="340" y2="190" stroke="#6366f1" stroke-width="0.8" marker-end="url(#a1)" opacity="0.6"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Components -->
+  <div class="topic-card" id="t-components">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Components of GIS</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>GIS consists of <strong>5 major components</strong> that work together to form a complete functional system for spatial data management.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Five Components of GIS</div>
+        <div class="diagram-inner">
+          <svg width="640" height="260" viewBox="0 0 640 260">
+            <defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#00d4ff" stroke-width="1.5"/></marker></defs>
+            <!-- Center -->
+            <ellipse cx="320" cy="130" rx="60" ry="38" fill="rgba(0,212,255,0.18)" stroke="#00d4ff" stroke-width="1.5"/>
+            <text x="320" y="126" text-anchor="middle" font-family="Syne" font-size="13" fill="#00d4ff" font-weight="700">GIS</text>
+            <text x="320" y="143" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#94a3b8">System</text>
+            <!-- Hardware -->
+            <rect x="20" y="30" width="110" height="50" rx="8" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="0.8"/>
+            <text x="75" y="52" text-anchor="middle" font-family="Syne" font-size="12" fill="#00d4ff" font-weight="600">Hardware</text>
+            <text x="75" y="68" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">CPU, Scanner, GPS</text>
+            <line x1="130" y1="55" x2="262" y2="115" stroke="#00d4ff" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+            <!-- Software -->
+            <rect x="510" y="30" width="110" height="50" rx="8" fill="rgba(124,58,237,0.12)" stroke="#7c3aed" stroke-width="0.8"/>
+            <text x="565" y="52" text-anchor="middle" font-family="Syne" font-size="12" fill="#a78bfa" font-weight="600">Software</text>
+            <text x="565" y="68" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">ArcGIS, QGIS</text>
+            <line x1="510" y1="55" x2="378" y2="115" stroke="#7c3aed" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+            <!-- Data -->
+            <rect x="20" y="180" width="110" height="50" rx="8" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="75" y="202" text-anchor="middle" font-family="Syne" font-size="12" fill="#10b981" font-weight="600">Data</text>
+            <text x="75" y="218" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Spatial + Attribute</text>
+            <line x1="130" y1="205" x2="262" y2="155" stroke="#10b981" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+            <!-- People -->
+            <rect x="510" y="180" width="110" height="50" rx="8" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="0.8"/>
+            <text x="565" y="202" text-anchor="middle" font-family="Syne" font-size="12" fill="#f59e0b" font-weight="600">People</text>
+            <text x="565" y="218" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Analysts, Users</text>
+            <line x1="510" y1="205" x2="378" y2="155" stroke="#f59e0b" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+            <!-- Methods -->
+            <rect x="265" y="218" width="110" height="34" rx="8" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="0.8"/>
+            <text x="320" y="235" text-anchor="middle" font-family="Syne" font-size="12" fill="#ef4444" font-weight="600">Methods</text>
+            <text x="320" y="248" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Procedures &amp; Workflows</text>
+            <line x1="320" y1="218" x2="320" y2="168" stroke="#ef4444" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+          </svg>
+        </div>
+      </div>
+      <h4>1. Hardware</h4>
+      <p><strong>Input:</strong> Digitizers, Scanners, GPS receivers, Remote sensing satellites. <strong>Processing:</strong> Workstations, Servers. <strong>Output:</strong> Plotters, Monitors, External storage.</p>
+      <h4>2. Software</h4>
+      <p>Provides tools to store, analyze, and display geographic data. Examples: ArcGIS (commercial), QGIS (open source), MapInfo, GRASS GIS, PostGIS.</p>
+      <h4>3. Data</h4>
+      <p>Most critical component. <strong>Spatial data</strong> — location coordinates (points, lines, polygons). <strong>Attribute data</strong> — descriptive properties (name, population, area).</p>
+      <h4>4. People</h4>
+      <p>GIS Specialists (analysts), Database Administrators, End Users (planners, government officials), Programmers (custom app developers).</p>
+      <h4>5. Methods / Procedures</h4>
+      <p>Rules and workflows for data collection, analysis, map production standards, and quality control procedures.</p>
+    </div>
+  </div>
+
+  <!-- Vector Data -->
+  <div class="topic-card" id="t-vector">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Types of Vector Data</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023</span>
+        <span class="marks-tag">6–8 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p><strong>Vector data</strong> represents geographic features using geometric shapes (points, lines, polygons) defined by coordinate pairs (X,Y). It is precise, compact, and ideal for discrete features.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Three Types of Vector Data</div>
+        <div class="diagram-inner">
+          <svg width="640" height="230" viewBox="0 0 640 230">
+            <!-- Point -->
+            <rect x="20" y="20" width="185" height="200" rx="10" fill="rgba(0,212,255,0.06)" stroke="#00d4ff" stroke-width="0.8"/>
+            <text x="112" y="44" text-anchor="middle" font-family="Syne" font-size="13" fill="#00d4ff" font-weight="700">Point (0D)</text>
+            <text x="112" y="60" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#64748b">Single coordinate (X,Y)</text>
+            <circle cx="112" cy="115" r="10" fill="rgba(0,212,255,0.4)" stroke="#00d4ff" stroke-width="1.5"/>
+            <circle cx="80" cy="140" r="7" fill="rgba(0,212,255,0.25)" stroke="#00d4ff" stroke-width="1"/>
+            <circle cx="145" cy="145" r="8" fill="rgba(0,212,255,0.3)" stroke="#00d4ff" stroke-width="1"/>
+            <text x="112" y="185" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">City, Well, Hospital</text>
+            <text x="112" y="200" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#64748b">(72.87, 19.07)</text>
+            <!-- Line -->
+            <rect x="225" y="20" width="185" height="200" rx="10" fill="rgba(16,185,129,0.06)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="318" y="44" text-anchor="middle" font-family="Syne" font-size="13" fill="#10b981" font-weight="700">Line (1D)</text>
+            <text x="318" y="60" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#64748b">Connected vertices</text>
+            <polyline points="248,160 275,120 305,135 340,100 380,115 400,80" stroke="#10b981" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="248" cy="160" r="4" fill="#10b981"/>
+            <circle cx="275" cy="120" r="3" fill="#10b981" opacity="0.6"/>
+            <circle cx="305" cy="135" r="3" fill="#10b981" opacity="0.6"/>
+            <circle cx="340" cy="100" r="3" fill="#10b981" opacity="0.6"/>
+            <circle cx="380" cy="115" r="3" fill="#10b981" opacity="0.6"/>
+            <circle cx="400" cy="80" r="4" fill="#10b981"/>
+            <text x="318" y="185" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Road, River, Contour</text>
+            <text x="318" y="200" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Has: Length only</text>
+            <!-- Polygon -->
+            <rect x="430" y="20" width="185" height="200" rx="10" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="0.8"/>
+            <text x="522" y="44" text-anchor="middle" font-family="Syne" font-size="13" fill="#f59e0b" font-weight="700">Polygon (2D)</text>
+            <text x="522" y="60" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#64748b">Closed boundary</text>
+            <polygon points="490,90 560,85 590,140 560,170 490,165 460,130" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="2"/>
+            <text x="522" y="133" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#f59e0b">District Area</text>
+            <text x="522" y="185" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">District, Lake, Building</text>
+            <text x="522" y="200" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Has: Area + Perimeter</text>
+          </svg>
+        </div>
+      </div>
+      <h4>1. Point Data</h4>
+      <p>Represents a <strong>single location</strong> with coordinates (X, Y). No dimension (0D). Used for features too small for their scale. Examples: cities on small-scale map, wells, hospitals, GPS waypoints.</p>
+      <h4>2. Line / Polyline Data</h4>
+      <p>A <strong>series of connected points</strong> forming a linear feature. Has length (1D) but no area. The start and end points are different. Examples: roads, railways, rivers, contour lines, pipelines.</p>
+      <h4>3. Polygon Data</h4>
+      <p>A <strong>closed shape</strong> with three or more vertices where start = end point. Has both area and perimeter (2D). Examples: country boundaries, lakes, forests, building footprints, land parcels.</p>
+      <table>
+        <tr><th>Type</th><th>Dimension</th><th>Properties</th><th>Examples</th></tr>
+        <tr><td>Point</td><td>0D</td><td>Location only</td><td>Well, City, Hospital</td></tr>
+        <tr><td>Line</td><td>1D</td><td>Length</td><td>Road, River, Railway</td></tr>
+        <tr><td>Polygon</td><td>2D</td><td>Area + Perimeter</td><td>District, Lake, Forest</td></tr>
+      </table>
+      <h4>Elements of Vector Data (PYQ 2023)</h4>
+      <ul>
+        <li><strong>Nodes:</strong> Start and end points of a line/arc</li>
+        <li><strong>Vertices:</strong> Intermediate points along a line</li>
+        <li><strong>Arcs/Edges:</strong> Line segments connecting nodes</li>
+        <li><strong>Polygons:</strong> Closed regions formed by arcs</li>
+        <li><strong>Attributes:</strong> Non-spatial data associated with features</li>
+        <li><strong>Topology:</strong> Spatial relationships between features</li>
+        <li><strong>Coordinates:</strong> X, Y (and optionally Z) values</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Raster -->
+  <div class="topic-card" id="t-raster">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Raster Data Model &amp; Types</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023 2024</span>
+        <span class="marks-tag">6–8 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>A <strong>raster data model</strong> represents geographic space as a regular <strong>grid of cells (pixels)</strong>, where each cell holds a single value representing an attribute at that location.</p>
+      <div class="highlight-box">Key Characteristics: Cell (pixel) · Cell Size (Resolution) · Cell Value · Extent (Bounding Box) · Rows &amp; Columns · Bands · NoData Value · Coordinate Reference System
+      </div>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Raster Grid Structure</div>
+        <div class="diagram-inner">
+          <svg width="640" height="260" viewBox="0 0 640 260">
+            <!-- Grid -->
+            <g opacity="0.9">
+              <rect x="30" y="30" width="280" height="220" rx="4" fill="none" stroke="#1e2d45" stroke-width="1"/>
+              <!-- Rows -->
+              <line x1="30" y1="74" x2="310" y2="74" stroke="#1e2d45" stroke-width="0.6"/>
+              <line x1="30" y1="118" x2="310" y2="118" stroke="#1e2d45" stroke-width="0.6"/>
+              <line x1="30" y1="162" x2="310" y2="162" stroke="#1e2d45" stroke-width="0.6"/>
+              <line x1="30" y1="206" x2="310" y2="206" stroke="#1e2d45" stroke-width="0.6"/>
+              <!-- Cols -->
+              <line x1="86" y1="30" x2="86" y2="250" stroke="#1e2d45" stroke-width="0.6"/>
+              <line x1="142" y1="30" x2="142" y2="250" stroke="#1e2d45" stroke-width="0.6"/>
+              <line x1="198" y1="30" x2="198" y2="250" stroke="#1e2d45" stroke-width="0.6"/>
+              <line x1="254" y1="30" x2="254" y2="250" stroke="#1e2d45" stroke-width="0.6"/>
+              <!-- Cell values -->
+              <text x="58" y="57" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#7c3aed">5</text>
+              <text x="114" y="57" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#7c3aed">5</text>
+              <text x="170" y="57" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#00d4ff">8</text>
+              <text x="226" y="57" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#10b981">3</text>
+              <text x="282" y="57" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#10b981">3</text>
+              <text x="58" y="101" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#7c3aed">5</text>
+              <text x="114" y="101" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#00d4ff">8</text>
+              <text x="170" y="101" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#00d4ff">8</text>
+              <text x="226" y="101" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#f59e0b">6</text>
+              <text x="282" y="101" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#10b981">3</text>
+              <text x="58" y="145" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#f59e0b">6</text>
+              <text x="114" y="145" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#f59e0b">6</text>
+              <text x="170" y="145" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#f59e0b">6</text>
+              <text x="226" y="145" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#ef4444">9</text>
+              <text x="282" y="145" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#ef4444">9</text>
+              <text x="58" y="189" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#10b981">3</text>
+              <text x="114" y="189" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#f59e0b">6</text>
+              <text x="170" y="189" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#ef4444">9</text>
+              <text x="226" y="189" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#ef4444">9</text>
+              <text x="282" y="189" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#ef4444">9</text>
+              <text x="58" y="233" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#10b981">3</text>
+              <text x="114" y="233" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#10b981">3</text>
+              <text x="170" y="233" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#f59e0b">6</text>
+              <text x="226" y="233" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#ef4444">9</text>
+              <text x="282" y="233" text-anchor="middle" font-family="Space Mono" font-size="11" fill="#ef4444">9</text>
+              <!-- Highlighted cell -->
+              <rect x="142" y="118" width="56" height="44" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1.5"/>
+            </g>
+            <!-- Labels -->
+            <text x="170" y="255" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#64748b">Row 3, Col 3 → Value: 6</text>
+            <!-- Legend -->
+            <rect x="340" y="30" width="280" height="220" rx="8" fill="rgba(17,24,39,0.5)" stroke="#1e2d45" stroke-width="0.8"/>
+            <text x="480" y="55" text-anchor="middle" font-family="Syne" font-size="13" fill="#00d4ff" font-weight="700">Elements of Raster</text>
+            <circle cx="368" cy="85" r="5" fill="rgba(0,212,255,0.4)" stroke="#00d4ff"/>
+            <text x="382" y="89" font-family="DM Sans" font-size="12" fill="#94a3b8"><tspan font-weight="500" fill="#e2e8f0">Cell/Pixel</tspan> — basic unit</text>
+            <circle cx="368" cy="113" r="5" fill="rgba(124,58,237,0.4)" stroke="#7c3aed"/>
+            <text x="382" y="117" font-family="DM Sans" font-size="12" fill="#94a3b8"><tspan font-weight="500" fill="#e2e8f0">Resolution</tspan> — cell size</text>
+            <circle cx="368" cy="141" r="5" fill="rgba(16,185,129,0.4)" stroke="#10b981"/>
+            <text x="382" y="145" font-family="DM Sans" font-size="12" fill="#94a3b8"><tspan font-weight="500" fill="#e2e8f0">Cell Value</tspan> — attribute</text>
+            <circle cx="368" cy="169" r="5" fill="rgba(245,158,11,0.4)" stroke="#f59e0b"/>
+            <text x="382" y="173" font-family="DM Sans" font-size="12" fill="#94a3b8"><tspan font-weight="500" fill="#e2e8f0">Extent</tspan> — bounding box</text>
+            <circle cx="368" cy="197" r="5" fill="rgba(239,68,68,0.4)" stroke="#ef4444"/>
+            <text x="382" y="201" font-family="DM Sans" font-size="12" fill="#94a3b8"><tspan font-weight="500" fill="#e2e8f0">NoData</tspan> — missing = -9999</text>
+            <circle cx="368" cy="225" r="5" fill="rgba(99,102,241,0.4)" stroke="#6366f1"/>
+            <text x="382" y="229" font-family="DM Sans" font-size="12" fill="#94a3b8"><tspan font-weight="500" fill="#e2e8f0">Bands</tspan> — RGB, multispectral</text>
+          </svg>
+        </div>
+      </div>
+
+      <h4>Advantages of Raster Data</h4>
+      <ul>
+        <li>Simple data structure — easy to analyze</li>
+        <li>Compatible with satellite and aerial imagery</li>
+        <li>Efficient for surface/continuous data analysis (slope, aspect)</li>
+        <li>Easy overlay operations</li>
+        <li>Supports spatial modeling easily</li>
+      </ul>
+      <h4>Disadvantages of Raster Data</h4>
+      <ul>
+        <li>Large file sizes — high storage requirement</li>
+        <li>Resolution-dependent — lower resolution = less accuracy</li>
+        <li>Cannot represent sharp or irregular boundaries well</li>
+        <li>Network analysis is difficult in raster</li>
+        <li>Loss of precision with coarser resolution</li>
+      </ul>
+
+      <h4>Raster vs Vector Comparison</h4>
+      <table>
+        <tr><th>Feature</th><th>Raster</th><th>Vector</th></tr>
+        <tr><td>Representation</td><td>Grid of cells</td><td>Points, Lines, Polygons</td></tr>
+        <tr><td>Storage</td><td>High</td><td>Low</td></tr>
+        <tr><td>Accuracy</td><td>Resolution-dependent</td><td>High</td></tr>
+        <tr><td>Best For</td><td>Continuous surfaces</td><td>Discrete features</td></tr>
+        <tr><td>Example</td><td>Satellite image, DEM</td><td>Road map, boundary</td></tr>
+        <tr><td>Analysis</td><td>Surface analysis</td><td>Network analysis</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- TIN -->
+  <div class="topic-card" id="t-tin">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">TIN Data Model (Triangulated Irregular Network)</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>A <strong>TIN (Triangulated Irregular Network)</strong> is a vector-based 3D terrain model formed by a network of non-overlapping triangles. Each triangle has three nodes with X, Y, Z (elevation) coordinates connected using <strong>Delaunay Triangulation</strong>.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">TIN Structure — Nodes, Edges &amp; Faces</div>
+        <div class="diagram-inner">
+          <svg width="640" height="260" viewBox="0 0 640 260">
+            <defs>
+              <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#00d4ff" stroke-width="1.5"/></marker>
+            </defs>
+            <!-- TIN triangles -->
+            <g opacity="0.9">
+              <polygon points="80,220 200,80 320,200" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="1.5"/>
+              <polygon points="200,80 320,200 400,60" fill="rgba(124,58,237,0.12)" stroke="#7c3aed" stroke-width="1.5"/>
+              <polygon points="320,200 400,60 500,180" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5"/>
+              <polygon points="80,220 320,200 200,240" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="1.2"/>
+              <polygon points="400,60 500,180 560,80" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1.2"/>
+              <!-- Nodes -->
+              <circle cx="80" cy="220" r="7" fill="#00d4ff" opacity="0.9"/>
+              <circle cx="200" cy="80" r="7" fill="#00d4ff" opacity="0.9"/>
+              <circle cx="320" cy="200" r="7" fill="#00d4ff" opacity="0.9"/>
+              <circle cx="400" cy="60" r="7" fill="#00d4ff" opacity="0.9"/>
+              <circle cx="500" cy="180" r="7" fill="#00d4ff" opacity="0.9"/>
+              <circle cx="200" cy="240" r="5" fill="#64748b" opacity="0.7"/>
+              <circle cx="560" cy="80" r="5" fill="#64748b" opacity="0.7"/>
+              <!-- Node labels Z values -->
+              <text x="68" y="215" text-anchor="end" font-family="Space Mono" font-size="10" fill="#00d4ff">P1(z=45)</text>
+              <text x="196" y="72" text-anchor="middle" font-family="Space Mono" font-size="10" fill="#00d4ff">P2(z=120)</text>
+              <text x="332" y="196" text-anchor="start" font-family="Space Mono" font-size="10" fill="#00d4ff">P3(z=60)</text>
+              <text x="406" y="55" text-anchor="start" font-family="Space Mono" font-size="10" fill="#00d4ff">P4(z=150)</text>
+              <text x="510" y="178" text-anchor="start" font-family="Space Mono" font-size="10" fill="#00d4ff">P5(z=80)</text>
+              <!-- Triangle labels -->
+              <text x="190" y="180" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Face 1</text>
+              <text x="305" y="130" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#a78bfa">Face 2</text>
+              <text x="410" y="145" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#10b981">Face 3</text>
+            </g>
+            <!-- Legend -->
+            <rect x="480" y="20" width="148" height="100" rx="8" fill="rgba(17,24,39,0.7)" stroke="#1e2d45"/>
+            <text x="554" y="40" text-anchor="middle" font-family="Syne" font-size="11" fill="#e2e8f0" font-weight="600">TIN Elements</text>
+            <circle cx="498" cy="60" r="5" fill="#00d4ff"/>
+            <text x="510" y="64" font-family="DM Sans" font-size="11" fill="#94a3b8">Nodes (X,Y,Z)</text>
+            <line x1="492" y1="82" x2="516" y2="82" stroke="#7c3aed" stroke-width="1.5"/>
+            <text x="524" y="86" font-family="DM Sans" font-size="11" fill="#94a3b8">Edges (TIN lines)</text>
+            <polygon points="492,98 510,92 528,100" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1"/>
+            <text x="540" y="100" font-family="DM Sans" font-size="11" fill="#94a3b8">Faces (triangles)</text>
+          </svg>
+        </div>
+      </div>
+      <h4>Structure of TIN</h4>
+      <table>
+        <tr><th>Element</th><th>Description</th></tr>
+        <tr><td>Nodes</td><td>Points with X, Y, Z coordinates (elevation values)</td></tr>
+        <tr><td>Edges</td><td>Lines connecting adjacent nodes (triangle sides)</td></tr>
+        <tr><td>Faces</td><td>Triangular surfaces formed by three nodes</td></tr>
+      </table>
+      <h4>Delaunay Triangulation</h4>
+      <p>Algorithm used to build TIN — ensures no point lies inside the circumcircle of any triangle, maximizing equilateral triangles and avoiding long thin shapes.</p>
+      <h4>TIN vs DEM vs Raster</h4>
+      <table>
+        <tr><th>Feature</th><th>TIN</th><th>DEM (Raster)</th><th>Vector</th></tr>
+        <tr><td>Data Type</td><td>Vector</td><td>Raster</td><td>Vector</td></tr>
+        <tr><td>Resolution</td><td>Variable</td><td>Fixed</td><td>—</td></tr>
+        <tr><td>Breaklines</td><td>Supported</td><td>Not directly</td><td>—</td></tr>
+        <tr><td>Best For</td><td>Terrain modeling</td><td>Surface analysis</td><td>Features</td></tr>
+        <tr><td>Storage</td><td>Efficient</td><td>High</td><td>Low</td></tr>
+      </table>
+      <h4>Applications of TIN</h4>
+      <ul>
+        <li>Terrain/3D surface modeling (hills, valleys, mountains)</li>
+        <li>Flood prediction and watershed analysis</li>
+        <li>Civil engineering — road and building design</li>
+        <li>Volume calculation (cut and fill in construction)</li>
+        <li>Military — line-of-sight analysis</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== UNIT 2 ===================== -->
+<div class="section" id="unit2">
+  <div class="section-header">
+    <div class="unit-badge u2">U2</div>
+    <div class="section-title">Unit 2 — Data Models &amp; Databases</div>
+    <div class="section-hours">6 Hours</div>
+  </div>
+
+  <!-- Non-spatial -->
+  <div class="topic-card" id="t-nonspatial">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Non-Spatial Data Attributes &amp; Types</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2023 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p><strong>Non-spatial data</strong> (attribute data) describes the properties or characteristics of geographic features. It answers the question "WHAT is it?" while spatial data answers "WHERE is it?"</p>
+      <h4>Types of Non-Spatial Attribute Data</h4>
+      <table>
+        <tr><th>Type</th><th>Definition</th><th>Order</th><th>Example</th></tr>
+        <tr><td><strong>Nominal</strong></td><td>Categories with no ranking</td><td>No order</td><td>Land use: Forest, Urban, Water</td></tr>
+        <tr><td><strong>Ordinal</strong></td><td>Categories with ranking</td><td>Has order</td><td>Road class: Primary, Secondary, Local</td></tr>
+        <tr><td><strong>Interval</strong></td><td>Numeric, equal intervals, no true zero</td><td>Yes + diff</td><td>Temperature: 20°C, 30°C</td></tr>
+        <tr><td><strong>Ratio</strong></td><td>Numeric with true zero</td><td>Yes + ratio</td><td>Population, Distance, Area</td></tr>
+      </table>
+      <div class="highlight-box amber">
+        <strong>Significance in GIS Analysis:</strong> Nominal → classification maps | Ordinal → priority ranking | Interval → temperature analysis | Ratio → population density, distance buffers
+      </div>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Non-Spatial Data Types Hierarchy</div>
+        <div class="diagram-inner">
+          <svg width="640" height="160" viewBox="0 0 640 160">
+            <rect x="20" y="40" width="130" height="90" rx="8" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="0.8"/>
+            <text x="85" y="65" text-anchor="middle" font-family="Syne" font-size="12" fill="#00d4ff" font-weight="700">Nominal</text>
+            <text x="85" y="83" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Names/Categories</text>
+            <text x="85" y="100" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Land use type</text>
+            <text x="85" y="116" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#64748b">No order</text>
+            <rect x="170" y="30" width="130" height="100" rx="8" fill="rgba(124,58,237,0.1)" stroke="#7c3aed" stroke-width="0.8"/>
+            <text x="235" y="55" text-anchor="middle" font-family="Syne" font-size="12" fill="#a78bfa" font-weight="700">Ordinal</text>
+            <text x="235" y="73" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Ranked categories</text>
+            <text x="235" y="90" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Road class</text>
+            <text x="235" y="107" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#64748b">Has order</text>
+            <rect x="320" y="20" width="130" height="110" rx="8" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="385" y="45" text-anchor="middle" font-family="Syne" font-size="12" fill="#10b981" font-weight="700">Interval</text>
+            <text x="385" y="63" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Equal spacing</text>
+            <text x="385" y="80" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Temperature</text>
+            <text x="385" y="97" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#64748b">No true zero</text>
+            <rect x="470" y="10" width="140" height="120" rx="8" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="0.8"/>
+            <text x="540" y="35" text-anchor="middle" font-family="Syne" font-size="12" fill="#f59e0b" font-weight="700">Ratio</text>
+            <text x="540" y="53" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">True zero exists</text>
+            <text x="540" y="70" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Population, Area</text>
+            <text x="540" y="87" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#64748b">Most powerful</text>
+            <text x="540" y="104" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Distance, Weight</text>
+            <!-- Arrow showing power -->
+            <text x="320" y="150" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#64748b">← Least powerful &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Most powerful →</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compression -->
+  <div class="topic-card" id="t-compression">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Raster Data Compression Techniques</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023 2024</span>
+        <span class="marks-tag">6–8 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>Raster data files can be very large. <strong>Compression techniques</strong> reduce storage requirements while maintaining data usability. The main techniques are:</p>
+
+      <h4>1. Run-Length Encoding (RLE)</h4>
+      <p>Stores consecutive cells with the <strong>same value</strong> as a single record (value, count) instead of repeating them.</p>
+      <div class="formula">
+        Original: 1,1,1,1,2,2,3,3,3,3,3<br>
+        RLE:      (1×4), (2×2), (3×5) → saves 4 values
+      </div>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Run-Length Encoding (RLE)</div>
+        <div class="diagram-inner">
+          <svg width="600" height="130" viewBox="0 0 600 130">
+            <!-- Original row -->
+            <text x="10" y="30" font-family="Syne" font-size="12" fill="#94a3b8" font-weight="600">Original:</text>
+            <g>
+              <rect x="90" y="15" width="36" height="30" fill="rgba(0,212,255,0.2)" stroke="#00d4ff" stroke-width="0.8"/>
+              <text x="108" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#00d4ff">1</text>
+              <rect x="126" y="15" width="36" height="30" fill="rgba(0,212,255,0.2)" stroke="#00d4ff" stroke-width="0.8"/>
+              <text x="144" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#00d4ff">1</text>
+              <rect x="162" y="15" width="36" height="30" fill="rgba(0,212,255,0.2)" stroke="#00d4ff" stroke-width="0.8"/>
+              <text x="180" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#00d4ff">1</text>
+              <rect x="198" y="15" width="36" height="30" fill="rgba(124,58,237,0.2)" stroke="#7c3aed" stroke-width="0.8"/>
+              <text x="216" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#a78bfa">2</text>
+              <rect x="234" y="15" width="36" height="30" fill="rgba(124,58,237,0.2)" stroke="#7c3aed" stroke-width="0.8"/>
+              <text x="252" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#a78bfa">2</text>
+              <rect x="270" y="15" width="36" height="30" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="0.8"/>
+              <text x="288" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#10b981">3</text>
+              <rect x="306" y="15" width="36" height="30" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="0.8"/>
+              <text x="324" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#10b981">3</text>
+              <rect x="342" y="15" width="36" height="30" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="0.8"/>
+              <text x="360" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#10b981">3</text>
+              <rect x="378" y="15" width="36" height="30" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="0.8"/>
+              <text x="396" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#10b981">3</text>
+              <rect x="414" y="15" width="36" height="30" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="0.8"/>
+              <text x="432" y="34" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#10b981">3</text>
+            </g>
+            <!-- Arrow -->
+            <text x="300" y="72" text-anchor="middle" font-family="DM Sans" font-size="18" fill="#64748b">↓ RLE Compressed</text>
+            <!-- Encoded -->
+            <text x="10" y="110" font-family="Syne" font-size="12" fill="#94a3b8" font-weight="600">Encoded:</text>
+            <rect x="90" y="92" width="80" height="30" rx="6" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="0.8"/>
+            <text x="130" y="111" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#00d4ff">1 × 3</text>
+            <rect x="185" y="92" width="80" height="30" rx="6" fill="rgba(124,58,237,0.15)" stroke="#7c3aed" stroke-width="0.8"/>
+            <text x="225" y="111" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#a78bfa">2 × 2</text>
+            <rect x="280" y="92" width="80" height="30" rx="6" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="320" y="111" text-anchor="middle" font-family="Space Mono" font-size="12" fill="#10b981">3 × 5</text>
+            <text x="420" y="111" font-family="DM Sans" font-size="11" fill="#64748b">← 10 values → 3 records</text>
+          </svg>
+        </div>
+      </div>
+
+      <h4>2. Chain Coding</h4>
+      <p>Represents boundaries of features by recording the <strong>direction of movement</strong> from one cell to the next using direction codes (0–7 for 8 directions). Used to compress line/boundary features efficiently.</p>
+      <div class="formula">
+        Directions: 0=E, 1=NE, 2=N, 3=NW, 4=W, 5=SW, 6=S, 7=SE<br>
+        A polygon boundary: Start(2,1) → 0,0,2,2,4,4,6,6 (chain code)
+      </div>
+
+      <h4>3. Block Encoding (Block Code)</h4>
+      <p>Similar to RLE but works in <strong>2D</strong>. Divides the area into the largest possible square blocks of uniform value. More efficient for areas with large uniform zones.</p>
+      <div class="formula">
+        Record format: (Row, Col, BlockSize, Value)<br>
+        Example: (1,1,2,"Forest") = 2×2 block starting at row 1, col 1, all Forest
+      </div>
+
+      <h4>4. Quadtree Encoding</h4>
+      <p>Hierarchical subdivision — the entire raster is recursively divided into <strong>4 quadrants</strong> until each quadrant has a uniform value. Most complex but most efficient for sparse data.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Quadtree Division</div>
+        <div class="diagram-inner">
+          <svg width="400" height="200" viewBox="0 0 400 200">
+            <!-- Level 0: Full grid -->
+            <rect x="20" y="20" width="160" height="160" fill="none" stroke="#7c3aed" stroke-width="2"/>
+            <text x="100" y="190" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#a78bfa">Level 0 (not uniform)</text>
+            <!-- Level 1: Divide into 4 -->
+            <rect x="20" y="20" width="80" height="80" fill="rgba(0,212,255,0.2)" stroke="#00d4ff" stroke-width="1"/>
+            <text x="60" y="65" text-anchor="middle" font-family="Space Mono" font-size="14" fill="#00d4ff" font-weight="700">1</text>
+            <text x="60" y="82" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#64748b">uniform</text>
+            <rect x="100" y="20" width="80" height="80" fill="none" stroke="#f59e0b" stroke-width="1"/>
+            <text x="140" y="55" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#f59e0b">divide again</text>
+            <rect x="20" y="100" width="80" height="80" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+            <text x="60" y="145" text-anchor="middle" font-family="Space Mono" font-size="14" fill="#10b981" font-weight="700">3</text>
+            <text x="60" y="162" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#64748b">uniform</text>
+            <rect x="100" y="100" width="80" height="80" fill="rgba(124,58,237,0.2)" stroke="#7c3aed" stroke-width="1"/>
+            <text x="140" y="145" text-anchor="middle" font-family="Space Mono" font-size="14" fill="#a78bfa" font-weight="700">2</text>
+            <text x="140" y="162" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#64748b">uniform</text>
+            <!-- Subdivided NE quadrant -->
+            <rect x="100" y="20" width="40" height="40" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="0.8"/>
+            <text x="120" y="44" text-anchor="middle" font-family="Space Mono" font-size="10" fill="#00d4ff">1</text>
+            <rect x="140" y="20" width="40" height="40" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="0.8"/>
+            <text x="160" y="44" text-anchor="middle" font-family="Space Mono" font-size="10" fill="#f59e0b">4</text>
+            <rect x="100" y="60" width="40" height="40" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="0.8"/>
+            <text x="120" y="84" text-anchor="middle" font-family="Space Mono" font-size="10" fill="#ef4444">5</text>
+            <rect x="140" y="60" width="40" height="40" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="160" y="84" text-anchor="middle" font-family="Space Mono" font-size="10" fill="#10b981">3</text>
+            <!-- Arrow and label -->
+            <text x="230" y="100" font-family="DM Sans" font-size="12" fill="#94a3b8">← Quadtree splits</text>
+            <text x="230" y="118" font-family="DM Sans" font-size="12" fill="#94a3b8">non-uniform cells</text>
+            <text x="230" y="136" font-family="DM Sans" font-size="12" fill="#94a3b8">into 4 quadrants</text>
+            <text x="230" y="154" font-family="DM Sans" font-size="12" fill="#64748b">until uniform value</text>
+          </svg>
+        </div>
+      </div>
+
+      <h4>Comparison</h4>
+      <table>
+        <tr><th>Technique</th><th>Works on</th><th>Best For</th><th>Complexity</th></tr>
+        <tr><td>RLE</td><td>1D rows</td><td>Uniform horizontal regions</td><td>Low</td></tr>
+        <tr><td>Chain Coding</td><td>Boundaries</td><td>Line/polygon outlines</td><td>Medium</td></tr>
+        <tr><td>Block Encoding</td><td>2D blocks</td><td>Large uniform zones</td><td>Medium</td></tr>
+        <tr><td>Quadtree</td><td>Hierarchical 2D</td><td>Sparse/variable data</td><td>High</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Raster Formats -->
+  <div class="topic-card" id="t-formats">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Raster Data File Formats</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>Raster data is stored in various file formats depending on the use case. The three most common formats used in GIS are:</p>
+      <h4>1. GeoTIFF (.tif)</h4>
+      <p><strong>Most widely used</strong> raster format in GIS. It is a standard TIFF image file with embedded geospatial metadata (coordinate system, projection, extent). Supports single and multi-band data.</p>
+      <div class="highlight-box">Use cases: Satellite imagery, DEMs, aerial photography, remote sensing outputs</div>
+      <h4>2. JPEG2000 (.jp2)</h4>
+      <p>Advanced compression format based on wavelet technology. Provides high compression ratios with minimal quality loss. Supports georeferencing through world files or internal metadata.</p>
+      <div class="highlight-box green">Use cases: Web mapping, large satellite image archives, efficient storage</div>
+      <h4>3. ASCII Grid (.asc)</h4>
+      <p>Simple text-based raster format. Header contains metadata (rows, cols, cell size, nodata value), followed by a matrix of cell values. Easy to edit manually but no compression.</p>
+      <div class="highlight-box amber">Use cases: DEM exchange, hydrological modeling, academic research data sharing</div>
+      <h4>Other Common Formats</h4>
+      <table>
+        <tr><th>Format</th><th>Extension</th><th>Key Feature</th></tr>
+        <tr><td>Erdas Imagine</td><td>.img</td><td>Used in remote sensing, supports large files</td></tr>
+        <tr><td>PNG</td><td>.png</td><td>Lossless, used for map tiles</td></tr>
+        <tr><td>NetCDF</td><td>.nc</td><td>Climate/scientific data, multi-dimensional</td></tr>
+        <tr><td>HDF5</td><td>.h5</td><td>Hierarchical, NASA satellite data</td></tr>
+        <tr><td>GRID (Esri)</td><td>no ext</td><td>ArcGIS native raster format</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Spatial DB -->
+  <div class="topic-card" id="t-spatialdb">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Spatial Database Systems &amp; Types</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>A <strong>Spatial Database System</strong> stores, manages, and queries geographically referenced data using spatial data types, spatial indexing, and spatial query functions beyond what standard databases offer.</p>
+      <h4>Types of Spatial Database Systems</h4>
+      <table>
+        <tr><th>System</th><th>Type</th><th>Best For</th></tr>
+        <tr><td>PostGIS</td><td>Open Source (PostgreSQL extension)</td><td>Advanced spatial analysis, web GIS</td></tr>
+        <tr><td>Oracle Spatial</td><td>Commercial RDBMS</td><td>Enterprise GIS, large organizations</td></tr>
+        <tr><td>Microsoft SQL Server Spatial</td><td>Commercial RDBMS</td><td>Windows-based GIS solutions</td></tr>
+        <tr><td>SpatiaLite</td><td>Open Source (SQLite extension)</td><td>Mobile GIS, lightweight apps</td></tr>
+        <tr><td>MySQL Spatial</td><td>Open Source RDBMS</td><td>Web applications with basic GIS</td></tr>
+        <tr><td>MongoDB (GeoJSON)</td><td>NoSQL Document DB</td><td>JSON-based spatial queries</td></tr>
+        <tr><td>Geodatabase (Esri)</td><td>Proprietary</td><td>ArcGIS ecosystem, enterprise</td></tr>
+      </table>
+      <h4>Key Terminologies</h4>
+      <ul>
+        <li><strong>Geometry:</strong> Shape and location stored as WKT/WKB (e.g., POINT(72.87 19.07))</li>
+        <li><strong>Spatial Index:</strong> R-Tree, Quad-Tree for fast spatial searches</li>
+        <li><strong>Spatial Functions:</strong> ST_Area(), ST_Buffer(), ST_Distance(), ST_Intersects()</li>
+        <li><strong>Topology:</strong> Rules defining spatial relationships (Contains, Within, Touches)</li>
+        <li><strong>CRS:</strong> Coordinate Reference System (WGS84/EPSG:4326)</li>
+        <li><strong>Primary/Foreign Key:</strong> Table relationships for joined attribute data</li>
+        <li><strong>Metadata:</strong> Data about the spatial dataset (source, accuracy, date)</li>
+      </ul>
+      <div class="highlight-box purple"><strong>Best for GIS Analysis:</strong> PostGIS is considered most suitable for GIS analysis due to its open-source nature, full support for OGC standards, powerful spatial functions, and seamless integration with QGIS and web GIS frameworks.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== UNIT 3 ===================== -->
+<div class="section" id="unit3">
+  <div class="section-header">
+    <div class="unit-badge u3">U3</div>
+    <div class="section-title">Unit 3 — Processing &amp; Analysis Techniques</div>
+    <div class="section-hours">6 Hours</div>
+  </div>
+
+  <!-- Pre-processing -->
+  <div class="topic-card" id="t-preprocess">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Pre-processing of Spatial Datasets</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023</span>
+        <span class="marks-tag">6–8 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p><strong>Pre-processing</strong> involves preparing raw spatial data before analysis to ensure accuracy, consistency, and compatibility. It is a critical step in GIS workflows.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Pre-processing Pipeline</div>
+        <div class="diagram-inner">
+          <svg width="640" height="120" viewBox="0 0 640 120">
+            <defs><marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#10b981" stroke-width="1.5"/></marker></defs>
+            <g>
+              <rect x="10" y="35" width="90" height="50" rx="8" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="0.8"/>
+              <text x="55" y="57" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#00d4ff" font-weight="600">Data</text>
+              <text x="55" y="71" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Collection</text>
+            </g>
+            <line x1="100" y1="60" x2="118" y2="60" stroke="#10b981" stroke-width="1" marker-end="url(#a4)"/>
+            <g>
+              <rect x="118" y="35" width="90" height="50" rx="8" fill="rgba(124,58,237,0.12)" stroke="#7c3aed" stroke-width="0.8"/>
+              <text x="163" y="57" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#a78bfa" font-weight="600">Format</text>
+              <text x="163" y="71" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Conversion</text>
+            </g>
+            <line x1="208" y1="60" x2="226" y2="60" stroke="#10b981" stroke-width="1" marker-end="url(#a4)"/>
+            <g>
+              <rect x="226" y="35" width="90" height="50" rx="8" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="0.8"/>
+              <text x="271" y="57" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#10b981" font-weight="600">Projection</text>
+              <text x="271" y="71" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Transform</text>
+            </g>
+            <line x1="316" y1="60" x2="334" y2="60" stroke="#10b981" stroke-width="1" marker-end="url(#a4)"/>
+            <g>
+              <rect x="334" y="35" width="90" height="50" rx="8" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="0.8"/>
+              <text x="379" y="57" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#f59e0b" font-weight="600">Error</text>
+              <text x="379" y="71" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Correction</text>
+            </g>
+            <line x1="424" y1="60" x2="442" y2="60" stroke="#10b981" stroke-width="1" marker-end="url(#a4)"/>
+            <g>
+              <rect x="442" y="35" width="90" height="50" rx="8" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="0.8"/>
+              <text x="487" y="57" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#ef4444" font-weight="600">Resampling</text>
+              <text x="487" y="71" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">&amp; Clipping</text>
+            </g>
+            <line x1="532" y1="60" x2="550" y2="60" stroke="#10b981" stroke-width="1" marker-end="url(#a4)"/>
+            <g>
+              <rect x="550" y="35" width="80" height="50" rx="8" fill="rgba(20,184,166,0.12)" stroke="#14b8a6" stroke-width="0.8"/>
+              <text x="590" y="57" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#2dd4bf" font-weight="600">Ready</text>
+              <text x="590" y="71" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Dataset</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <h4>Steps in Pre-processing</h4>
+      <ul>
+        <li><strong>1. Data Collection &amp; Import:</strong> Gathering data from GPS, satellites, digitizers, existing maps</li>
+        <li><strong>2. Format Conversion:</strong> Converting between formats (e.g., shapefile to GeoJSON, paper map to digital)</li>
+        <li><strong>3. Coordinate System / Projection:</strong> Transforming data to a common CRS for all layers</li>
+        <li><strong>4. Error Detection &amp; Correction:</strong> Identifying and fixing geometric errors (gaps, overlaps, dangles, sliver polygons)</li>
+        <li><strong>5. Resampling:</strong> Changing raster cell size to match other layers</li>
+        <li><strong>6. Clipping/Masking:</strong> Extracting data for specific study area extent</li>
+        <li><strong>7. Attribute Cleaning:</strong> Fixing null values, duplicate records, inconsistent naming</li>
+        <li><strong>8. Topology Validation:</strong> Ensuring spatial relationships are correct</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Map Projections -->
+  <div class="topic-card" id="t-projection">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Map Projections in GIS</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023 2024</span>
+        <span class="marks-tag">6–8 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>A <strong>map projection</strong> is a mathematical method of representing the curved 3D surface of the Earth on a flat 2D map. Every projection causes some distortion of shape, area, distance, or direction.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Three Types of Projection Surfaces</div>
+        <div class="diagram-inner">
+          <svg width="640" height="200" viewBox="0 0 640 200">
+            <!-- Cylindrical -->
+            <rect x="30" y="20" width="170" height="170" rx="8" fill="rgba(0,212,255,0.06)" stroke="#00d4ff" stroke-width="0.8"/>
+            <text x="115" y="45" text-anchor="middle" font-family="Syne" font-size="13" fill="#00d4ff" font-weight="700">Cylindrical</text>
+            <ellipse cx="115" cy="100" rx="35" ry="50" fill="none" stroke="#00d4ff" stroke-width="1.2"/>
+            <rect x="80" y="50" width="70" height="100" fill="none" stroke="#00d4ff" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.5"/>
+            <text x="115" y="168" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#94a3b8">Mercator, UTM</text>
+            <text x="115" y="182" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Good for navigation</text>
+            <!-- Conic -->
+            <rect x="220" y="20" width="190" height="170" rx="8" fill="rgba(16,185,129,0.06)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="315" y="45" text-anchor="middle" font-family="Syne" font-size="13" fill="#10b981" font-weight="700">Conic</text>
+            <ellipse cx="315" cy="105" rx="38" ry="50" fill="none" stroke="#10b981" stroke-width="1.2"/>
+            <polygon points="315,45 277,155 353,155" fill="none" stroke="#10b981" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.5"/>
+            <text x="315" y="168" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#94a3b8">Albers, Lambert</text>
+            <text x="315" y="182" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Good for mid-latitudes</text>
+            <!-- Azimuthal/Planar -->
+            <rect x="430" y="20" width="185" height="170" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="0.8"/>
+            <text x="522" y="45" text-anchor="middle" font-family="Syne" font-size="13" fill="#f59e0b" font-weight="700">Azimuthal/Planar</text>
+            <ellipse cx="522" cy="105" rx="45" ry="50" fill="none" stroke="#f59e0b" stroke-width="1.2"/>
+            <ellipse cx="522" cy="105" rx="22" ry="25" fill="none" stroke="#f59e0b" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.5"/>
+            <line x1="522" y1="55" x2="522" y2="155" stroke="#f59e0b" stroke-width="0.5" stroke-dasharray="3 2" opacity="0.5"/>
+            <line x1="477" y1="105" x2="567" y2="105" stroke="#f59e0b" stroke-width="0.5" stroke-dasharray="3 2" opacity="0.5"/>
+            <text x="522" y="168" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#94a3b8">Stereographic</text>
+            <text x="522" y="182" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Good for polar regions</text>
+          </svg>
+        </div>
+      </div>
+      <h4>Classification by Preserved Property</h4>
+      <table>
+        <tr><th>Type</th><th>Preserves</th><th>Distorts</th><th>Example</th></tr>
+        <tr><td>Conformal</td><td>Shape (angles)</td><td>Area</td><td>Mercator, Lambert Conformal</td></tr>
+        <tr><td>Equal Area</td><td>Area</td><td>Shape</td><td>Albers, Sinusoidal</td></tr>
+        <tr><td>Equidistant</td><td>Distance</td><td>Area, shape</td><td>Azimuthal Equidistant</td></tr>
+        <tr><td>Azimuthal</td><td>Direction</td><td>Shape, area</td><td>Gnomonic</td></tr>
+        <tr><td>Compromise</td><td>None perfectly</td><td>All slightly</td><td>Robinson, Winkel Tripel</td></tr>
+      </table>
+      <h4>Common Projections Used in GIS</h4>
+      <ul>
+        <li><strong>WGS84 (EPSG:4326):</strong> Global GPS standard, geographic coordinates</li>
+        <li><strong>UTM (Universal Transverse Mercator):</strong> Local/regional mapping, minimizes distortion</li>
+        <li><strong>Mercator:</strong> Web maps (Google Maps), navigation</li>
+        <li><strong>Lambert Conformal Conic:</strong> Aviation charts, US state plane</li>
+        <li><strong>Polar Stereographic:</strong> Arctic/Antarctic mapping</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Interpolation -->
+  <div class="topic-card" id="t-interpolation">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Spatial Interpolation Techniques (IDW &amp; Kriging)</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p><strong>Spatial interpolation</strong> estimates unknown values at unsampled locations based on known values at surrounding sampled points. Essential for creating continuous surfaces from point data.</p>
+      <h4>1. Inverse Distance Weighting (IDW)</h4>
+      <p>IDW assumes nearby points have more influence than distant ones. The weight of each known point is <strong>inversely proportional to its distance</strong> from the unknown point.</p>
+      <div class="formula">
+        Z(x) = Σ [Z(xi) / d(x,xi)^p] / Σ [1 / d(x,xi)^p]<br>
+        where d = distance, p = power parameter (usually 2), Z = value
+      </div>
+      <div class="highlight-box">Best scenarios: Rainfall estimation, temperature interpolation, pollution mapping — where closer stations are more relevant</div>
+      <h4>2. Kriging</h4>
+      <p>Kriging is a <strong>geostatistical method</strong> that uses a semivariogram to model spatial autocorrelation. It provides the <strong>best linear unbiased estimate (BLUE)</strong> along with error estimates at each point.</p>
+      <div class="formula">
+        Z(x) = Σ λi · Z(xi)<br>
+        where λi = optimal weights derived from the semivariogram
+      </div>
+      <div class="highlight-box green">Best scenarios: Groundwater elevation, soil properties, mineral exploration — where spatial autocorrelation structure is known</div>
+      <h4>IDW vs Kriging Comparison</h4>
+      <table>
+        <tr><th>Feature</th><th>IDW</th><th>Kriging</th></tr>
+        <tr><td>Basis</td><td>Distance-weighted average</td><td>Geostatistical (semivariogram)</td></tr>
+        <tr><td>Error Estimate</td><td>No</td><td>Yes (prediction variance)</td></tr>
+        <tr><td>Complexity</td><td>Simple</td><td>Complex</td></tr>
+        <tr><td>Data requirement</td><td>Low</td><td>Needs spatial structure analysis</td></tr>
+        <tr><td>Best for</td><td>Smooth surfaces</td><td>Accurate scientific prediction</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Resolution -->
+  <div class="topic-card" id="t-resolution">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Types of Spatial Resolutions in GIS</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023</span>
+        <span class="marks-tag">6–8 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>Resolution in GIS refers to the <strong>level of detail</strong> in spatial data. There are four main types of resolution:</p>
+      <table>
+        <tr><th>Type</th><th>Definition</th><th>Examples</th></tr>
+        <tr><td><strong>Spatial Resolution</strong></td><td>Size of smallest feature detectable (pixel size on ground)</td><td>Landsat = 30m, Sentinel = 10m, Ikonos = 1m</td></tr>
+        <tr><td><strong>Spectral Resolution</strong></td><td>Number and width of wavelength bands captured</td><td>RGB (3 bands), Multispectral (8 bands), Hyperspectral (200+ bands)</td></tr>
+        <tr><td><strong>Temporal Resolution</strong></td><td>Frequency of data collection (revisit time)</td><td>Landsat = 16 days, MODIS = daily, SPOT = 26 days</td></tr>
+        <tr><td><strong>Radiometric Resolution</strong></td><td>Number of brightness levels per pixel (bit depth)</td><td>8-bit = 256 levels, 16-bit = 65536 levels</td></tr>
+      </table>
+      <div class="highlight-box">There is a trade-off: Higher spatial resolution → smaller coverage area → larger file size. Satellites balance all four resolutions based on their mission.</div>
+    </div>
+  </div>
+
+  <!-- DEM -->
+  <div class="topic-card" id="t-dem">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Digital Elevation Model (DEM)</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2023 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>A <strong>Digital Elevation Model (DEM)</strong> is a raster representation of terrain elevation — a digital 3D representation of the Earth's surface. Each cell contains the elevation value (Z) of that location above sea level.</p>
+      <div class="highlight-box">DEM vs DSM vs DTM: DEM = bare earth surface | DSM = surface including buildings and trees | DTM = terrain with drainage features</div>
+      <h4>Sources of DEM Data</h4>
+      <ul>
+        <li>SRTM (Shuttle Radar Topography Mission) — 30m / 90m resolution, free</li>
+        <li>ASTER GDEM — 30m resolution, global coverage, free</li>
+        <li>LiDAR — very high resolution (0.5m–5m), expensive</li>
+        <li>Photogrammetry from aerial photography</li>
+        <li>Digitized contour maps</li>
+      </ul>
+      <h4>Applications of DEM</h4>
+      <ul>
+        <li>Slope and aspect analysis</li>
+        <li>Watershed delineation and hydrological modeling</li>
+        <li>Flood inundation mapping</li>
+        <li>Viewshed analysis (line of sight)</li>
+        <li>Road and pipeline route planning</li>
+        <li>Volume calculation for excavation/fill</li>
+        <li>3D visualization and fly-through</li>
+        <li>Landslide susceptibility mapping</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== UNIT 4 ===================== -->
+<div class="section" id="unit4">
+  <div class="section-header">
+    <div class="unit-badge u4">U4</div>
+    <div class="section-title">Unit 4 — Quality Assessment &amp; GIS Analysis</div>
+    <div class="section-hours">6 Hours</div>
+  </div>
+
+  <div class="topic-card" id="t-quality">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Quality Assessment of GIS &amp; Freely Available DEMs</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p><strong>Quality assessment</strong> in GIS ensures that spatial data is accurate, consistent, and fit for its intended purpose. Poor quality data leads to incorrect analysis and decisions.</p>
+      <h4>Dimensions of GIS Data Quality</h4>
+      <table>
+        <tr><th>Dimension</th><th>Definition</th><th>How to Measure</th></tr>
+        <tr><td>Positional Accuracy</td><td>How close features are to true location</td><td>RMSE against GPS/survey</td></tr>
+        <tr><td>Attribute Accuracy</td><td>Correctness of non-spatial data</td><td>Field verification, cross-checking</td></tr>
+        <tr><td>Completeness</td><td>All required features present</td><td>Compare with reference dataset</td></tr>
+        <tr><td>Logical Consistency</td><td>Topological correctness</td><td>Topology rules validation</td></tr>
+        <tr><td>Temporal Accuracy</td><td>Data is current and up-to-date</td><td>Date of data collection</td></tr>
+        <tr><td>Lineage</td><td>History/source of data</td><td>Metadata documentation</td></tr>
+      </table>
+      <h4>Quality Assessment of Freely Available DEMs (SRTM, ASTER)</h4>
+      <ul>
+        <li><strong>Vertical Accuracy Check:</strong> Compare DEM elevations against known GPS benchmarks or surveyed points using RMSE</li>
+        <li><strong>Artifact Detection:</strong> Identify data voids (missing values), striping, speckle noise</li>
+        <li><strong>Resolution Adequacy:</strong> 30m SRTM vs 1m LiDAR — check if scale is suitable for the study</li>
+        <li><strong>Vegetation Bias:</strong> SRTM captures top of vegetation, not bare earth in forest areas</li>
+        <li><strong>Comparison with LiDAR:</strong> High-accuracy LiDAR used as reference ground truth</li>
+        <li><strong>Hydrological Plausibility:</strong> Check that rivers flow downhill, no flat sinks</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="topic-card" id="t-analysis">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Steps Involved in GIS Analysis</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>GIS analysis follows a systematic process to solve spatial problems and derive meaningful information from geographic data.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">GIS Analysis Workflow</div>
+        <div class="diagram-inner">
+          <svg width="620" height="100" viewBox="0 0 620 100">
+            <defs><marker id="a5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#f59e0b" stroke-width="1.5"/></marker></defs>
+            <rect x="5" y="25" width="85" height="50" rx="7" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="0.8"/>
+            <text x="47" y="46" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#00d4ff" font-weight="600">Problem</text>
+            <text x="47" y="60" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Definition</text>
+            <line x1="90" y1="50" x2="108" y2="50" stroke="#f59e0b" stroke-width="1" marker-end="url(#a5)"/>
+            <rect x="108" y="25" width="85" height="50" rx="7" fill="rgba(124,58,237,0.12)" stroke="#7c3aed" stroke-width="0.8"/>
+            <text x="150" y="46" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#a78bfa" font-weight="600">Data</text>
+            <text x="150" y="60" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Collection</text>
+            <line x1="193" y1="50" x2="211" y2="50" stroke="#f59e0b" stroke-width="1" marker-end="url(#a5)"/>
+            <rect x="211" y="25" width="85" height="50" rx="7" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="253" y="46" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#10b981" font-weight="600">Pre-</text>
+            <text x="253" y="60" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">processing</text>
+            <line x1="296" y1="50" x2="314" y2="50" stroke="#f59e0b" stroke-width="1" marker-end="url(#a5)"/>
+            <rect x="314" y="25" width="85" height="50" rx="7" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="0.8"/>
+            <text x="356" y="46" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#f59e0b" font-weight="600">Spatial</text>
+            <text x="356" y="60" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Analysis</text>
+            <line x1="399" y1="50" x2="417" y2="50" stroke="#f59e0b" stroke-width="1" marker-end="url(#a5)"/>
+            <rect x="417" y="25" width="85" height="50" rx="7" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="0.8"/>
+            <text x="459" y="46" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#ef4444" font-weight="600">Output /</text>
+            <text x="459" y="60" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Visualization</text>
+            <line x1="502" y1="50" x2="520" y2="50" stroke="#f59e0b" stroke-width="1" marker-end="url(#a5)"/>
+            <rect x="520" y="25" width="90" height="50" rx="7" fill="rgba(20,184,166,0.12)" stroke="#14b8a6" stroke-width="0.8"/>
+            <text x="565" y="46" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#2dd4bf" font-weight="600">Decision /</text>
+            <text x="565" y="60" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Reporting</text>
+          </svg>
+        </div>
+      </div>
+      <ul>
+        <li><strong>Step 1 — Problem Definition:</strong> Clearly define the spatial question/objective (e.g., find best site for a school)</li>
+        <li><strong>Step 2 — Data Collection:</strong> Gather relevant spatial and attribute data from multiple sources</li>
+        <li><strong>Step 3 — Data Pre-processing:</strong> Clean, convert, reproject, and validate the data</li>
+        <li><strong>Step 4 — Spatial Analysis:</strong> Apply overlays, buffers, queries, interpolation, network analysis</li>
+        <li><strong>Step 5 — Output/Visualization:</strong> Generate maps, charts, 3D views, reports</li>
+        <li><strong>Step 6 — Decision Making:</strong> Interpret results and make location-based decisions</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== UNIT 5 ===================== -->
+<div class="section" id="unit5">
+  <div class="section-header">
+    <div class="unit-badge u5">U5</div>
+    <div class="section-title">Unit 5 — Applications, Errors &amp; Maps</div>
+    <div class="section-hours">6 Hours</div>
+  </div>
+
+  <div class="topic-card" id="t-errors">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Errors in GIS Applications</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>Errors in GIS can occur at any stage — data collection, processing, or output. Identifying and minimizing errors is critical for reliable GIS analysis.</p>
+      <h4>Types of Errors in GIS</h4>
+      <table>
+        <tr><th>Error Type</th><th>Description</th><th>Example</th></tr>
+        <tr><td><strong>Positional Error</strong></td><td>Feature not in true geographic location</td><td>Road shifted by 50m from actual position</td></tr>
+        <tr><td><strong>Attribute Error</strong></td><td>Wrong or missing descriptive data</td><td>Population count incorrectly entered</td></tr>
+        <tr><td><strong>Topological Error</strong></td><td>Incorrect spatial relationships</td><td>Gaps, overlaps, sliver polygons, dangling nodes</td></tr>
+        <tr><td><strong>Scale Error</strong></td><td>Features not correctly scaled</td><td>Mixing 1:25000 and 1:250000 data</td></tr>
+        <tr><td><strong>Temporal Error</strong></td><td>Data from different time periods</td><td>Old road network with new satellite image</td></tr>
+        <tr><td><strong>Digitizing Error</strong></td><td>Manual input mistakes</td><td>Undershoot, overshoot, wrong feature type</td></tr>
+        <tr><td><strong>Projection Error</strong></td><td>Wrong CRS assigned or used</td><td>Data shifted due to wrong datum</td></tr>
+      </table>
+      <h4>Areas Where Errors Are Encountered</h4>
+      <ul>
+        <li><strong>Data Input:</strong> Digitizing errors, scanning artifacts, GPS measurement errors</li>
+        <li><strong>Data Processing:</strong> Resampling errors, interpolation inaccuracies, overlay errors</li>
+        <li><strong>Data Storage:</strong> Precision loss during format conversion</li>
+        <li><strong>Data Output:</strong> Map generalization, scale-related errors</li>
+        <li><strong>Application:</strong> Using wrong methodology for analysis</li>
+      </ul>
+      <h4>Impact on GIS Analysis</h4>
+      <p>Errors propagate through analysis — a positional error in one layer multiplies through overlay operations, leading to incorrect site selection, wrong boundary delineation, or flawed resource allocation decisions.</p>
+      <div class="highlight-box amber"><strong>Mitigation:</strong> Quality control checks at every stage, metadata documentation, cross-validation with field data, using appropriate scale data for analysis.</div>
+    </div>
+  </div>
+
+  <div class="topic-card" id="t-mapelements">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Key Elements of a Map</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2022 2023 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p>A map must contain certain essential elements to be useful and interpretable. These elements provide context and reference for the spatial information shown.</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Key Elements of a Map</div>
+        <div class="diagram-inner">
+          <svg width="600" height="300" viewBox="0 0 600 300">
+            <!-- Map body -->
+            <rect x="20" y="20" width="370" height="265" rx="8" fill="rgba(0,212,255,0.05)" stroke="#00d4ff" stroke-width="1"/>
+            <!-- Title -->
+            <rect x="30" y="28" width="350" height="30" rx="4" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="0.6"/>
+            <text x="205" y="47" text-anchor="middle" font-family="Syne" font-size="12" fill="#00d4ff" font-weight="700">MAP TITLE — Study Area Name</text>
+            <!-- Main map area -->
+            <rect x="30" y="65" width="220" height="150" rx="4" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
+            <text x="140" y="130" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#10b981">Main Map Body</text>
+            <text x="140" y="148" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Geographic Features</text>
+            <!-- Inset map -->
+            <rect x="260" y="65" width="110" height="80" rx="4" fill="rgba(124,58,237,0.08)" stroke="#7c3aed" stroke-width="0.6"/>
+            <text x="315" y="100" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#a78bfa">Inset / Location Map</text>
+            <!-- North arrow -->
+            <rect x="260" y="155" width="50" height="60" rx="4" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="0.6"/>
+            <text x="285" y="180" text-anchor="middle" font-family="DM Sans" font-size="22" fill="#f59e0b">↑</text>
+            <text x="285" y="205" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#f59e0b">N</text>
+            <!-- Scale bar -->
+            <rect x="320" y="155" width="50" height="60" rx="4" fill="rgba(239,68,68,0.08)" stroke="#ef4444" stroke-width="0.6"/>
+            <text x="345" y="180" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#ef4444">Scale Bar</text>
+            <text x="345" y="196" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#64748b">0——5km</text>
+            <!-- Legend -->
+            <rect x="30" y="225" width="340" height="50" rx="4" fill="rgba(20,184,166,0.08)" stroke="#14b8a6" stroke-width="0.6"/>
+            <text x="60" y="248" font-family="DM Sans" font-size="11" fill="#2dd4bf" font-weight="600">Legend/Key:</text>
+            <rect x="140" y="237" width="12" height="12" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="0.5"/>
+            <text x="158" y="248" font-family="DM Sans" font-size="10" fill="#94a3b8">Water</text>
+            <rect x="210" y="237" width="12" height="12" fill="rgba(16,185,129,0.5)" stroke="#10b981" stroke-width="0.5"/>
+            <text x="228" y="248" font-family="DM Sans" font-size="10" fill="#94a3b8">Forest</text>
+            <rect x="280" y="237" width="12" height="12" fill="rgba(245,158,11,0.5)" stroke="#f59e0b" stroke-width="0.5"/>
+            <text x="298" y="248" font-family="DM Sans" font-size="10" fill="#94a3b8">Urban</text>
+            <!-- Legend labels right side -->
+            <rect x="408" y="20" width="180" height="265" rx="8" fill="rgba(17,24,39,0.5)" stroke="#1e2d45"/>
+            <text x="498" y="45" text-anchor="middle" font-family="Syne" font-size="12" fill="#e2e8f0" font-weight="700">Map Elements</text>
+            <text x="420" y="72" font-family="DM Sans" font-size="11" fill="#00d4ff">① Title</text>
+            <text x="420" y="90" font-family="DM Sans" font-size="10" fill="#64748b">Name of map / area</text>
+            <text x="420" y="114" font-family="DM Sans" font-size="11" fill="#10b981">② Map Body</text>
+            <text x="420" y="132" font-family="DM Sans" font-size="10" fill="#64748b">Geographic content</text>
+            <text x="420" y="156" font-family="DM Sans" font-size="11" fill="#a78bfa">③ Inset Map</text>
+            <text x="420" y="174" font-family="DM Sans" font-size="10" fill="#64748b">Location reference</text>
+            <text x="420" y="198" font-family="DM Sans" font-size="11" fill="#f59e0b">④ North Arrow</text>
+            <text x="420" y="216" font-family="DM Sans" font-size="10" fill="#64748b">Orientation</text>
+            <text x="420" y="240" font-family="DM Sans" font-size="11" fill="#ef4444">⑤ Scale Bar</text>
+            <text x="420" y="258" font-family="DM Sans" font-size="10" fill="#64748b">Distance reference</text>
+            <text x="420" y="278" font-family="DM Sans" font-size="11" fill="#2dd4bf">⑥ Legend/Key</text>
+          </svg>
+        </div>
+      </div>
+      <h4>All Key Elements</h4>
+      <ul>
+        <li><strong>Title:</strong> Clearly identifies what the map represents</li>
+        <li><strong>Map Body:</strong> The actual geographic content with features</li>
+        <li><strong>Legend / Key:</strong> Explains symbols, colors, and patterns used</li>
+        <li><strong>North Arrow / Compass Rose:</strong> Shows orientation/direction</li>
+        <li><strong>Scale Bar / Representative Fraction:</strong> Shows distance relationship (e.g., 1:50,000)</li>
+        <li><strong>Inset / Location Map:</strong> Shows study area in regional context</li>
+        <li><strong>Graticule / Grid:</strong> Coordinate lines (latitude/longitude or UTM grid)</li>
+        <li><strong>Contour Lines:</strong> Lines connecting equal elevation points</li>
+        <li><strong>Data Source &amp; Date:</strong> Metadata about data origin and currency</li>
+        <li><strong>Author / Publisher:</strong> Who created the map and when</li>
+        <li><strong>Projection Information:</strong> Which map projection was used</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="topic-card" id="t-overlay">
+    <div class="topic-header" onclick="toggle(this)">
+      <div class="topic-title">Vector Overlay in Polygon (Impose, Stamp, Join, Compare)</div>
+      <div class="topic-meta">
+        <span class="pyq-tag">PYQ 2024</span>
+        <span class="marks-tag">6 Marks</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="topic-body">
+      <p><strong>Vector overlay</strong> is a GIS operation that combines two or more polygon layers to create a new layer containing the spatial and attribute characteristics of all input layers. It answers "what is at this location from multiple layers?"</p>
+      <div class="diagram-wrap">
+        <div class="diagram-label">Vector Overlay Types</div>
+        <div class="diagram-inner">
+          <svg width="620" height="240" viewBox="0 0 620 240">
+            <!-- Impose -->
+            <rect x="10" y="10" width="138" height="215" rx="8" fill="rgba(0,212,255,0.06)" stroke="#00d4ff" stroke-width="0.8"/>
+            <text x="79" y="32" text-anchor="middle" font-family="Syne" font-size="12" fill="#00d4ff" font-weight="700">Impose</text>
+            <rect x="30" y="45" width="80" height="60" rx="4" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1"/>
+            <rect x="50" y="65" width="60" height="60" rx="4" fill="rgba(124,58,237,0.15)" stroke="#7c3aed" stroke-width="1"/>
+            <text x="79" y="155" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Layer B placed</text>
+            <text x="79" y="170" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">over Layer A</text>
+            <text x="79" y="190" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Both layers kept</text>
+            <text x="79" y="208" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">unchanged</text>
+            <!-- Stamp -->
+            <rect x="160" y="10" width="138" height="215" rx="8" fill="rgba(16,185,129,0.06)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="229" y="32" text-anchor="middle" font-family="Syne" font-size="12" fill="#10b981" font-weight="700">Stamp</text>
+            <rect x="178" y="45" width="80" height="60" rx="4" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1"/>
+            <polygon points="180,85 260,60 260,105 180,105" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1.5"/>
+            <text x="229" y="155" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Layer B cuts into</text>
+            <text x="229" y="170" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Layer A shape</text>
+            <text x="229" y="190" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">B attributes added</text>
+            <text x="229" y="208" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">to A regions</text>
+            <!-- Join -->
+            <rect x="310" y="10" width="138" height="215" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="0.8"/>
+            <text x="379" y="32" text-anchor="middle" font-family="Syne" font-size="12" fill="#f59e0b" font-weight="700">Join</text>
+            <rect x="328" y="45" width="70" height="60" rx="4" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1"/>
+            <rect x="360" y="55" width="70" height="60" rx="4" fill="rgba(245,158,11,0.25)" stroke="#f59e0b" stroke-width="1.5"/>
+            <polygon points="360,75 398,65 398,90 360,90" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="0.8"/>
+            <text x="379" y="155" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Attributes from B</text>
+            <text x="379" y="170" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">added to A table</text>
+            <text x="379" y="190" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">No new polygon</text>
+            <text x="379" y="208" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">boundaries created</text>
+            <!-- Compare -->
+            <rect x="460" y="10" width="148" height="215" rx="8" fill="rgba(239,68,68,0.06)" stroke="#ef4444" stroke-width="0.8"/>
+            <text x="534" y="32" text-anchor="middle" font-family="Syne" font-size="12" fill="#ef4444" font-weight="700">Compare</text>
+            <rect x="475" y="45" width="70" height="60" rx="4" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1"/>
+            <rect x="510" y="55" width="70" height="60" rx="4" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <text x="534" y="155" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">Differences</text>
+            <text x="534" y="170" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">between layers</text>
+            <text x="534" y="190" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">are highlighted</text>
+            <text x="534" y="208" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#64748b">Change detection</text>
+          </svg>
+        </div>
+      </div>
+      <ul>
+        <li><strong>Impose:</strong> Layer B is placed over Layer A — both remain unchanged; used for visual inspection</li>
+        <li><strong>Stamp:</strong> Layer B is "stamped" into Layer A — B attributes are transferred to overlapping regions of A</li>
+        <li><strong>Join:</strong> Attributes from B are added to A's table based on spatial coincidence — no new boundaries created</li>
+        <li><strong>Compare:</strong> Spatial differences between two time-period layers are identified — used for change detection (e.g., deforestation mapping)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PYQ SECTION ===================== -->
+<div class="section" id="pyq-section">
+  <div class="section-header">
+    <div class="unit-badge upyq">PYQ</div>
+    <div class="section-title">Previous Year Questions — Quick Reference</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showPaper('2022',this)">Summer 2022</div>
+    <div class="tab" onclick="showPaper('2023',this)">Summer 2023</div>
+    <div class="tab" onclick="showPaper('2024',this)">Summer 2024</div>
+  </div>
+
+  <!-- 2022 -->
+  <div id="paper-2022" class="paper-set">
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q1</span><span class="pyq-q">Convert 39°25'30" to decimal degrees</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">Answer</div><div class="formula">DD = 39 + 25/60 + 30/3600 = 39 + 0.4167 + 0.0083 = <strong>39.4250°</strong></div></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q2A</span><span class="pyq-q">What is GIS? Enlist application areas [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "What is GIS?" topic above (Unit 1) for complete definition + 8 application areas with examples.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q2B</span><span class="pyq-q">TIN data model terminologies. Compare TIN with raster and vector [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "TIN Data Model" topic (Unit 1) — Nodes, Edges, Faces, Delaunay Triangulation + comparison table.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q2C</span><span class="pyq-q">Elaborate components of GIS [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Components of GIS" topic (Unit 1) — Hardware, Software, Data, People, Methods.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q3A</span><span class="pyq-q">What is Vector Data? Explain types in detail [8 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Types of Vector Data" topic (Unit 1) — Point, Line, Polygon with diagrams and examples.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q3B</span><span class="pyq-q">Advantages and disadvantages of raster data [8 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Raster Data Model" topic (Unit 1) — scroll to Advantages and Disadvantages sections.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q3C</span><span class="pyq-q">Raster data compression techniques with examples [8 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Raster Data Compression Techniques" topic (Unit 2) — RLE, Chain Coding, Block Encoding, Quadtree.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q4A</span><span class="pyq-q">Different map projection systems in GIS [8 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Map Projections in GIS" topic (Unit 3) — Cylindrical, Conic, Azimuthal + preserved properties table.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q4B</span><span class="pyq-q">Steps for pre-processing of spatial datasets [8 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Pre-processing of Spatial Datasets" topic (Unit 3) — 8-step pipeline with diagram.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2022 Q5</span><span class="pyq-q">Quality assessment of DEMs | Key elements of Map | Application errors in GIS [6 marks each]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topics</div><p style="color:#64748b;font-size:13px;">→ Refer: Unit 4 (Quality Assessment), Unit 5 (Key Elements of Map), Unit 5 (Errors in GIS) topics above.</p></div>
+    </div>
+  </div>
+
+  <!-- 2023 -->
+  <div id="paper-2023" class="paper-set" style="display:none;">
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q1A</span><span class="pyq-q">What is Vector Data? Explain types in detail [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Types of Vector Data" topic (Unit 1).</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q1B</span><span class="pyq-q">Differentiate between Raster and Vector data [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">Answer Summary</div><p style="color:#64748b;font-size:13px;">→ Refer: Comparison table in "Raster Data Model" topic (Unit 1) — includes 6 comparison points: Representation, Storage, Accuracy, Best For, Example, Analysis type.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q1C</span><span class="pyq-q">What is GIS? Application areas [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "What is GIS?" topic (Unit 1).</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q2A</span><span class="pyq-q">Non-spatial data attributes and their types [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Non-Spatial Data Attributes" topic (Unit 2) — Nominal, Ordinal, Interval, Ratio with examples.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q2B</span><span class="pyq-q">Explain Quadtree and Run-Length Encoding with examples [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Raster Data Compression Techniques" topic (Unit 2) — RLE section with formula example + Quadtree subdivision diagram.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q2C</span><span class="pyq-q">TIN data model with data tables [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "TIN Data Model" topic (Unit 1) — includes Nodes/Edges/Faces table, Delaunay triangulation, and TIN vs DEM comparison.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q3</span><span class="pyq-q">Resolution techniques | Spatial DB systems | Pre-processing steps [6 marks each]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topics</div><p style="color:#64748b;font-size:13px;">→ Refer: Unit 3 — Resolution Types, Spatial DB Systems, Pre-processing topics above.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q4C</span><span class="pyq-q">Write note on Digital Elevation Model [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Digital Elevation Model (DEM)" topic (Unit 3).</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2023 Q5C</span><span class="pyq-q">Which of these is spatial data? Justify [6 marks]</span></div>
+      <div class="pyq-body">
+        <div class="pyq-ans-label">Answer</div>
+        <p style="color:#94a3b8;font-size:13px;"><strong style="color:#e2e8f0;">a. Elevation of Mount Everest (8,849m)</strong> — Spatial: YES. It has a specific geographic location (lat/long of Everest summit) + elevation value (Z).</p>
+        <p style="color:#94a3b8;font-size:13px;"><strong style="color:#e2e8f0;">b. Depth of coal mine in Jharia</strong> — Spatial: YES. Jharia is a specific location + depth is a spatial attribute.</p>
+        <p style="color:#94a3b8;font-size:13px;"><strong style="color:#e2e8f0;">c. Minimum temperature in Delhi on 01/01/2023</strong> — Spatial: YES (Delhi is a location) + Temporal (date). This is spatiotemporal data.</p>
+        <p style="color:#94a3b8;font-size:13px;"><strong style="color:#e2e8f0;">d. Location (lat, long) of an oil well</strong> — Spatial: YES. This is the most purely spatial — it directly gives coordinates as spatial data.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2024 -->
+  <div id="paper-2024" class="paper-set" style="display:none;">
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q1A</span><span class="pyq-q">Explain GIS and key components [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "What is GIS?" + "Components of GIS" topics (Unit 1).</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q1B</span><span class="pyq-q">Compare raster vs vector. Advantages and disadvantages of each [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: Raster Data Model topic (Unit 1) — includes comparison table, advantages and disadvantages of both.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q1C</span><span class="pyq-q">What is TIN? Purpose and how it differs from raster [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "TIN Data Model" topic (Unit 1) — purpose, structure, and TIN vs DEM comparison table.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q2A</span><span class="pyq-q">Chain Coding and Block Encoding [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Raster Data Compression Techniques" topic (Unit 2) — Chain Coding with direction codes + Block Encoding with 2D record format.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q2B</span><span class="pyq-q">3 raster data file formats with key characteristics [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Raster Data File Formats" topic (Unit 2) — GeoTIFF, JPEG2000, ASCII Grid.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q2C</span><span class="pyq-q">Spatial database systems — types and functionalities [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Spatial Database Systems" topic (Unit 2) — PostGIS, Oracle Spatial, SpatiaLite, MySQL + key terminologies.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q3A</span><span class="pyq-q">IDW and Kriging interpolation with scenarios [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Spatial Interpolation Techniques" topic (Unit 3) — IDW formula, Kriging formula, best-case scenarios, and comparison table.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q3B</span><span class="pyq-q">DEM — definition, applications, how it differs from other models [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Digital Elevation Model (DEM)" topic (Unit 3) — definition, DEM vs DSM vs DTM, sources, applications.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q3C</span><span class="pyq-q">Types of map projections with application examples [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Map Projections in GIS" topic (Unit 3) — Cylindrical, Conic, Azimuthal + preserved properties + common projections table.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q4A</span><span class="pyq-q">Steps involved in GIS analysis [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Steps in GIS Analysis" topic (Unit 4) — 6-step workflow with diagram.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q4B</span><span class="pyq-q">Quality assessment of GIS [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Quality Assessment" topic (Unit 4) — 6 quality dimensions with table.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q5A</span><span class="pyq-q">Key elements of Map [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Key Elements of a Map" topic (Unit 5).</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q5B</span><span class="pyq-q">Vector overlay in polygon — impose, stamp, join, compare [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Vector Overlay in Polygon" topic (Unit 5) — all 4 types with diagram.</p></div>
+    </div>
+    <div class="pyq-card">
+      <div class="pyq-card-header"><span class="pyq-year">2024 Q5C</span><span class="pyq-q">Three types of errors in GIS and their impact [6 marks]</span></div>
+      <div class="pyq-body"><div class="pyq-ans-label">See Topic</div><p style="color:#64748b;font-size:13px;">→ Refer: "Errors in GIS" topic (Unit 5) — Positional, Attribute, Topological errors with impact analysis.</p></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end content -->
+</div><!-- end main -->
+
+<script>
+// Toggle topic body
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+}
+
+// Sidebar
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Scroll to section
+function goTo(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Auto open first card
+    const firstHeader = el.querySelector('.topic-header');
+    if (firstHeader) {
+      const body = firstHeader.nextElementSibling;
+      if (!body.classList.contains('open')) {
+        body.classList.add('open');
+        firstHeader.querySelector('.chevron').style.transform = 'rotate(90deg)';
+      }
+    }
+  }
+  // Close sidebar on mobile
+  if (window.innerWidth < 900) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+// PYQ tabs
+function showPaper(year, tab) {
+  document.querySelectorAll('.paper-set').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('paper-' + year).style.display = 'block';
+  tab.classList.add('active');
+}
+
+// Search
+function searchTopics(query) {
+  const q = query.toLowerCase().trim();
+  const cards = document.querySelectorAll('.topic-card');
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) || q === '' ? 'block' : 'none';
+  });
+}
+
+// Highlight active nav on scroll
+const sections = document.querySelectorAll('.section, .topic-card');
+const navItems = document.querySelectorAll('.nav-item');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navItems.forEach(n => {
+    n.classList.remove('active');
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(current)) n.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
