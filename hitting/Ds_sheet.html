@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusX DS Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;--bg4:#2e2e2e;
+  --border:#2e2e2e;--border2:#3a3a3a;
+  --text:#e8e8e8;--text2:#a0a0a0;--text3:#666;
+  --accent:#e85d04;--accent2:#f48c06;
+  --easy:#22c55e;--med:#f59e0b;--hard:#ef4444;
+  --yt:#ff0000;--cx:#7c3aed;
+  --radius:8px;--radius2:12px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+
+/* LAYOUT */
+.app{max-width:1100px;margin:0 auto;padding:0 20px 60px}
+
+/* HEADER */
+.header{padding:32px 0 24px;border-bottom:1px solid var(--border)}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.header h1{font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px}
+.header p{font-size:13px;color:var(--text2);margin-top:6px;max-width:600px}
+.header-actions{display:flex;gap:10px;align-items:center;flex-shrink:0}
+.btn{padding:7px 16px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;transition:all .15s}
+.btn:hover{background:var(--bg4);color:var(--text)}
+.btn-reset{border-color:#ef4444;color:#ef4444}
+.btn-reset:hover{background:#ef44441a}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:10px;align-items:center;padding:18px 0 16px;flex-wrap:wrap}
+.tabs-group{display:flex;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+.tab{padding:7px 16px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:transparent;font-family:inherit;transition:all .15s;white-space:nowrap}
+.tab.active{background:var(--bg4);color:#fff}
+.tab:hover:not(.active){color:var(--text)}
+.search-wrap{flex:1;min-width:200px;position:relative}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--text3)}
+.search{width:100%;padding:8px 12px 8px 34px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border .15s}
+.search:focus{border-color:var(--border2)}
+.search::placeholder{color:var(--text3)}
+.filter-select{padding:7px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);font-size:13px;font-family:inherit;cursor:pointer;outline:none}
+.filter-select:focus{border-color:var(--border2)}
+.filter-select option{background:var(--bg2)}
+
+/* PROGRESS CARD */
+.progress-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.pct-ring{width:64px;height:64px;flex-shrink:0;position:relative}
+.pct-ring svg{transform:rotate(-90deg)}
+.pct-ring .ring-bg{stroke:var(--bg4)}
+.pct-ring .ring-fill{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .6s ease}
+.pct-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.progress-info{flex:1}
+.progress-info h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px}
+.progress-counts{font-size:13px;color:var(--text2)}
+.progress-counts span{font-weight:600;color:#fff}
+.diff-stats{display:flex;gap:20px;flex-wrap:wrap}
+.diff-stat{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text2)}
+.diff-dot{width:9px;height:9px;border-radius:50%}
+.diff-stat b{color:#fff;font-weight:600}
+
+/* SECTION */
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);margin-bottom:10px;overflow:hidden;transition:border-color .15s}
+.section:hover{border-color:var(--border2)}
+.section-header{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;user-select:none}
+.section-header:hover .section-title{color:#fff}
+.chevron{width:18px;height:18px;flex-shrink:0;color:var(--text3);transition:transform .2s}
+.chevron.open{transform:rotate(90deg)}
+.section-title{font-size:15px;font-weight:600;color:var(--text);flex:1}
+.section-meta{display:flex;align-items:center;gap:14px}
+.sec-bar-wrap{width:120px;height:4px;background:var(--bg4);border-radius:99px;overflow:hidden}
+.sec-bar{height:4px;border-radius:99px;background:var(--accent);transition:width .4s}
+.sec-count{font-size:13px;color:var(--text2);min-width:40px;text-align:right}
+
+/* SUBSECTION */
+.subsection{border-top:1px solid var(--border)}
+.sub-header{display:flex;align-items:center;gap:12px;padding:12px 20px 12px 36px;cursor:pointer;user-select:none;background:var(--bg);transition:background .15s}
+.sub-header:hover{background:#141414}
+.sub-title{font-size:14px;font-weight:500;color:var(--text2);flex:1}
+.sub-header:hover .sub-title{color:var(--text)}
+.sub-meta{display:flex;align-items:center;gap:14px}
+.sub-bar-wrap{width:100px;height:3px;background:var(--bg4);border-radius:99px;overflow:hidden}
+.sub-bar{height:3px;border-radius:99px;background:#534AB7;transition:width .4s}
+.sub-count{font-size:12px;color:var(--text3);min-width:36px;text-align:right}
+
+/* TABLE */
+.topic-table{width:100%;border-collapse:collapse}
+.topic-table thead tr{background:var(--bg3)}
+.topic-table th{padding:10px 12px;font-size:11px;font-weight:600;color:var(--text3);text-align:left;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+.topic-table th:first-child{padding-left:52px}
+.topic-table td{padding:12px 12px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+.topic-table tr:last-child td{border-bottom:none}
+.topic-table tbody tr{transition:background .12s}
+.topic-table tbody tr:hover{background:var(--bg3)}
+.topic-table tbody tr.done-row{background:#0a2a12 !important;border-left:3px solid var(--easy)}
+.topic-table tbody tr.done-row:hover{background:#0d3016 !important}
+
+/* CHECKBOX */
+.cb-wrap{display:flex;align-items:center;justify-content:center;padding-left:20px}
+.cb{width:20px;height:20px;border-radius:5px;border:2px solid #555;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;position:relative;user-select:none}
+.cb:hover{border-color:var(--easy);background:#22c55e15}
+.cb.checked{background:var(--easy) !important;border-color:var(--easy) !important;box-shadow:0 0 0 3px #22c55e22}
+.cb.checked::after{content:"";position:absolute;width:6px;height:10px;border:2.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg);top:2px;left:5px}
+
+/* TOPIC NAME */
+.topic-name-cell{font-weight:500;color:var(--text)}
+.done-row .topic-name-cell{color:#6b9e78 !important;text-decoration:line-through !important;text-decoration-color:#4a8a5a !important}
+
+/* BADGES */
+.diff-badge{padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600}
+.diff-badge.easy{background:#052e0f;color:#22c55e}
+.diff-badge.med{background:#2d1d00;color:#f59e0b}
+.diff-badge.hard{background:#2a0808;color:#ef4444}
+
+/* LINKS */
+.link-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:500;text-decoration:none;cursor:pointer;transition:all .15s;border:none;font-family:inherit}
+.yt-btn{background:#1f0000;color:var(--yt);border:1px solid #3d0000}
+.yt-btn:hover{background:#2d0000;border-color:#ff0000}
+.cx-btn{background:#1a1130;color:#a78bfa;border:1px solid #2d1d5e}
+.cx-btn:hover{background:#221640;border-color:#7c3aed}
+.src-badge{font-size:10px;padding:2px 6px;border-radius:4px}
+.src-cx{background:#1a1130;color:#a78bfa}
+.src-my{background:#0a2010;color:#4ade80}
+
+/* TAG */
+.tag-pill{padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500}
+.tag-python{background:#1e1630;color:#a78bfa}
+.tag-pandas{background:#0a2010;color:#4ade80}
+.tag-numpy{background:#0a1e2a;color:#38bdf8}
+.tag-sql{background:#0d1f2d;color:#60a5fa}
+.tag-ml{background:#2d0c0c;color:#f87171}
+.tag-stats{background:#2d1a00;color:#fbbf24}
+.tag-viz{background:#0d2010;color:#34d399}
+.tag-eda{background:#1a1a0d;color:#d4d456}
+.tag-feat{background:#2d0d1a;color:#f472b6}
+.tag-comms{background:#1a0d2d;color:#c084fc}
+
+/* WEEK */
+.week-chip{font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg4);color:var(--text3)}
+
+/* REVISION STAR */
+.rev-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;transition:color .15s;padding:2px 4px}
+.rev-btn:hover{color:#f59e0b}
+.rev-btn.starred{color:#f59e0b}
+
+/* STREAK */
+.streak-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:20px 24px;margin-top:20px}
+.streak-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.streak-grid{display:flex;gap:5px;flex-wrap:wrap}
+.streak-day{width:30px;height:30px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);cursor:pointer;transition:all .15s;font-weight:500}
+.streak-day:hover{border-color:var(--border2);color:var(--text2)}
+.streak-day.done{background:#7c3aed22;border-color:#7c3aed;color:#a78bfa}
+.streak-day.today{border:1.5px solid var(--accent);color:var(--accent)}
+.streak-day.done.today{background:#7c3aed33;border-color:var(--accent)}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px;color:var(--text3);font-size:14px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+/* MONTH FILTER PILLS */
+.month-pills{display:flex;gap:6px;flex-wrap:wrap}
+.mp{padding:5px 14px;border-radius:99px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
+.mp.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mp:hover:not(.active){border-color:var(--border2);color:var(--text)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#1f1f1f;border:1px solid var(--border2);border-radius:var(--radius);padding:10px 18px;font-size:13px;color:var(--text);z-index:999;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>📊 CampusX DS Sheet</h1>
+        <p>Striver-style tracker for your Data Science journey — CampusX DSMP 2.0 + your roadmap. Click topics to mark done!</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-reset" onclick="resetAll()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+        <button class="btn" onclick="exportData()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <label class="btn" style="cursor:pointer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import
+          <input type="file" accept=".json" onchange="importData(event)" style="display:none">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="month-pills" id="month-pills"></div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search" type="text" placeholder="Search topics..." id="srch" oninput="render()">
+    </div>
+    <select class="filter-select" id="tag-filter" onchange="render()">
+      <option value="">All Tags</option>
+      <option value="python">Python</option>
+      <option value="numpy">NumPy</option>
+      <option value="pandas">Pandas</option>
+      <option value="sql">SQL</option>
+      <option value="viz">Visualization</option>
+      <option value="eda">EDA</option>
+      <option value="stats">Statistics</option>
+      <option value="feat">Feature Eng.</option>
+      <option value="ml">Machine Learning</option>
+      <option value="comms">Communication</option>
+    </select>
+    <select class="filter-select" id="src-filter" onchange="render()">
+      <option value="">All Sources</option>
+      <option value="cx">CampusX</option>
+      <option value="my">My Roadmap</option>
+    </select>
+    <select class="filter-select" id="diff-filter" onchange="render()">
+      <option value="">All Difficulty</option>
+      <option value="easy">Easy</option>
+      <option value="med">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
+
+  <!-- PROGRESS CARD -->
+  <div class="progress-card">
+    <div class="pct-ring">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle class="ring-bg" cx="32" cy="32" r="26" fill="none" stroke-width="6"/>
+        <circle class="ring-fill" id="ring-fill" cx="32" cy="32" r="26" fill="none" stroke-width="6"
+          stroke-dasharray="163.36" stroke-dashoffset="163.36"/>
+      </svg>
+      <div class="pct-text" id="pct-text">0%</div>
+    </div>
+    <div class="progress-info">
+      <h3>Overall Progress</h3>
+      <div class="progress-counts"><span id="done-count">0</span> / <span id="total-count">0</span> topics completed</div>
+    </div>
+    <div class="diff-stats">
+      <div class="diff-stat"><div class="diff-dot" style="background:var(--easy)"></div> Easy <b id="easy-done">0</b>/<span id="easy-total">0</span></div>
+      <div class="diff-stat"><div class="diff-dot" style="background:var(--med)"></div> Medium <b id="med-done">0</b>/<span id="med-total">0</span></div>
+      <div class="diff-stat"><div class="diff-dot" style="background:var(--hard)"></div> Hard <b id="hard-done">0</b>/<span id="hard-total">0</span></div>
+    </div>
+  </div>
+
+  <!-- SECTIONS -->
+  <div id="sections-container"></div>
+
+  <!-- STREAK -->
+  <div class="streak-section">
+    <div class="streak-title">🔥 Daily Streak — May 2025 <span style="font-size:12px;color:var(--text3);font-weight:400;margin-left:4px" id="streak-count"></span></div>
+    <div class="streak-grid" id="streak-grid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const SECTIONS = [
+  {
+    id:'s1', title:'Python Programming', month:'May',
+    subs:[
+      {id:'sub1a', title:'Python Basics', topics:[
+        {id:'py1',name:'Python basics — data types, variables, print, type conversion',tag:'python',diff:'easy',src:'cx',week:'W1',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+        {id:'py2',name:'Python operators, if-else, while & for loops',tag:'python',diff:'easy',src:'cx',week:'W1',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+        {id:'py3',name:'Python strings — indexing, slicing, string methods',tag:'python',diff:'easy',src:'cx',week:'W1',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub1b', title:'Python Data Structures', topics:[
+        {id:'py4',name:'Lists — methods, slicing, list comprehension',tag:'python',diff:'easy',src:'cx',week:'W2',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+        {id:'py5',name:'Tuples, Sets, Dictionaries',tag:'python',diff:'easy',src:'cx',week:'W2',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+        {id:'py6',name:'Functions — args, kwargs, lambda, map, filter, zip',tag:'python',diff:'med',src:'cx',week:'W2',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub1c', title:'Advanced Python', topics:[
+        {id:'py7',name:'OOP — classes, objects, inheritance, polymorphism, dunder methods',tag:'python',diff:'med',src:'cx',week:'W3',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+        {id:'py8',name:'File handling — read, write, context managers',tag:'python',diff:'med',src:'cx',week:'W4',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+        {id:'py9',name:'Exception handling — try, except, finally, custom exceptions',tag:'python',diff:'med',src:'cx',week:'W4',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+        {id:'py10',name:'Decorators & Generators — yield, generator expressions',tag:'python',diff:'hard',src:'cx',week:'W4',yt:'https://youtube.com/watch?v=ERCMXc8x7mc&list=PLKnIA16_Rmva-wDFCFAjAFRKO35t6INhu',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub1d', title:'Communication Skills', topics:[
+        {id:'wc1',name:'Written clarity — explain data findings to non-technical audience',tag:'comms',diff:'easy',src:'my',week:'—',yt:'',cx:''},
+        {id:'wc2',name:'Structure an insight — Problem → Finding → Recommendation',tag:'comms',diff:'med',src:'my',week:'—',yt:'',cx:''},
+      ]},
+    ]
+  },
+  {
+    id:'s2', title:'NumPy & Pandas', month:'Jun',
+    subs:[
+      {id:'sub2a', title:'NumPy', topics:[
+        {id:'np1',name:'NumPy — array creation, shape, reshape, dtype, arange, linspace',tag:'numpy',diff:'easy',src:'cx',week:'W5',yt:'https://youtube.com/watch?v=CpPLLp3snK4&list=PLKnIA16_Rmvb-ToL3RQ_bwxG4_ND-0-DT',cx:'https://learnwith.campusx.in'},
+        {id:'np2',name:'NumPy — indexing, slicing, fancy indexing, boolean masking',tag:'numpy',diff:'med',src:'cx',week:'W5',yt:'https://youtube.com/watch?v=CpPLLp3snK4&list=PLKnIA16_Rmvb-ToL3RQ_bwxG4_ND-0-DT',cx:'https://learnwith.campusx.in'},
+        {id:'np3',name:'NumPy — broadcasting, vectorized ops, universal functions (ufuncs)',tag:'numpy',diff:'med',src:'cx',week:'W5',yt:'https://youtube.com/watch?v=CpPLLp3snK4&list=PLKnIA16_Rmvb-ToL3RQ_bwxG4_ND-0-DT',cx:'https://learnwith.campusx.in'},
+        {id:'np4',name:'NumPy — math methods, linalg basics, random module',tag:'numpy',diff:'med',src:'cx',week:'W5',yt:'https://youtube.com/watch?v=CpPLLp3snK4&list=PLKnIA16_Rmvb-ToL3RQ_bwxG4_ND-0-DT',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub2b', title:'Pandas Basics', topics:[
+        {id:'pd1',name:'Pandas Series — creation, indexing, boolean indexing, plotting',tag:'pandas',diff:'easy',src:'cx',week:'W6',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+        {id:'pd2',name:'Pandas DataFrame — read_csv, attributes, filtering, adding columns',tag:'pandas',diff:'easy',src:'cx',week:'W6',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+        {id:'pd3',name:'Pandas DataFrame methods — sort, isnull, dropna, fillna, apply, astype',tag:'pandas',diff:'med',src:'cx',week:'W6',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub2c', title:'Pandas Advanced', topics:[
+        {id:'pd4',name:'Pandas GroupBy — aggregation, transform, filter, multi-level groupby',tag:'pandas',diff:'med',src:'cx',week:'W7',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+        {id:'pd5',name:'Pandas merge, join, concat — all join types explained',tag:'pandas',diff:'med',src:'cx',week:'W7',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+        {id:'pd6',name:'Pandas pivot_table, melt, stack, unstack, crosstab',tag:'pandas',diff:'hard',src:'cx',week:'W7',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+        {id:'pd7',name:'Pandas datetime — to_datetime, resample, rolling, shift',tag:'pandas',diff:'med',src:'cx',week:'W7',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+        {id:'pd8',name:'Pandas Case Study — Time Series Analysis project',tag:'pandas',diff:'hard',src:'cx',week:'W7',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+        {id:'pd9',name:'Pandas Case Study — Working with textual data (NLP-lite)',tag:'pandas',diff:'hard',src:'cx',week:'W7',yt:'https://youtube.com/watch?v=kq9Vmg5d7Sk&list=PLKnIA16_RmvbR85fgbfVRKOiMokUKVupy',cx:'https://learnwith.campusx.in'},
+      ]},
+    ]
+  },
+  {
+    id:'s3', title:'Data Visualization', month:'Jun',
+    subs:[
+      {id:'sub3a', title:'Matplotlib', topics:[
+        {id:'vz1',name:'Matplotlib basics — line, bar, scatter, histogram, pie charts',tag:'viz',diff:'easy',src:'cx',week:'W8',yt:'https://www.youtube.com/playlist?list=PL-osiE80TeTvipOqomVEeZ1HRrcEvtZB_',cx:'https://learnwith.campusx.in'},
+        {id:'vz2',name:'Matplotlib advanced — subplots, 3D plots, contour, heatmaps, annotations',tag:'viz',diff:'med',src:'cx',week:'W8',yt:'https://www.youtube.com/playlist?list=PL-osiE80TeTvipOqomVEeZ1HRrcEvtZB_',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub3b', title:'Plotly & Seaborn', topics:[
+        {id:'vz3',name:'Plotly — interactive charts, express vs graph_objects',tag:'viz',diff:'med',src:'cx',week:'W8',yt:'https://youtube.com/watch?v=GGL6U0k8WYA',cx:'https://learnwith.campusx.in'},
+        {id:'vz4',name:'Plotly Dash — build COVID-19 dashboard, deploy on Heroku',tag:'viz',diff:'hard',src:'cx',week:'W8',yt:'https://youtube.com/watch?v=GGL6U0k8WYA',cx:'https://learnwith.campusx.in'},
+        {id:'vz5',name:'Seaborn — distribution plots (hist, kde, ecdf)',tag:'viz',diff:'easy',src:'cx',week:'W9',yt:'https://youtube.com/playlist?list=PLKnIA16_RmvbB1bFGjvS6a8T0mnqawejo',cx:'https://learnwith.campusx.in'},
+        {id:'vz6',name:'Seaborn — categorical plots, regression plots, heatmaps',tag:'viz',diff:'med',src:'cx',week:'W9',yt:'https://youtube.com/playlist?list=PLKnIA16_RmvbB1bFGjvS6a8T0mnqawejo',cx:'https://learnwith.campusx.in'},
+        {id:'vz7',name:'Storytelling with charts — choosing the right chart for each insight',tag:'viz',diff:'med',src:'my',week:'—',yt:'https://youtube.com/watch?v=jbkSRLYSojo',cx:''},
+      ]},
+    ]
+  },
+  {
+    id:'s4', title:'SQL for Data Science', month:'Jun',
+    subs:[
+      {id:'sub4a', title:'SQL Basics', topics:[
+        {id:'sq1',name:'SELECT, WHERE, ORDER BY, LIMIT, DISTINCT, aliases',tag:'sql',diff:'easy',src:'my',week:'—',yt:'https://youtube.com/watch?v=7S_tz1z_5bA',cx:''},
+        {id:'sq2',name:'Aggregate functions — COUNT, SUM, AVG, MIN, MAX',tag:'sql',diff:'easy',src:'my',week:'—',yt:'https://youtube.com/watch?v=7S_tz1z_5bA',cx:''},
+        {id:'sq3',name:'GROUP BY, HAVING — filter on aggregates',tag:'sql',diff:'med',src:'my',week:'—',yt:'https://youtube.com/watch?v=7S_tz1z_5bA',cx:''},
+      ]},
+      {id:'sub4b', title:'Advanced SQL', topics:[
+        {id:'sq4',name:'JOINs — INNER, LEFT, RIGHT, FULL OUTER, SELF, CROSS',tag:'sql',diff:'med',src:'my',week:'—',yt:'https://youtube.com/watch?v=2HVMiPPuPIM',cx:''},
+        {id:'sq5',name:'Subqueries — correlated subqueries, EXISTS, IN',tag:'sql',diff:'hard',src:'my',week:'—',yt:'https://youtube.com/watch?v=2HVMiPPuPIM',cx:''},
+        {id:'sq6',name:'CTEs — WITH clause, recursive CTEs',tag:'sql',diff:'hard',src:'my',week:'—',yt:'https://youtube.com/watch?v=K1UrHnzvTYc',cx:''},
+        {id:'sq7',name:'Window functions — ROW_NUMBER, RANK, LAG, LEAD, PARTITION BY',tag:'sql',diff:'hard',src:'my',week:'—',yt:'https://youtube.com/watch?v=Ww71knvhQ-s',cx:''},
+      ]},
+    ]
+  },
+  {
+    id:'s5', title:'Exploratory Data Analysis', month:'Jul',
+    subs:[
+      {id:'sub5a', title:'Data Gathering & Cleaning', topics:[
+        {id:'eda1',name:'Data gathering — CSV, Excel, JSON, SQL, APIs, web scraping',tag:'eda',diff:'med',src:'cx',week:'W10',yt:'https://youtube.com/watch?v=8NOdgjC1988',cx:'https://learnwith.campusx.in'},
+        {id:'eda2',name:'Data assessing — identify quality issues (missing, duplicates, types)',tag:'eda',diff:'med',src:'cx',week:'W10',yt:'https://youtube.com/watch?v=mJlRTUuVr04',cx:'https://learnwith.campusx.in'},
+        {id:'eda3',name:'Data cleaning — standardize, correct, validate, audit trail',tag:'eda',diff:'med',src:'cx',week:'W10',yt:'https://youtube.com/watch?v=mJlRTUuVr04',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub5b', title:'Analysis Techniques', topics:[
+        {id:'eda4',name:'Univariate analysis — distributions, outlier detection (IQR, Z-score)',tag:'eda',diff:'med',src:'cx',week:'W11',yt:'https://youtube.com/watch?v=4HyTlbHUKSw',cx:'https://learnwith.campusx.in'},
+        {id:'eda5',name:'Bivariate analysis — correlation, scatter, boxplots by category',tag:'eda',diff:'med',src:'cx',week:'W11',yt:'https://youtube.com/watch?v=4HyTlbHUKSw',cx:'https://learnwith.campusx.in'},
+        {id:'eda6',name:'Multivariate analysis — pairplots, heatmaps, dimensionality preview',tag:'eda',diff:'hard',src:'cx',week:'W11',yt:'https://youtube.com/watch?v=4HyTlbHUKSw',cx:'https://learnwith.campusx.in'},
+        {id:'pf1',name:'Problem framing — define the right business question before analysis',tag:'comms',diff:'med',src:'my',week:'—',yt:'',cx:''},
+        {id:'ps1',name:'Product sense — metrics, funnels, DAU/MAU, churn, retention',tag:'comms',diff:'med',src:'my',week:'—',yt:'',cx:''},
+      ]},
+    ]
+  },
+  {
+    id:'s6', title:'Statistics & Probability', month:'Jul',
+    subs:[
+      {id:'sub6a', title:'Descriptive Statistics', topics:[
+        {id:'st1',name:'Descriptive stats — mean, median, mode, variance, std, IQR',tag:'stats',diff:'easy',src:'cx',week:'W12',yt:'https://youtube.com/watch?v=tPhzDKjQBpo&list=PLKnIA16_RmvbVrE0eZO2bCaFln6jaNq-1',cx:'https://learnwith.campusx.in'},
+        {id:'st2',name:'Probability — basics, conditional, Bayes theorem',tag:'stats',diff:'med',src:'cx',week:'W12',yt:'https://youtube.com/watch?v=tPhzDKjQBpo&list=PLKnIA16_RmvbVrE0eZO2bCaFln6jaNq-1',cx:'https://learnwith.campusx.in'},
+        {id:'st3',name:'Probability distributions — Normal, Binomial, Poisson, PDF, CDF',tag:'stats',diff:'med',src:'cx',week:'W12',yt:'https://youtube.com/watch?v=tPhzDKjQBpo&list=PLKnIA16_RmvbVrE0eZO2bCaFln6jaNq-1',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub6b', title:'Inferential Statistics', topics:[
+        {id:'st4',name:'Central Limit Theorem, sampling distributions, confidence intervals',tag:'stats',diff:'med',src:'cx',week:'W13',yt:'https://youtube.com/watch?v=tPhzDKjQBpo&list=PLKnIA16_RmvbVrE0eZO2bCaFln6jaNq-1',cx:'https://learnwith.campusx.in'},
+        {id:'st5',name:'Hypothesis testing — null/alt hypothesis, p-value, Type I & II errors',tag:'stats',diff:'hard',src:'cx',week:'W13',yt:'https://youtube.com/watch?v=tPhzDKjQBpo&list=PLKnIA16_RmvbVrE0eZO2bCaFln6jaNq-1',cx:'https://learnwith.campusx.in'},
+        {id:'st6',name:'t-test, Chi-square test, ANOVA — when to use which',tag:'stats',diff:'hard',src:'cx',week:'W13',yt:'https://youtube.com/watch?v=tPhzDKjQBpo&list=PLKnIA16_RmvbVrE0eZO2bCaFln6jaNq-1',cx:'https://learnwith.campusx.in'},
+        {id:'st7',name:'A/B testing & experiment design — control groups, bias, sample size',tag:'stats',diff:'hard',src:'my',week:'—',yt:'https://youtube.com/watch?v=VXsRLLXs4Wc',cx:''},
+      ]},
+    ]
+  },
+  {
+    id:'s7', title:'Feature Engineering', month:'Aug',
+    subs:[
+      {id:'sub7a', title:'Missing Data & Encoding', topics:[
+        {id:'fe1',name:'Handling missing data — CCA, mean/median imputation, KNN imputer, MICE',tag:'feat',diff:'med',src:'cx',week:'W14',yt:'https://youtube.com/watch?v=aUnNWZorGmk',cx:'https://learnwith.campusx.in'},
+        {id:'fe2',name:'Feature encoding — one-hot, label, ordinal, target, binary encoding',tag:'feat',diff:'med',src:'cx',week:'W14',yt:'https://youtube.com/watch?v=589nCGeWG1w',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub7b', title:'Scaling, Transformation & Selection', topics:[
+        {id:'fe3',name:'Feature scaling — standardization (z-score), min-max, robust scaler',tag:'feat',diff:'med',src:'cx',week:'W14',yt:'https://youtube.com/watch?v=1Yw9sC0PNwY',cx:'https://learnwith.campusx.in'},
+        {id:'fe4',name:'Feature transformation — log, box-cox, Yeo-Johnson, quantile transform',tag:'feat',diff:'hard',src:'cx',week:'W15',yt:'https://youtube.com/watch?v=1Yw9sC0PNwY',cx:'https://learnwith.campusx.in'},
+        {id:'fe5',name:'Feature selection — filter (correlation), wrapper (RFE), embedded (LASSO)',tag:'feat',diff:'hard',src:'cx',week:'W15',yt:'https://youtube.com/watch?v=kA4mD3y4aqA',cx:'https://learnwith.campusx.in'},
+        {id:'fe6',name:'Handling imbalanced data — SMOTE, oversampling, undersampling, class weights',tag:'feat',diff:'hard',src:'cx',week:'W15',yt:'https://youtube.com/watch?v=JnlM4yLFNuo',cx:'https://learnwith.campusx.in'},
+      ]},
+    ]
+  },
+  {
+    id:'s8', title:'Machine Learning', month:'Aug',
+    subs:[
+      {id:'sub8a', title:'Fundamentals & Regression', topics:[
+        {id:'ml1',name:'ML fundamentals — supervised vs unsupervised, bias-variance tradeoff',tag:'ml',diff:'easy',src:'cx',week:'W16',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml2',name:'Linear regression — OLS, gradient descent, assumptions, R², RMSE',tag:'ml',diff:'med',src:'cx',week:'W16',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml3',name:'Ridge & Lasso regression — regularization, L1 vs L2',tag:'ml',diff:'med',src:'cx',week:'W16',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub8b', title:'Classification', topics:[
+        {id:'ml4',name:'Logistic regression — sigmoid, binary & multiclass, decision boundary',tag:'ml',diff:'med',src:'cx',week:'W17',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml5',name:'Model evaluation — confusion matrix, precision, recall, F1, ROC-AUC',tag:'ml',diff:'med',src:'cx',week:'W17',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml6',name:'Naive Bayes — Gaussian, Multinomial, Bernoulli variants',tag:'ml',diff:'med',src:'cx',week:'W19',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml7',name:'KNN — distance metrics, choosing K, curse of dimensionality',tag:'ml',diff:'easy',src:'cx',week:'W19',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml8',name:'SVM — hyperplane, kernel trick, soft margin, SVR',tag:'ml',diff:'hard',src:'cx',week:'W20',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub8c', title:'Tree-based & Ensemble', topics:[
+        {id:'ml9',name:'Decision tree — Gini, entropy, information gain, pruning, overfitting',tag:'ml',diff:'med',src:'cx',week:'W18',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml10',name:'Random forest — bagging, OOB score, feature importance',tag:'ml',diff:'med',src:'cx',week:'W18',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml11',name:'Boosting — AdaBoost, Gradient Boosting, XGBoost, LightGBM',tag:'ml',diff:'hard',src:'cx',week:'W20',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+      ]},
+      {id:'sub8d', title:'Unsupervised Learning', topics:[
+        {id:'ml12',name:'K-Means clustering — elbow method, silhouette score',tag:'ml',diff:'med',src:'cx',week:'W21',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml13',name:'Hierarchical clustering & DBSCAN — density-based methods',tag:'ml',diff:'hard',src:'cx',week:'W21',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml14',name:'PCA — variance explained, scree plot, reconstruction',tag:'ml',diff:'hard',src:'cx',week:'W21',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+        {id:'ml15',name:'t-SNE — non-linear dimensionality reduction, visualization',tag:'ml',diff:'hard',src:'cx',week:'W21',yt:'https://youtube.com/watch?v=ZhacwtUR0SU&list=PLKnIA16_RmvZAqJzKstVHywcRNMn6pcGD',cx:'https://learnwith.campusx.in'},
+      ]},
+    ]
+  },
+  {
+    id:'s9', title:'Capstone & Career', month:'Sep',
+    subs:[
+      {id:'sub9a', title:'Storytelling & Communication', topics:[
+        {id:'ca1',name:'Executive data storytelling — structure, narrative, key takeaways',tag:'comms',diff:'med',src:'my',week:'—',yt:'https://youtube.com/watch?v=jbkSRLYSojo',cx:''},
+        {id:'ca2',name:'Dashboard design — what to show, what to cut, layout principles',tag:'viz',diff:'med',src:'my',week:'—',yt:'',cx:''},
+        {id:'ca3',name:'BigQuery basics — query large datasets in GCP',tag:'sql',diff:'med',src:'my',week:'—',yt:'https://youtube.com/watch?v=d3MDxC_iuaw',cx:''},
+      ]},
+      {id:'sub9b', title:'Capstone Project', topics:[
+        {id:'ca4',name:'CampusX Capstone — end-to-end DS pipeline (EDA → FE → Model → Deploy)',tag:'ml',diff:'hard',src:'cx',week:'W22',yt:'https://learnwith.campusx.in',cx:'https://learnwith.campusx.in'},
+        {id:'ca5',name:'Build personal project — choose dataset, present findings as a story',tag:'ml',diff:'hard',src:'my',week:'—',yt:'',cx:''},
+      ]},
+      {id:'sub9c', title:'Interview Prep', topics:[
+        {id:'ca6',name:'DS mock interview — case study practice (product analytics style)',tag:'comms',diff:'hard',src:'my',week:'—',yt:'https://youtube.com/watch?v=X6osrLDMkHc',cx:''},
+        {id:'ca7',name:'SQL interview questions — top 50 patterns',tag:'sql',diff:'hard',src:'my',week:'—',yt:'https://youtube.com/watch?v=p3qvj9hO_Bo',cx:''},
+        {id:'ca8',name:'ML interview questions — concepts, intuition, tradeoffs',tag:'ml',diff:'hard',src:'my',week:'—',yt:'',cx:''},
+        {id:'ca9',name:'Resume polish — project section, skills, GitHub portfolio',tag:'comms',diff:'easy',src:'my',week:'—',yt:'',cx:''},
+      ]},
+    ]
+  },
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const SK='ds_sheet_v3', STK='ds_streak_v3', EXPK='ds_expand_v3', REVK='ds_rev_v3';
+let state={}, streakState={}, expandState={}, revState={};
+let activeMonth='All';
+
+function load(){
+  try{state=JSON.parse(localStorage.getItem(SK)||'{}')}catch(e){state={}}
+  try{streakState=JSON.parse(localStorage.getItem(STK)||'{}')}catch(e){streakState={}}
+  try{expandState=JSON.parse(localStorage.getItem(EXPK)||'{}')}catch(e){expandState={}}
+  try{revState=JSON.parse(localStorage.getItem(REVK)||'{}')}catch(e){revState={}}
+}
+function save(){
+  localStorage.setItem(SK,JSON.stringify(state));
+  localStorage.setItem(STK,JSON.stringify(streakState));
+  localStorage.setItem(EXPK,JSON.stringify(expandState));
+  localStorage.setItem(REVK,JSON.stringify(revState));
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function allTopics(){return SECTIONS.flatMap(s=>s.subs.flatMap(sub=>sub.topics))}
+function isDone(id){return state[id]==='done'}
+function isRev(id){return !!revState[id]}
+
+function toggleDone(id){
+  const nowDone = !isDone(id);
+  state[id] = nowDone ? 'done' : '';
+  save();
+  updateStats();
+  // update section/sub progress bars without full re-render
+  updateSectionBars();
+  const row=document.querySelector(`tr[data-id="${id}"]`);
+  if(row){
+    row.classList.toggle('done-row', nowDone);
+    const cb=row.querySelector('.cb');
+    if(cb) cb.classList.toggle('checked', nowDone);
+    const nm=row.querySelector('.topic-name-cell');
+    if(nm) nm.style.cssText = nowDone
+      ? 'text-decoration:line-through;color:var(--text2)'
+      : '';
+  }
+  toast(nowDone ? '✓ Marked as done!' : 'Unmarked');
+}
+
+function updateSectionBars(){
+  // re-render only progress bars & counts, not the whole DOM
+  SECTIONS.forEach(sec=>{
+    const allT=sec.subs.flatMap(s=>s.topics);
+    const secDone=allT.filter(t=>isDone(t.id)).length;
+    const secTotal=allT.length;
+    const secPct=secTotal?Math.round(secDone/secTotal*100):0;
+    const bar=document.querySelector(`#body-${sec.id}`)?.previousElementSibling?.querySelector('.sec-bar');
+    const cnt=document.querySelector(`#body-${sec.id}`)?.previousElementSibling?.querySelector('.sec-count');
+    if(bar) bar.style.width=secPct+'%';
+    if(cnt) cnt.textContent=`${secDone} / ${secTotal}`;
+    sec.subs.forEach(sub=>{
+      const subDone=sub.topics.filter(t=>isDone(t.id)).length;
+      const subTotal=sub.topics.length;
+      const subPct=subTotal?Math.round(subDone/subTotal*100):0;
+      const sbar=document.querySelector(`#body-${sub.id}`)?.previousElementSibling?.querySelector('.sub-bar');
+      const scnt=document.querySelector(`#body-${sub.id}`)?.previousElementSibling?.querySelector('.sub-count');
+      if(sbar) sbar.style.width=subPct+'%';
+      if(scnt) scnt.textContent=`${subDone} / ${subTotal}`;
+    });
+  });
+}
+
+function toggleRev(id,btn){
+  revState[id]=!revState[id];
+  save();
+  btn.classList.toggle('starred',revState[id]);
+}
+
+function toggleSection(id){
+  expandState[id]=!expandState[id];
+  save();
+  const body=document.getElementById('body-'+id);
+  const chev=document.getElementById('chev-'+id);
+  if(body){body.style.display=expandState[id]?'block':'none'}
+  if(chev){chev.classList.toggle('open',expandState[id])}
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+function resetAll(){
+  if(!confirm('Reset all progress? This cannot be undone.'))return;
+  state={};streakState={};expandState={};revState={};save();render();
+  toast('Progress reset');
+}
+
+function exportData(){
+  const data={state,streakState,revState,exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='ds_sheet_backup.json';a.click();
+  toast('Exported!');
+}
+
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.state)state=d.state;
+      if(d.streakState)streakState=d.streakState;
+      if(d.revState)revState=d.revState;
+      save();render();toast('Imported!');
+    }catch{toast('Invalid file')}
+  };reader.readAsText(file);
+}
+
+// ─── STATS ───────────────────────────────────────────────────────────────────
+function updateStats(){
+  const all=allTopics();
+  const q=(document.getElementById('srch')?.value||'').toLowerCase();
+  const tag=document.getElementById('tag-filter')?.value||'';
+  const src=document.getElementById('src-filter')?.value||'';
+  const diff=document.getElementById('diff-filter')?.value||'';
+  const filtered=all.filter(t=>{
+    if(activeMonth!=='All'&&t.month!==activeMonth)return false;
+    if(tag&&t.tag!==tag)return false;
+    if(src&&t.src!==src)return false;
+    if(diff&&t.diff!==diff)return false;
+    if(q&&!t.name.toLowerCase().includes(q))return false;
+    return true;
+  });
+  const total=filtered.length;
+  const done=filtered.filter(t=>isDone(t.id)).length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('done-count').textContent=done;
+  document.getElementById('total-count').textContent=total;
+  document.getElementById('pct-text').textContent=pct+'%';
+  const circ=2*Math.PI*26;
+  const fill=document.getElementById('ring-fill');
+  if(fill){fill.style.strokeDashoffset=circ-(circ*pct/100)}
+  ['easy','med','hard'].forEach(d=>{
+    const dt=filtered.filter(t=>t.diff===d);
+    document.getElementById(d+'-total').textContent=dt.length;
+    document.getElementById(d+'-done').textContent=dt.filter(t=>isDone(t.id)).length;
+  });
+}
+
+// ─── RENDER MONTH PILLS ───────────────────────────────────────────────────────
+function renderMonthPills(){
+  const c=document.getElementById('month-pills');c.innerHTML='';
+  ['All','May','Jun','Jul','Aug','Sep'].forEach(m=>{
+    const b=document.createElement('button');
+    b.className='mp'+(activeMonth===m?' active':'');
+    b.textContent=m;
+    b.onclick=()=>{activeMonth=m;renderMonthPills();renderSections();updateStats()};
+    c.appendChild(b);
+  });
+}
+
+// ─── RENDER SECTIONS ─────────────────────────────────────────────────────────
+function renderSections(){
+  const c=document.getElementById('sections-container');c.innerHTML='';
+  const q=(document.getElementById('srch')?.value||'').toLowerCase();
+  const tag=document.getElementById('tag-filter')?.value||'';
+  const src=document.getElementById('src-filter')?.value||'';
+  const diff=document.getElementById('diff-filter')?.value||'';
+
+  SECTIONS.forEach(sec=>{
+    if(activeMonth!=='All'&&sec.month!==activeMonth)return;
+
+    // filter topics
+    const filteredSubs=sec.subs.map(sub=>({
+      ...sub,
+      topics:sub.topics.filter(t=>{
+        if(tag&&t.tag!==tag)return false;
+        if(src&&t.src!==src)return false;
+        if(diff&&t.diff!==diff)return false;
+        if(q&&!t.name.toLowerCase().includes(q))return false;
+        return true;
+      })
+    })).filter(sub=>sub.topics.length>0);
+    if(!filteredSubs.length)return;
+
+    const allT=filteredSubs.flatMap(s=>s.topics);
+    const secDone=allT.filter(t=>isDone(t.id)).length;
+    const secTotal=allT.length;
+    const secPct=secTotal?Math.round(secDone/secTotal*100):0;
+    const isOpen=!!expandState[sec.id];
+
+    const el=document.createElement('div');
+    el.className='section';
+    el.innerHTML=`
+      <div class="section-header" onclick="toggleSection('${sec.id}')">
+        <svg id="chev-${sec.id}" class="chevron${isOpen?' open':''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        <div class="section-title">${sec.title}</div>
+        <div class="section-meta">
+          <div class="sec-bar-wrap"><div class="sec-bar" style="width:${secPct}%"></div></div>
+          <div class="sec-count">${secDone} / ${secTotal}</div>
+        </div>
+      </div>
+      <div id="body-${sec.id}" style="display:${isOpen?'block':'none'}">
+        ${filteredSubs.map(sub=>{
+          const subDone=sub.topics.filter(t=>isDone(t.id)).length;
+          const subTotal=sub.topics.length;
+          const subPct=subTotal?Math.round(subDone/subTotal*100):0;
+          const subOpen=expandState[sub.id]!==false;
+          return `
+          <div class="subsection">
+            <div class="sub-header" onclick="toggleSubsection('${sub.id}')">
+              <svg id="chev-${sub.id}" class="chevron${subOpen?' open':''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              <div class="sub-title">${sub.title}</div>
+              <div class="sub-meta">
+                <div class="sub-bar-wrap"><div class="sub-bar" style="width:${subPct}%"></div></div>
+                <div class="sub-count">${subDone} / ${subTotal}</div>
+              </div>
+            </div>
+            <div id="body-${sub.id}" style="display:${subOpen?'block':'none'}">
+              <table class="topic-table">
+                <thead><tr>
+                  <th>Status</th>
+                  <th>Topic</th>
+                  <th>Tag</th>
+                  <th>Week</th>
+                  <th>Source</th>
+                  <th>Videos</th>
+                  <th>Revision</th>
+                  <th>Difficulty</th>
+                </tr></thead>
+                <tbody>
+                ${sub.topics.map(t=>`
+                  <tr data-id="${t.id}" class="${isDone(t.id)?'done-row':''}">
+                    <td><div class="cb-wrap"><div class="cb${isDone(t.id)?' checked':''}" onclick="toggleDone('${t.id}')"></div></div></td>
+                    <td><div class="topic-name-cell" style="${isDone(t.id)?'text-decoration:line-through;color:var(--text2)':''}">${t.name}</div></td>
+                    <td><span class="tag-pill tag-${t.tag}">${t.tag}</span></td>
+                    <td><span class="week-chip">${t.week}</span></td>
+                    <td><span class="src-badge src-${t.src}">${t.src==='cx'?'CX':'MY'}</span></td>
+                    <td style="white-space:nowrap">
+                      ${t.yt?`<a class="link-btn yt-btn" href="${t.yt}" target="_blank">▶ YT</a>`:'<span style="color:var(--text3);font-size:12px">—</span>'}
+                      ${t.cx&&t.src==='cx'?`<a class="link-btn cx-btn" href="${t.cx}" target="_blank" style="margin-left:4px">CX</a>`:''}
+                    </td>
+                    <td><button class="rev-btn${isRev(t.id)?' starred':''}" onclick="toggleRev('${t.id}',this)" title="Mark for revision">★</button></td>
+                    <td><span class="diff-badge ${t.diff}">${t.diff.charAt(0).toUpperCase()+t.diff.slice(1)}</span></td>
+                  </tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+    c.appendChild(el);
+  });
+}
+
+function toggleSubsection(id){
+  if(expandState[id]===false){expandState[id]=true;}
+  else if(expandState[id]===true){expandState[id]=false;}
+  else{expandState[id]=false;}
+  save();
+  const body=document.getElementById('body-'+id);
+  const chev=document.getElementById('chev-'+id);
+  if(body)body.style.display=expandState[id]===false?'none':'block';
+  if(chev)chev.classList.toggle('open',expandState[id]!==false);
+}
+
+// ─── STREAK ───────────────────────────────────────────────────────────────────
+function renderStreak(){
+  const box=document.getElementById('streak-grid');box.innerHTML='';
+  const today=new Date().getDate();
+  let cnt=Object.values(streakState).filter(Boolean).length;
+  document.getElementById('streak-count').textContent=cnt+' days logged';
+  for(let d=1;d<=31;d++){
+    const key=`may-${d}`;
+    const el=document.createElement('div');
+    el.className='streak-day'+(streakState[key]?' done':'')+(d===today?' today':'');
+    el.textContent=d;el.title=`May ${d}`;
+    el.onclick=()=>{streakState[key]=!streakState[key];save();renderStreak()};
+    box.appendChild(el);
+  }
+}
+
+// ─── FULL RENDER ─────────────────────────────────────────────────────────────
+function render(){
+  renderMonthPills();
+  renderSections();
+  updateStats();
+  renderStreak();
+}
+
+load();
+render();
+</script>
+</body>
+</html>
