@@ -8,7 +8,6 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* DARK MODE (default) */
   :root {
     --bg: #0a0a0f;
     --surface: #111118;
@@ -27,7 +26,6 @@
     --shadow-card: rgba(124,109,250,0.12);
   }
 
-  /* LIGHT MODE */
   :root.light {
     --bg: #f4f4f8;
     --surface: #ffffff;
@@ -50,11 +48,9 @@
     color: var(--text);
     font-family: 'Syne', sans-serif;
     min-height: 100vh;
-    padding: 0;
     transition: background 0.3s, color 0.3s;
   }
 
-  /* THEME TOGGLE BUTTON */
   .theme-toggle {
     position: relative;
     background: var(--card);
@@ -71,42 +67,31 @@
   }
   .theme-toggle:hover { border-color: var(--accent); }
   .theme-toggle .knob {
-    width: 20px;
-    height: 20px;
+    width: 20px; height: 20px;
     border-radius: 50%;
     background: var(--accent);
     transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 11px;
   }
   :root.light .theme-toggle .knob { transform: translateX(28px); }
   .theme-toggle .track-icons {
-    position: absolute;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 6px;
-    font-size: 10px;
-    pointer-events: none;
-    top: 50%;
-    transform: translateY(-50%);
+    position: absolute; width: 100%;
+    display: flex; justify-content: space-between;
+    padding: 0 6px; font-size: 10px;
+    pointer-events: none; top: 50%; transform: translateY(-50%);
   }
 
-  /* HEADER */
   header {
     background: linear-gradient(135deg, var(--header-bg1) 0%, var(--header-bg2) 100%);
     border-bottom: 1px solid var(--border);
     padding: 2.5rem 2rem 2rem;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
     transition: background 0.3s, border-color 0.3s;
   }
   header::before {
     content: '';
-    position: absolute;
-    top: -60px; right: -60px;
+    position: absolute; top: -60px; right: -60px;
     width: 300px; height: 300px;
     background: radial-gradient(circle, var(--header-glow) 0%, transparent 70%);
     pointer-events: none;
@@ -115,344 +100,134 @@
   .uni-badge {
     display: inline-block;
     font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
+    font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--accent);
     border: 1px solid var(--accent);
-    padding: 0.3rem 0.75rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+    padding: 0.3rem 0.75rem; border-radius: 4px; margin-bottom: 1rem;
   }
-  h1 {
-    font-size: clamp(1.6rem, 4vw, 2.8rem);
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 0.4rem;
-  }
+  h1 { font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: 800; line-height: 1.1; margin-bottom: 0.4rem; }
   h1 span { color: var(--accent2); }
-  .subtitle {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
+  .subtitle { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.05em; }
 
-  /* STATS BAR */
   .stats-bar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 1.2rem 2rem;
-    transition: background 0.3s, border-color 0.3s;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 1.2rem 2rem; transition: background 0.3s, border-color 0.3s;
   }
-  .stats-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    align-items: center;
-  }
+  .stats-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; }
   .stat { display: flex; flex-direction: column; }
-  .stat-val {
-    font-size: 1.6rem;
-    font-weight: 800;
-    line-height: 1;
-  }
+  .stat-val { font-size: 1.6rem; font-weight: 800; line-height: 1; }
   .stat-val.pass-col { color: var(--pass); }
   .stat-val.fail-col { color: var(--fail); }
   .stat-val.accent-col { color: var(--accent); }
   .stat-val.gold-col { color: var(--accent2); }
-  .stat-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 0.2rem;
-  }
+  .stat-label { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.2rem; }
   .divider { width: 1px; height: 40px; background: var(--border); }
 
-  /* CONTROLS */
-  .controls {
-    max-width: 1200px;
-    margin: 1.5rem auto;
-    padding: 0 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: center;
-  }
-  .search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 220px;
-  }
+  .controls { max-width: 1200px; margin: 1.5rem auto; padding: 0 2rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+  .search-wrap { position: relative; flex: 1; min-width: 220px; }
   .search-wrap input {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 0.7rem 1rem 0.7rem 2.5rem;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
-    outline: none;
-    transition: border-color 0.2s, background 0.3s, color 0.3s;
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 0.7rem 1rem 0.7rem 2.5rem;
+    color: var(--text); font-family: 'Space Mono', monospace; font-size: 0.8rem;
+    outline: none; transition: border-color 0.2s, background 0.3s, color 0.3s;
   }
   .search-wrap input:focus { border-color: var(--accent); }
-  .search-wrap::before {
-    content: '⌕';
-    position: absolute;
-    left: 0.75rem; top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    font-size: 1.1rem;
-    pointer-events: none;
-  }
+  .search-wrap::before { content: '⌕'; position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 1.1rem; pointer-events: none; }
   .filter-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .filter-btn {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    padding: 0.55rem 1rem;
-    border-radius: var(--r);
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-family: 'Space Mono', monospace; font-size: 0.7rem;
+    padding: 0.55rem 1rem; border-radius: var(--r);
+    border: 1px solid var(--border); background: var(--card); color: var(--muted);
+    cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.08em;
   }
   .filter-btn:hover { border-color: var(--accent); color: var(--text); }
   .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  /* SORT */
-  .sort-bar {
-    max-width: 1200px;
-    margin: 0 auto 1rem;
-    padding: 0 2rem;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .sort-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
+  .sort-bar { max-width: 1200px; margin: 0 auto 1rem; padding: 0 2rem; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .sort-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
   .sort-btn {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem;
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.15s;
+    font-family: 'Space Mono', monospace; font-size: 0.68rem;
+    padding: 0.35rem 0.75rem; border-radius: 6px;
+    border: 1px solid var(--border); background: transparent; color: var(--muted);
+    cursor: pointer; transition: all 0.15s;
   }
   .sort-btn:hover { color: var(--text); border-color: var(--muted); }
   .sort-btn.active { color: var(--accent2); border-color: var(--accent2); }
 
-  /* GRID */
-  .grid {
-    max-width: 1200px;
-    margin: 0 auto 3rem;
-    padding: 0 2rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1rem;
-  }
+  .grid { max-width: 1200px; margin: 0 auto 3rem; padding: 0 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
 
-  /* CARD */
   .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 1.25rem;
-    position: relative;
-    overflow: hidden;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 1.25rem;
+    position: relative; overflow: hidden;
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background 0.3s;
     animation: fadeUp 0.4s ease both;
   }
-  .card:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent);
-    box-shadow: 0 8px 32px var(--shadow-card);
-  }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 8px 32px var(--shadow-card); }
   .card.hidden { display: none; }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.75rem;
-  }
-  .rank-badge {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--accent2);
-    background: rgba(242,201,76,0.1);
-    border: 1px solid rgba(242,201,76,0.3);
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-  }
-  .result-pill {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.62rem;
-    font-weight: 700;
-    padding: 0.25rem 0.65rem;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+  .rank-badge { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--accent2); background: rgba(242,201,76,0.1); border: 1px solid rgba(242,201,76,0.3); padding: 0.2rem 0.5rem; border-radius: 4px; }
+  .result-pill { font-family: 'Space Mono', monospace; font-size: 0.62rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.08em; }
   .result-pill.pass { background: rgba(74,222,128,0.12); color: var(--pass); border: 1px solid rgba(74,222,128,0.3); }
   .result-pill.fail { background: rgba(248,113,113,0.12); color: var(--fail); border: 1px solid rgba(248,113,113,0.3); }
 
-  .student-name {
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.2;
-    margin-bottom: 0.15rem;
-    word-break: break-word;
-  }
-  .seat-no {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
+  .student-name { font-size: 1rem; font-weight: 600; line-height: 1.2; margin-bottom: 0.15rem; word-break: break-word; }
+  .seat-no { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-bottom: 1rem; }
 
-  /* SGPA DISPLAY */
-  .sgpa-row {
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    margin-bottom: 1rem;
-  }
-  .sgpa-val {
-    font-size: 2.2rem;
-    font-weight: 800;
-    line-height: 1;
-  }
-  .sgpa-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-  .total-marks {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-left: auto;
-  }
+  .sgpa-row { display: flex; align-items: baseline; gap: 0.4rem; margin-bottom: 1rem; }
+  .sgpa-val { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+  .sgpa-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+  .total-marks { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--muted); margin-left: auto; }
 
-  /* PROGRESS BAR */
-  .progress-wrap {
-    background: var(--surface);
-    border-radius: 4px;
-    height: 4px;
-    margin-bottom: 1rem;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.6s ease;
-  }
+  .progress-wrap { background: var(--surface); border-radius: 4px; height: 4px; margin-bottom: 1rem; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
 
-  /* SUBJECT SCORES */
-  .subjects { display: flex; flex-direction: column; gap: 0.4rem; }
-  .subject-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
+  /* Subject rows with marks */
+  .subjects { display: flex; flex-direction: column; gap: 0.35rem; }
+  .subject-row { display: flex; align-items: center; gap: 0.5rem; }
+  .sub-code { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--muted); width: 68px; flex-shrink: 0; }
+  .sub-name { flex: 1; color: var(--muted); font-size: 0.68rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sub-marks-wrap { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+  .sub-marks {
+    font-family: 'Space Mono', monospace; font-size: 0.68rem; font-weight: 700;
+    padding: 0.15rem 0.45rem; border-radius: 4px; min-width: 36px; text-align: center;
   }
-  .sub-code {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--muted);
-    width: 72px;
-    flex-shrink: 0;
-  }
-  .sub-name {
-    flex: 1;
-    color: var(--muted);
-    font-size: 0.7rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .sub-grade {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    font-weight: 700;
-    padding: 0.15rem 0.4rem;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
-  .grade-EX { background: rgba(250,204,21,0.15); color: #fbbf24; }
-  .grade-AA { background: rgba(74,222,128,0.15); color: #4ade80; }
-  .grade-AB { background: rgba(52,211,153,0.12); color: #34d399; }
-  .grade-BB { background: rgba(96,165,250,0.12); color: #60a5fa; }
-  .grade-BC { background: rgba(124,109,250,0.15); color: #a78bfa; }
-  .grade-CC { background: rgba(167,139,250,0.1); color: #c4b5fd; }
-  .grade-CD { background: rgba(148,163,184,0.1); color: #94a3b8; }
-  .grade-DD { background: rgba(148,163,184,0.08); color: #7a8899; }
-  .grade-DE { background: rgba(251,191,36,0.08); color: #b8914d; }
-  .grade-EE { background: rgba(248,113,113,0.08); color: #f87171; }
-  .grade-FF { background: rgba(239,68,68,0.15); color: #ef4444; }
-  .grade-AU { background: rgba(100,100,100,0.1); color: #666; }
+  .sub-grade-tag { font-family: 'Space Mono', monospace; font-size: 0.55rem; padding: 0.1rem 0.3rem; border-radius: 3px; }
 
-  /* Light mode grade overrides for readability */
-  :root.light .grade-EX { background: rgba(180,130,0,0.12); color: #a07000; }
-  :root.light .grade-AA { background: rgba(22,163,74,0.12); color: #15803d; }
-  :root.light .grade-AB { background: rgba(5,150,105,0.1); color: #047857; }
-  :root.light .grade-BB { background: rgba(37,99,235,0.1); color: #1d4ed8; }
-  :root.light .grade-BC { background: rgba(79,70,229,0.1); color: #4338ca; }
-  :root.light .grade-CC { background: rgba(109,40,217,0.08); color: #6d28d9; }
-  :root.light .grade-CD { background: rgba(100,116,139,0.1); color: #475569; }
-  :root.light .grade-DD { background: rgba(100,116,139,0.08); color: #64748b; }
-  :root.light .grade-DE { background: rgba(180,130,0,0.08); color: #92400e; }
-  :root.light .grade-EE { background: rgba(220,38,38,0.08); color: #b91c1c; }
-  :root.light .grade-FF { background: rgba(220,38,38,0.12); color: #991b1b; }
-  :root.light .grade-AU { background: rgba(100,100,100,0.08); color: #888; }
+  /* Marks color based on score */
+  .marks-ex  { background: rgba(250,204,21,0.15); color: #fbbf24; }
+  .marks-aa  { background: rgba(74,222,128,0.15); color: #4ade80; }
+  .marks-ab  { background: rgba(52,211,153,0.12); color: #34d399; }
+  .marks-bb  { background: rgba(96,165,250,0.12); color: #60a5fa; }
+  .marks-bc  { background: rgba(124,109,250,0.15); color: #a78bfa; }
+  .marks-cc  { background: rgba(167,139,250,0.1); color: #c4b5fd; }
+  .marks-cd  { background: rgba(148,163,184,0.1); color: #94a3b8; }
+  .marks-dd  { background: rgba(148,163,184,0.08); color: #7a8899; }
+  .marks-de  { background: rgba(251,191,36,0.08); color: #b8914d; }
+  .marks-ee  { background: rgba(248,113,113,0.08); color: #f87171; }
+  .marks-ff  { background: rgba(239,68,68,0.15); color: #ef4444; }
 
-  /* NO RESULTS */
-  .no-results {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
-    display: none;
-    grid-column: 1/-1;
-  }
+  :root.light .marks-ex { background: rgba(180,130,0,0.12); color: #a07000; }
+  :root.light .marks-aa { background: rgba(22,163,74,0.12); color: #15803d; }
+  :root.light .marks-ab { background: rgba(5,150,105,0.1); color: #047857; }
+  :root.light .marks-bb { background: rgba(37,99,235,0.1); color: #1d4ed8; }
+  :root.light .marks-bc { background: rgba(79,70,229,0.1); color: #4338ca; }
+  :root.light .marks-cc { background: rgba(109,40,217,0.08); color: #6d28d9; }
+  :root.light .marks-cd { background: rgba(100,116,139,0.1); color: #475569; }
+  :root.light .marks-dd { background: rgba(100,116,139,0.08); color: #64748b; }
+  :root.light .marks-de { background: rgba(180,130,0,0.08); color: #92400e; }
+  :root.light .marks-ee { background: rgba(220,38,38,0.08); color: #b91c1c; }
+  :root.light .marks-ff { background: rgba(220,38,38,0.12); color: #991b1b; }
 
-  /* TOP PERFORMERS highlight */
+  .no-results { text-align: center; padding: 4rem 2rem; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 0.8rem; display: none; grid-column: 1/-1; }
+
   .card[data-top="1"] { border-color: rgba(242,201,76,0.5); }
   .card[data-top="2"] { border-color: rgba(200,200,200,0.35); }
   .card[data-top="3"] { border-color: rgba(180,120,60,0.4); }
 
-  /* Footer */
-  footer {
-    text-align: center;
-    padding: 2rem;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-  }
+  footer { text-align: center; padding: 2rem; font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); border-top: 1px solid var(--border); }
 
   @media (max-width: 600px) {
     .grid { grid-template-columns: 1fr; }
@@ -481,37 +256,20 @@
 
 <div class="stats-bar">
   <div class="stats-inner">
-    <div class="stat">
-      <span class="stat-val accent-col" id="total-count">—</span>
-      <span class="stat-label">Total Students</span>
-    </div>
+    <div class="stat"><span class="stat-val accent-col" id="total-count">—</span><span class="stat-label">Total Students</span></div>
     <div class="divider"></div>
-    <div class="stat">
-      <span class="stat-val pass-col" id="pass-count">—</span>
-      <span class="stat-label">Passed</span>
-    </div>
+    <div class="stat"><span class="stat-val pass-col" id="pass-count">—</span><span class="stat-label">Passed</span></div>
     <div class="divider"></div>
-    <div class="stat">
-      <span class="stat-val fail-col" id="fail-count">—</span>
-      <span class="stat-label">Failed</span>
-    </div>
+    <div class="stat"><span class="stat-val fail-col" id="fail-count">—</span><span class="stat-label">Failed</span></div>
     <div class="divider"></div>
-    <div class="stat">
-      <span class="stat-val gold-col" id="avg-sgpa">—</span>
-      <span class="stat-label">Avg SGPA</span>
-    </div>
+    <div class="stat"><span class="stat-val gold-col" id="avg-sgpa">—</span><span class="stat-label">Avg SGPA</span></div>
     <div class="divider"></div>
-    <div class="stat">
-      <span class="stat-val gold-col" id="top-sgpa">—</span>
-      <span class="stat-label">Top SGPA</span>
-    </div>
+    <div class="stat"><span class="stat-val gold-col" id="top-sgpa">—</span><span class="stat-label">Top SGPA</span></div>
   </div>
 </div>
 
 <div class="controls">
-  <div class="search-wrap">
-    <input type="text" id="search" placeholder="Search by name or seat number…">
-  </div>
+  <div class="search-wrap"><input type="text" id="search" placeholder="Search by name or seat number…"></div>
   <div class="filter-btns">
     <button class="filter-btn active" data-filter="all">All</button>
     <button class="filter-btn" data-filter="pass">Pass</button>
@@ -531,9 +289,7 @@
   <div class="no-results" id="no-results">No students found.</div>
 </div>
 
-<footer>
-  Results for immediate reference only. Please verify from official university marksheet. &nbsp;·&nbsp; Generated 20/04/2026
-</footer>
+<footer>Results for immediate reference only. Please verify from official university marksheet. &nbsp;·&nbsp; Generated 20/04/2026</footer>
 
 <script>
 const SUBJECT_NAMES = {
@@ -548,79 +304,292 @@ const SUBJECT_NAMES = {
   'BTHM505B': 'Business Communication',
 };
 
+// Grade → marks class mapping
+function gradeClass(g) {
+  const m = { EX:'ex', AA:'aa', AB:'ab', BB:'bb', BC:'bc', CC:'cc', CD:'cd', DD:'dd', DE:'de', EE:'ee', FF:'ff' };
+  return 'marks-' + (m[g] || 'dd');
+}
+
+// students: subjects now store { marks, grade } instead of just grade
 const students = [
-  { seat: '2210121245043', name: 'PHAD SHRIKANT RAJU', result: 'PASS', total: 447, sgpa: 6.18, grades: { BTCOC501:'EE', BTCOC502:'EE', BTCOC503:'DE', BTCOE504A:'CD', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'CD' } },
-  { seat: '23010121245002', name: 'HAUNSKAR SOHAM RAM', result: 'PASS', total: 494, sgpa: 6.93, grades: { BTCOC501:'CC', BTCOC502:'CD', BTCOC503:'DE', BTCOE504B:'CD', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'CC' } },
-  { seat: '23010121245003', name: 'ADHAL HARSHWARDHAN DINESH', result: 'PASS', total: 506, sgpa: 7.14, grades: { BTCOC501:'BB', BTCOC502:'CD', BTCOC503:'DD', BTCOE504B:'DD', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'CC' } },
-  { seat: '23010121245004', name: 'TETARE RUTIK GAJANAN', result: 'PASS', total: 547, sgpa: 7.77, grades: { BTCOC501:'AB', BTCOC502:'BC', BTCOC503:'CD', BTCOE504B:'BC', BTCOL506:'AA', BTCOM507:'AA', BTHM505A:'BC' } },
-  { seat: '23010121245005', name: 'TIDKE NIVRUTTI BABURAO', result: 'PASS', total: 518, sgpa: 7.36, grades: { BTCOC501:'AB', BTCOC502:'CC', BTCOC503:'DE', BTCOE504B:'DD', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'BB' } },
-  { seat: '23010121245006', name: 'GAWANDE SANCHIT DINKAR', result: 'PASS', total: 514, sgpa: 7.23, grades: { BTCOC501:'CC', BTCOC502:'CD', BTCOC503:'DE', BTCOE504A:'BB', BTCOL506:'AB', BTCOM507:'AA', BTHM505A:'BB' } },
-  { seat: '23010121245007', name: 'ANJANA SARKAR PRANTOSH', result: 'PASS', total: 534, sgpa: 7.57, grades: { BTCOC501:'BB', BTCOC502:'CC', BTCOC503:'DD', BTCOE504A:'BB', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'BC' } },
-  { seat: '23010121245008', name: 'MHASKE SHAILESH ANIL', result: 'PASS', total: 487, sgpa: 6.91, grades: { BTCOC501:'BC', BTCOC502:'CD', BTCOC503:'DE', BTCOE504B:'DD', BTCOL506:'AA', BTCOM507:'AB', BTHM505A:'CC' } },
-  { seat: '23010121245009', name: 'BHALTILAK NAVNEET SHIVAJIRAO', result: 'PASS', total: 535, sgpa: 7.57, grades: { BTCOC501:'CD', BTCOC502:'AB', BTCOC503:'DD', BTCOE504A:'BC', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'BB' } },
-  { seat: '23010121245010', name: 'JATALE ADITYA SHRIRAM', result: 'PASS', total: 539, sgpa: 7.73, grades: { BTCOC501:'AB', BTCOC502:'BB', BTCOC503:'DD', BTCOE504B:'BC', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'BC' } },
-  { seat: '23010121245011', name: 'WARKHADE UDAY DINESH', result: 'PASS', total: 401, sgpa: 5.82, grades: { BTCOC501:'EE', BTCOC502:'EE', BTCOC503:'EE', BTCOE504A:'DD', BTCOL506:'BB', BTCOM507:'BB', BTHM505B:'DD' } },
-  { seat: '23010121245012', name: 'SHELKE ANAND BAPURAO', result: 'PASS', total: 493, sgpa: 6.95, grades: { BTCOC501:'BB', BTCOC502:'DD', BTCOC503:'EE', BTCOE504B:'CD', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'BC' } },
-  { seat: '23010121245013', name: 'WARHEKAR DEVANSHU KISHOR', result: 'PASS', total: 460, sgpa: 6.45, grades: { BTCOC501:'DE', BTCOC502:'DD', BTCOC503:'DD', BTCOE504B:'DD', BTCOL506:'AB', BTCOM507:'BB', BTHM505B:'CC' } },
-  { seat: '23010121245014', name: 'RAUT PREM SURESH', result: 'FAIL', total: 451, sgpa: null, grades: { BTCOC501:'CD', BTCOC502:'DD', BTCOC503:'EE', BTCOE504B:'FF', BTCOL506:'AA', BTCOM507:'AB', BTHM505B:'CD' } },
-  { seat: '23010121245015', name: 'SHEWANE PRATIK MOHAN', result: 'PASS', total: 472, sgpa: 6.64, grades: { BTCOC501:'DD', BTCOC502:'CD', BTCOC503:'DE', BTCOE504B:'CD', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'CD' } },
-  { seat: '23010121245016', name: 'KHAN ALTAMASH MAHEMOOD KHAN', result: 'PASS', total: 484, sgpa: 6.84, grades: { BTCOC501:'CD', BTCOC502:'DD', BTCOC503:'DE', BTCOE504A:'BC', BTCOL506:'AA', BTCOM507:'AB', BTHM505B:'CC' } },
-  { seat: '23010121245017', name: 'YADAV BRIJESH RAMESH', result: 'PASS', total: 556, sgpa: 7.98, grades: { BTCOC501:'AB', BTCOC502:'BC', BTCOC503:'BB', BTCOE504B:'CC', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'BC' } },
-  { seat: '23010121245018', name: 'PAWAR TEJAS SHRICHAND', result: 'PASS', total: 491, sgpa: 6.80, grades: { BTCOC501:'CD', BTCOC502:'DD', BTCOC503:'DD', BTCOE504A:'CC', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'CD' } },
-  { seat: '23010121245019', name: 'SANGADE JAYKUMAR SUDHAKAR', result: 'PASS', total: 473, sgpa: 6.68, grades: { BTCOC501:'DD', BTCOC502:'CC', BTCOC503:'DE', BTCOE504B:'CC', BTCOL506:'AB', BTCOM507:'AB', BTHM505A:'DD' } },
-  { seat: '23010121245020', name: 'JUNGHARE YASH GAJANAN', result: 'PASS', total: 479, sgpa: 6.80, grades: { BTCOC501:'BB', BTCOC502:'DD', BTCOC503:'EE', BTCOE504A:'CC', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'DE' } },
-  { seat: '23010121245021', name: 'KARWATE SWAPNIL ASHOK', result: 'PASS', total: 462, sgpa: 6.57, grades: { BTCOC501:'CC', BTCOC502:'DD', BTCOC503:'EE', BTCOE504B:'DD', BTCOL506:'AA', BTCOM507:'AB', BTHM505A:'CD' } },
-  { seat: '23010121245022', name: 'GAWAI RACHI VINOD', result: 'PASS', total: 543, sgpa: 7.66, grades: { BTCOC501:'CC', BTCOC502:'CD', BTCOC503:'CD', BTCOE504A:'AA', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'AB' } },
-  { seat: '23010121245023', name: 'MAGAR YOGITA NITIN', result: 'PASS', total: 540, sgpa: 7.61, grades: { BTCOC501:'CC', BTCOC502:'CC', BTCOC503:'CD', BTCOE504A:'AB', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'BB' } },
-  { seat: '23010121245024', name: 'MOHITE ABHIMANYU VITTHALRAO', result: 'FAIL', total: 447, sgpa: null, grades: { BTCOC501:'BC', BTCOC502:'EE', BTCOC503:'DD', BTCOE504B:'FF', BTCOL506:'BB', BTCOM507:'AA', BTHM505B:'CD' } },
-  { seat: '23010121245025', name: 'SHEIKH HUZAIF ASHHAR ASLAM AZIM', result: 'PASS', total: 513, sgpa: 7.27, grades: { BTCOC501:'BC', BTCOC502:'CD', BTCOC503:'DD', BTCOE504A:'BC', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'BC' } },
-  { seat: '23010121245026', name: 'MISAL SANIKA RAJENDRA', result: 'PASS', total: 561, sgpa: 8.09, grades: { BTCOC501:'AA', BTCOC502:'BC', BTCOC503:'CC', BTCOE504B:'BC', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'AB' } },
-  { seat: '23010121245027', name: 'WADHONKAR VEDANT ANILRAO', result: 'PASS', total: 552, sgpa: 7.84, grades: { BTCOC501:'BB', BTCOC502:'CC', BTCOC503:'BC', BTCOE504B:'CC', BTCOL506:'AA', BTCOM507:'AA', BTHM505B:'AB' } },
-  { seat: '23010121245028', name: 'NALGIRE DARSHAN DATTATRAY', result: 'PASS', total: 498, sgpa: 6.95, grades: { BTCOC501:'CC', BTCOC502:'DE', BTCOC503:'EE', BTCOE504A:'BC', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'AB' } },
-  { seat: '23010121245029', name: 'CHAUDHARI DHIRAJ RAM', result: 'PASS', total: 494, sgpa: 6.95, grades: { BTCOC501:'DD', BTCOC502:'CD', BTCOC503:'CD', BTCOE504B:'CC', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'CC' } },
-  { seat: '23010121245030', name: 'MULE KAIWALYA GOVIND', result: 'PASS', total: 560, sgpa: 8.07, grades: { BTCOC501:'BB', BTCOC502:'BC', BTCOC503:'AB', BTCOE504A:'BB', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'BC' } },
-  { seat: '23010121245031', name: 'SUKHADEVE HARSH RAJESH', result: 'PASS', total: 529, sgpa: 7.61, grades: { BTCOC501:'BC', BTCOC502:'CC', BTCOC503:'BC', BTCOE504A:'BB', BTCOL506:'BB', BTCOM507:'AB', BTHM505B:'BC' } },
-  { seat: '23010121245033', name: 'PATIL VIVEK MURLIDHAR', result: 'PASS', total: 499, sgpa: 7.20, grades: { BTCOC501:'CC', BTCOC502:'DE', BTCOC503:'CC', BTCOE504A:'BC', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'CC' } },
-  { seat: '23010121245034', name: 'NAGRE DIKSHA GAJANAN', result: 'PASS', total: 547, sgpa: 7.84, grades: { BTCOC501:'AB', BTCOC502:'DD', BTCOC503:'BC', BTCOE504A:'BB', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'AB' } },
-  { seat: '23010121245035', name: 'SAYALI MANOHAR KHAWASHI', result: 'PASS', total: 555, sgpa: 8.07, grades: { BTCOC501:'BB', BTCOC502:'CC', BTCOC503:'BB', BTCOE504A:'BB', BTCOL506:'BB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245036', name: 'KAKAD PRERNA VILASRAO', result: 'PASS', total: 561, sgpa: 8.07, grades: { BTCOC501:'CC', BTCOC502:'CC', BTCOC503:'BB', BTCOE504A:'AA', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245037', name: 'RATHOD SEJAL VIJAY', result: 'PASS', total: 513, sgpa: 7.30, grades: { BTCOC501:'CC', BTCOC502:'CD', BTCOC503:'CD', BTCOE504A:'BB', BTCOL506:'BB', BTCOM507:'AA', BTHM505B:'BC' } },
-  { seat: '23010121245038', name: 'RAIBOLE SUHANI SURESH', result: 'PASS', total: 539, sgpa: 7.73, grades: { BTCOC501:'BB', BTCOC502:'CD', BTCOC503:'BB', BTCOE504A:'BC', BTCOL506:'AB', BTCOM507:'AA', BTHM505B:'BC' } },
-  { seat: '23010121245039', name: 'HIWALE KULDIP KAILAS', result: 'PASS', total: 545, sgpa: 7.91, grades: { BTCOC501:'CC', BTCOC502:'AA', BTCOC503:'CC', BTCOE504A:'BB', BTCOL506:'AB', BTCOM507:'EX', BTHM505A:'CC' } },
-  { seat: '23010121245040', name: 'BHAMKAR SAMRUDDHI SUHAS', result: 'PASS', total: 529, sgpa: 7.59, grades: { BTCOC501:'BB', BTCOC502:'CC', BTCOC503:'CC', BTCOE504A:'CD', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'BC' } },
-  { seat: '23010121245042', name: 'VILAYATKAR GAYATRI UMESH', result: 'PASS', total: 543, sgpa: 7.77, grades: { BTCOC501:'CC', BTCOC502:'BB', BTCOC503:'CD', BTCOE504A:'BB', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'BB' } },
-  { seat: '23010121245043', name: 'SARVE VAISHNAVI SANJAY', result: 'PASS', total: 583, sgpa: 8.55, grades: { BTCOC501:'AB', BTCOC502:'AB', BTCOC503:'BB', BTCOE504B:'AB', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245044', name: 'BHANGALE ANUSHRI PRAFULL', result: 'PASS', total: 575, sgpa: 8.34, grades: { BTCOC501:'BB', BTCOC502:'AB', BTCOC503:'BC', BTCOE504B:'BB', BTCOL506:'AA', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245045', name: 'AWCHAR SAMIKSHA BHAGWAT', result: 'PASS', total: 517, sgpa: 7.32, grades: { BTCOC501:'CC', BTCOC502:'DD', BTCOC503:'DD', BTCOE504A:'BB', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'BB' } },
-  { seat: '23010121245046', name: 'SURYAWANSHI ANJALI DATTAHARI', result: 'PASS', total: 505, sgpa: 7.11, grades: { BTCOC501:'DD', BTCOC502:'DD', BTCOC503:'DE', BTCOE504A:'BB', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245047', name: 'MINKE ANJALI GANGADHAR', result: 'PASS', total: 514, sgpa: 7.36, grades: { BTCOC501:'CC', BTCOC502:'CC', BTCOC503:'DE', BTCOE504A:'BB', BTCOL506:'BB', BTCOM507:'EX', BTHM505B:'BB' } },
-  { seat: '23010121245048', name: 'KAKDE SAMIKSHA MURLIDHAR', result: 'PASS', total: 547, sgpa: 7.86, grades: { BTCOC501:'BC', BTCOC502:'CC', BTCOC503:'BC', BTCOE504A:'AB', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'BC' } },
-  { seat: '23010121245049', name: 'GHONGE POOJA RAVIKIRAN', result: 'PASS', total: 561, sgpa: 8.09, grades: { BTCOC501:'BB', BTCOC502:'BC', BTCOC503:'CC', BTCOE504A:'AB', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245050', name: 'KHARBADE PRERANA DEVIDAS', result: 'PASS', total: 489, sgpa: 6.93, grades: { BTCOC501:'BC', BTCOC502:'EE', BTCOC503:'EE', BTCOE504A:'BB', BTCOL506:'BB', BTCOM507:'EX', BTHM505B:'BC' } },
-  { seat: '23010121245051', name: 'GIRHE AAKANKSHA PRABHAKAR', result: 'PASS', total: 545, sgpa: 7.86, grades: { BTCOC501:'CC', BTCOC502:'BB', BTCOC503:'CC', BTCOE504A:'BC', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245052', name: 'PATNEY JANVI DEEPAK', result: 'PASS', total: 564, sgpa: 8.07, grades: { BTCOC501:'BB', BTCOC502:'BC', BTCOC503:'CD', BTCOE504A:'AA', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245053', name: 'JADHAO ASHWIN RAMDAS', result: 'PASS', total: 485, sgpa: 7.02, grades: { BTCOC501:'CD', BTCOC502:'CC', BTCOC503:'CD', BTCOE504B:'DD', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'CD' } },
-  { seat: '23010121245054', name: 'ADE JAY SURESH', result: 'FAIL', total: 414, sgpa: null, grades: { BTCOC501:'EE', BTCOC502:'EE', BTCOC503:'FF', BTCOE504A:'CC', BTCOL506:'BB', BTCOM507:'EX', BTHM505B:'DD' } },
-  { seat: '23010121245055', name: 'WARKHADE ANKITA ASHISH', result: 'PASS', total: 573, sgpa: 8.34, grades: { BTCOC501:'BB', BTCOC502:'AB', BTCOC503:'CC', BTCOE504A:'AA', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245056', name: 'RAVANI SHRUSHTI MANILAL', result: 'PASS', total: 531, sgpa: 7.57, grades: { BTCOC501:'BC', BTCOC502:'DD', BTCOC503:'CD', BTCOE504A:'BB', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245057', name: 'GAWALI ISHWAR ASHOK', result: 'FAIL', total: 448, sgpa: null, grades: { BTCOC501:'DD', BTCOC502:'DE', BTCOC503:'DE', BTCOE504B:'FF', BTCOL506:'BB', BTCOM507:'EX', BTHM505B:'CD' } },
-  { seat: '23010121245058', name: 'SAYALI RAJENDRA KHUPSE', result: 'PASS', total: 535, sgpa: 7.84, grades: { BTCOC501:'CC', BTCOC502:'BB', BTCOC503:'BB', BTCOE504B:'DD', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '23010121245060', name: 'INGLE VAIBHAV VINOD', result: 'PASS', total: 525, sgpa: 7.39, grades: { BTCOC501:'CC', BTCOC502:'CD', BTCOC503:'DD', BTCOE504B:'BC', BTCOL506:'AA', BTCOM507:'EX', BTHM505B:'BB' } },
-  { seat: '23010121245061', name: 'MAHALE VAIBHAV DATTATRAY', result: 'FAIL', total: 470, sgpa: null, grades: { BTCOC501:'CD', BTCOC502:'CD', BTCOC503:'DD', BTCOE504A:'FF', BTCOL506:'AA', BTCOM507:'EX', BTHM505B:'DD' } },
-  { seat: '23010121245062', name: 'BUTLE KANISHK PRAMOD', result: 'FAIL', total: 453, sgpa: null, grades: { BTCOC501:'DD', BTCOC502:'CD', BTCOC503:'EE', BTCOE504A:'FF', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'CC' } },
-  { seat: '23010121245064', name: 'BIRADAR MEGHA DATTATRAY', result: 'PASS', total: 517, sgpa: 7.25, grades: { BTCOC501:'CC', BTCOC502:'CD', BTCOC503:'DE', BTCOE504A:'BC', BTCOL506:'AB', BTCOM507:'EX', BTHM505B:'BB' } },
-  { seat: '23010121245065', name: 'NANDURKAR ESHANT VIDYADHAR', result: 'PASS', total: 532, sgpa: 7.64, grades: { BTCOC501:'BC', BTCOC502:'BC', BTCOC503:'BC', BTCOE504A:'CC', BTCOL506:'BB', BTCOM507:'EX', BTHM505B:'CC' } },
-  { seat: '24010121245501', name: 'SHAH KHIZROYA IRQUAM ZAHEER AHMAD', result: 'PASS', total: 578, sgpa: 8.32, grades: { BTCOC501:'BC', BTCOC502:'BC', BTCOC503:'AB', BTCOE504A:'AB', BTCOL506:'AA', BTCOM507:'EX', BTHM505A:'AB' } },
-  { seat: '24010121245502', name: 'JAYSINGPURE SAKSHI SUNIL', result: 'PASS', total: 553, sgpa: 8.07, grades: { BTCOC501:'AB', BTCOC502:'BC', BTCOC503:'BB', BTCOE504A:'BC', BTCOL506:'AA', BTCOM507:'EX', BTHM505A:'CC' } },
-  { seat: '24010121245503', name: 'TERKHEDKAR RUCHIR RAJEEV', result: 'PASS', total: 532, sgpa: 7.57, grades: { BTCOC501:'CC', BTCOC502:'CC', BTCOC503:'BC', BTCOE504A:'BC', BTCOL506:'AB', BTCOM507:'EX', BTHM505A:'CC' } },
-  { seat: '24010121245504', name: 'SHINGOTE BHAGWAT SANJAY', result: 'PASS', total: 538, sgpa: 7.73, grades: { BTCOC501:'DD', BTCOC502:'BC', BTCOC503:'AB', BTCOE504A:'BC', BTCOL506:'AB', BTCOM507:'EX', BTHM505A:'BC' } },
-  { seat: '24010121245505', name: 'GAWHALE NILESH NARAYAN', result: 'PASS', total: 582, sgpa: 8.45, grades: { BTCOC501:'BC', BTCOC502:'BB', BTCOC503:'AA', BTCOE504B:'BB', BTCOL506:'EX', BTCOM507:'EX', BTHM505B:'BB' } },
-  { seat: '24010121245506', name: 'KARNALE SANKET GOVIND', result: 'PASS', total: 547, sgpa: 7.84, grades: { BTCOC501:'BC', BTCOC502:'CC', BTCOC503:'BC', BTCOE504B:'CC', BTCOL506:'AA', BTCOM507:'EX', BTHM505B:'AB' } },
-  { seat: '24010121245508', name: 'GAIKWAD PRATIKSHA SUDHAKAR', result: 'PASS', total: 583, sgpa: 8.50, grades: { BTCOC501:'BB', BTCOC502:'BB', BTCOC503:'AB', BTCOE504A:'AB', BTCOL506:'AA', BTCOM507:'EX', BTHM505A:'AB' } },
-  { seat: '24010121245509', name: 'DHOBLE NIKITA GOVIND', result: 'PASS', total: 539, sgpa: 7.82, grades: { BTCOC501:'CC', BTCOC502:'BB', BTCOC503:'BC', BTCOE504B:'CC', BTCOL506:'AB', BTCOM507:'EX', BTHM505A:'BB' } },
+  { seat:'2210121245043', name:'PHAD SHRIKANT RAJU', result:'PASS', total:447, sgpa:6.18, subjects:[
+    {code:'BTCOC501',marks:49,grade:'EE'},{code:'BTCOC502',marks:45,grade:'EE'},{code:'BTCOC503',marks:53,grade:'DE'},
+    {code:'BTCOE504A',marks:64,grade:'CD'},{code:'BTCOL506',marks:81,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:65,grade:'CD'}]},
+
+  { seat:'23010121245002', name:'HAUNSKAR SOHAM RAM', result:'PASS', total:494, sgpa:6.93, subjects:[
+    {code:'BTCOC501',marks:69,grade:'CC'},{code:'BTCOC502',marks:61,grade:'CD'},{code:'BTCOC503',marks:55,grade:'DE'},
+    {code:'BTCOE504B',marks:61,grade:'CD'},{code:'BTCOL506',marks:89,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:69,grade:'CC'}]},
+
+  { seat:'23010121245003', name:'ADHAL HARSHWARDHAN DINESH', result:'PASS', total:506, sgpa:7.14, subjects:[
+    {code:'BTCOC501',marks:78,grade:'BB'},{code:'BTCOC502',marks:65,grade:'CD'},{code:'BTCOC503',marks:56,grade:'DD'},
+    {code:'BTCOE504B',marks:59,grade:'DD'},{code:'BTCOL506',marks:89,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:69,grade:'CC'}]},
+
+  { seat:'23010121245004', name:'TETARE RUTIK GAJANAN', result:'PASS', total:547, sgpa:7.77, subjects:[
+    {code:'BTCOC501',marks:83,grade:'AB'},{code:'BTCOC502',marks:74,grade:'BC'},{code:'BTCOC503',marks:64,grade:'CD'},
+    {code:'BTCOE504B',marks:73,grade:'BC'},{code:'BTCOL506',marks:90,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505A',marks:73,grade:'BC'}]},
+
+  { seat:'23010121245005', name:'TIDKE NIVRUTTI BABURAO', result:'PASS', total:518, sgpa:7.36, subjects:[
+    {code:'BTCOC501',marks:84,grade:'AB'},{code:'BTCOC502',marks:69,grade:'CC'},{code:'BTCOC503',marks:54,grade:'DE'},
+    {code:'BTCOE504B',marks:57,grade:'DD'},{code:'BTCOL506',marks:88,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:76,grade:'BB'}]},
+
+  { seat:'23010121245006', name:'GAWANDE SANCHIT DINKAR', result:'PASS', total:514, sgpa:7.23, subjects:[
+    {code:'BTCOC501',marks:67,grade:'CC'},{code:'BTCOC502',marks:65,grade:'CD'},{code:'BTCOC503',marks:52,grade:'DE'},
+    {code:'BTCOE504A',marks:76,grade:'BB'},{code:'BTCOL506',marks:85,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505A',marks:79,grade:'BB'}]},
+
+  { seat:'23010121245007', name:'ANJANA SARKAR PRANTOSH', result:'PASS', total:534, sgpa:7.57, subjects:[
+    {code:'BTCOC501',marks:76,grade:'BB'},{code:'BTCOC502',marks:67,grade:'CC'},{code:'BTCOC503',marks:59,grade:'DD'},
+    {code:'BTCOE504A',marks:78,grade:'BB'},{code:'BTCOL506',marks:90,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:74,grade:'BC'}]},
+
+  { seat:'23010121245008', name:'MHASKE SHAILESH ANIL', result:'PASS', total:487, sgpa:6.91, subjects:[
+    {code:'BTCOC501',marks:73,grade:'BC'},{code:'BTCOC502',marks:64,grade:'CD'},{code:'BTCOC503',marks:51,grade:'DE'},
+    {code:'BTCOE504B',marks:57,grade:'DD'},{code:'BTCOL506',marks:90,grade:'AA'},{code:'BTCOM507',marks:85,grade:'AB'},{code:'BTHM505A',marks:67,grade:'CC'}]},
+
+  { seat:'23010121245009', name:'BHALTILAK NAVNEET SHIVAJIRAO', result:'PASS', total:535, sgpa:7.57, subjects:[
+    {code:'BTCOC501',marks:63,grade:'CD'},{code:'BTCOC502',marks:82,grade:'AB'},{code:'BTCOC503',marks:59,grade:'DD'},
+    {code:'BTCOE504A',marks:75,grade:'BC'},{code:'BTCOL506',marks:88,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:78,grade:'BB'}]},
+
+  { seat:'23010121245010', name:'JATALE ADITYA SHRIRAM', result:'PASS', total:539, sgpa:7.73, subjects:[
+    {code:'BTCOC501',marks:82,grade:'AB'},{code:'BTCOC502',marks:77,grade:'BB'},{code:'BTCOC503',marks:58,grade:'DD'},
+    {code:'BTCOE504B',marks:75,grade:'BC'},{code:'BTCOL506',marks:85,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:72,grade:'BC'}]},
+
+  { seat:'23010121245011', name:'WARKHADE UDAY DINESH', result:'PASS', total:401, sgpa:5.82, subjects:[
+    {code:'BTCOC501',marks:43,grade:'EE'},{code:'BTCOC502',marks:46,grade:'EE'},{code:'BTCOC503',marks:42,grade:'EE'},
+    {code:'BTCOE504A',marks:56,grade:'DD'},{code:'BTCOL506',marks:80,grade:'BB'},{code:'BTCOM507',marks:77,grade:'BB'},{code:'BTHM505B',marks:57,grade:'DD'}]},
+
+  { seat:'23010121245012', name:'SHELKE ANAND BAPURAO', result:'PASS', total:493, sgpa:6.95, subjects:[
+    {code:'BTCOC501',marks:76,grade:'BB'},{code:'BTCOC502',marks:58,grade:'DD'},{code:'BTCOC503',marks:48,grade:'EE'},
+    {code:'BTCOE504B',marks:63,grade:'CD'},{code:'BTCOL506',marks:85,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:73,grade:'BC'}]},
+
+  { seat:'23010121245013', name:'WARHEKAR DEVANSHU KISHOR', result:'PASS', total:460, sgpa:6.45, subjects:[
+    {code:'BTCOC501',marks:55,grade:'DE'},{code:'BTCOC502',marks:59,grade:'DD'},{code:'BTCOC503',marks:60,grade:'DD'},
+    {code:'BTCOE504B',marks:57,grade:'DD'},{code:'BTCOL506',marks:83,grade:'AB'},{code:'BTCOM507',marks:80,grade:'BB'},{code:'BTHM505B',marks:66,grade:'CC'}]},
+
+  { seat:'23010121245014', name:'RAUT PREM SURESH', result:'FAIL', total:451, sgpa:null, subjects:[
+    {code:'BTCOC501',marks:65,grade:'CD'},{code:'BTCOC502',marks:58,grade:'DD'},{code:'BTCOC503',marks:46,grade:'EE'},
+    {code:'BTCOE504B',marks:50,grade:'FF'},{code:'BTCOL506',marks:86,grade:'AA'},{code:'BTCOM507',marks:83,grade:'AB'},{code:'BTHM505B',marks:63,grade:'CD'}]},
+
+  { seat:'23010121245015', name:'SHEWANE PRATIK MOHAN', result:'PASS', total:472, sgpa:6.64, subjects:[
+    {code:'BTCOC501',marks:57,grade:'DD'},{code:'BTCOC502',marks:62,grade:'CD'},{code:'BTCOC503',marks:55,grade:'DE'},
+    {code:'BTCOE504B',marks:63,grade:'CD'},{code:'BTCOL506',marks:85,grade:'AB'},{code:'BTCOM507',marks:87,grade:'AA'},{code:'BTHM505B',marks:63,grade:'CD'}]},
+
+  { seat:'23010121245016', name:'KHAN ALTAMASH MAHEMOOD KHAN', result:'PASS', total:484, sgpa:6.84, subjects:[
+    {code:'BTCOC501',marks:65,grade:'CD'},{code:'BTCOC502',marks:58,grade:'DD'},{code:'BTCOC503',marks:51,grade:'DE'},
+    {code:'BTCOE504A',marks:74,grade:'BC'},{code:'BTCOL506',marks:87,grade:'AA'},{code:'BTCOM507',marks:83,grade:'AB'},{code:'BTHM505B',marks:66,grade:'CC'}]},
+
+  { seat:'23010121245017', name:'YADAV BRIJESH RAMESH', result:'PASS', total:556, sgpa:7.98, subjects:[
+    {code:'BTCOC501',marks:83,grade:'AB'},{code:'BTCOC502',marks:72,grade:'BC'},{code:'BTCOC503',marks:78,grade:'BB'},
+    {code:'BTCOE504B',marks:70,grade:'CC'},{code:'BTCOL506',marks:90,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:73,grade:'BC'}]},
+
+  { seat:'23010121245018', name:'PAWAR TEJAS SHRICHAND', result:'PASS', total:491, sgpa:6.80, subjects:[
+    {code:'BTCOC501',marks:65,grade:'CD'},{code:'BTCOC502',marks:58,grade:'DD'},{code:'BTCOC503',marks:60,grade:'DD'},
+    {code:'BTCOE504A',marks:69,grade:'CC'},{code:'BTCOL506',marks:85,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:64,grade:'CD'}]},
+
+  { seat:'23010121245019', name:'SANGADE JAYKUMAR SUDHAKAR', result:'PASS', total:473, sgpa:6.68, subjects:[
+    {code:'BTCOC501',marks:60,grade:'DD'},{code:'BTCOC502',marks:66,grade:'CC'},{code:'BTCOC503',marks:55,grade:'DE'},
+    {code:'BTCOE504B',marks:69,grade:'CC'},{code:'BTCOL506',marks:85,grade:'AB'},{code:'BTCOM507',marks:82,grade:'AB'},{code:'BTHM505A',marks:56,grade:'DD'}]},
+
+  { seat:'23010121245020', name:'JUNGHARE YASH GAJANAN', result:'PASS', total:479, sgpa:6.80, subjects:[
+    {code:'BTCOC501',marks:76,grade:'BB'},{code:'BTCOC502',marks:60,grade:'DD'},{code:'BTCOC503',marks:44,grade:'EE'},
+    {code:'BTCOE504A',marks:66,grade:'CC'},{code:'BTCOL506',marks:88,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:55,grade:'DE'}]},
+
+  { seat:'23010121245021', name:'KARWATE SWAPNIL ASHOK', result:'PASS', total:462, sgpa:6.57, subjects:[
+    {code:'BTCOC501',marks:68,grade:'CC'},{code:'BTCOC502',marks:56,grade:'DD'},{code:'BTCOC503',marks:46,grade:'EE'},
+    {code:'BTCOE504B',marks:60,grade:'DD'},{code:'BTCOL506',marks:86,grade:'AA'},{code:'BTCOM507',marks:85,grade:'AB'},{code:'BTHM505A',marks:61,grade:'CD'}]},
+
+  { seat:'23010121245022', name:'GAWAI RACHI VINOD', result:'PASS', total:543, sgpa:7.66, subjects:[
+    {code:'BTCOC501',marks:69,grade:'CC'},{code:'BTCOC502',marks:63,grade:'CD'},{code:'BTCOC503',marks:61,grade:'CD'},
+    {code:'BTCOE504A',marks:89,grade:'AA'},{code:'BTCOL506',marks:89,grade:'AA'},{code:'BTCOM507',marks:88,grade:'AA'},{code:'BTHM505B',marks:84,grade:'AB'}]},
+
+  { seat:'23010121245023', name:'MAGAR YOGITA NITIN', result:'PASS', total:540, sgpa:7.61, subjects:[
+    {code:'BTCOC501',marks:70,grade:'CC'},{code:'BTCOC502',marks:68,grade:'CC'},{code:'BTCOC503',marks:62,grade:'CD'},
+    {code:'BTCOE504A',marks:83,grade:'AB'},{code:'BTCOL506',marks:89,grade:'AA'},{code:'BTCOM507',marks:88,grade:'AA'},{code:'BTHM505B',marks:80,grade:'BB'}]},
+
+  { seat:'23010121245024', name:'MOHITE ABHIMANYU VITTHALRAO', result:'FAIL', total:447, sgpa:null, subjects:[
+    {code:'BTCOC501',marks:74,grade:'BC'},{code:'BTCOC502',marks:45,grade:'EE'},{code:'BTCOC503',marks:60,grade:'DD'},
+    {code:'BTCOE504B',marks:38,grade:'FF'},{code:'BTCOL506',marks:80,grade:'BB'},{code:'BTCOM507',marks:87,grade:'AA'},{code:'BTHM505B',marks:63,grade:'CD'}]},
+
+  { seat:'23010121245025', name:'SHEIKH HUZAIF ASHHAR ASLAM AZIM', result:'PASS', total:513, sgpa:7.27, subjects:[
+    {code:'BTCOC501',marks:72,grade:'BC'},{code:'BTCOC502',marks:62,grade:'CD'},{code:'BTCOC503',marks:57,grade:'DD'},
+    {code:'BTCOE504A',marks:75,grade:'BC'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:89,grade:'AA'},{code:'BTHM505B',marks:74,grade:'BC'}]},
+
+  { seat:'23010121245026', name:'MISAL SANIKA RAJENDRA', result:'PASS', total:561, sgpa:8.09, subjects:[
+    {code:'BTCOC501',marks:87,grade:'AA'},{code:'BTCOC502',marks:73,grade:'BC'},{code:'BTCOC503',marks:66,grade:'CC'},
+    {code:'BTCOE504B',marks:73,grade:'BC'},{code:'BTCOL506',marks:90,grade:'AA'},{code:'BTCOM507',marks:89,grade:'AA'},{code:'BTHM505B',marks:83,grade:'AB'}]},
+
+  { seat:'23010121245027', name:'WADHONKAR VEDANT ANILRAO', result:'PASS', total:552, sgpa:7.84, subjects:[
+    {code:'BTCOC501',marks:79,grade:'BB'},{code:'BTCOC502',marks:69,grade:'CC'},{code:'BTCOC503',marks:73,grade:'BC'},
+    {code:'BTCOE504B',marks:70,grade:'CC'},{code:'BTCOL506',marks:87,grade:'AA'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:84,grade:'AB'}]},
+
+  { seat:'23010121245028', name:'NALGIRE DARSHAN DATTATRAY', result:'PASS', total:498, sgpa:6.95, subjects:[
+    {code:'BTCOC501',marks:67,grade:'CC'},{code:'BTCOC502',marks:51,grade:'DE'},{code:'BTCOC503',marks:48,grade:'EE'},
+    {code:'BTCOE504A',marks:75,grade:'BC'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:83,grade:'AB'}]},
+
+  { seat:'23010121245029', name:'CHAUDHARI DHIRAJ RAM', result:'PASS', total:494, sgpa:6.95, subjects:[
+    {code:'BTCOC501',marks:57,grade:'DD'},{code:'BTCOC502',marks:62,grade:'CD'},{code:'BTCOC503',marks:64,grade:'CD'},
+    {code:'BTCOE504B',marks:70,grade:'CC'},{code:'BTCOL506',marks:85,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:66,grade:'CC'}]},
+
+  { seat:'23010121245030', name:'MULE KAIWALYA GOVIND', result:'PASS', total:560, sgpa:8.07, subjects:[
+    {code:'BTCOC501',marks:80,grade:'BB'},{code:'BTCOC502',marks:71,grade:'BC'},{code:'BTCOC503',marks:82,grade:'AB'},
+    {code:'BTCOE504A',marks:80,grade:'BB'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:73,grade:'BC'}]},
+
+  { seat:'23010121245031', name:'SUKHADEVE HARSH RAJESH', result:'PASS', total:529, sgpa:7.61, subjects:[
+    {code:'BTCOC501',marks:71,grade:'BC'},{code:'BTCOC502',marks:68,grade:'CC'},{code:'BTCOC503',marks:74,grade:'BC'},
+    {code:'BTCOE504A',marks:79,grade:'BB'},{code:'BTCOL506',marks:80,grade:'BB'},{code:'BTCOM507',marks:84,grade:'AB'},{code:'BTHM505B',marks:73,grade:'BC'}]},
+
+  { seat:'23010121245033', name:'PATIL VIVEK MURLIDHAR', result:'PASS', total:499, sgpa:7.20, subjects:[
+    {code:'BTCOC501',marks:66,grade:'CC'},{code:'BTCOC502',marks:55,grade:'DE'},{code:'BTCOC503',marks:68,grade:'CC'},
+    {code:'BTCOE504A',marks:71,grade:'BC'},{code:'BTCOL506',marks:82,grade:'AB'},{code:'BTCOM507',marks:91,grade:'EX'},{code:'BTHM505B',marks:66,grade:'CC'}]},
+
+  { seat:'23010121245034', name:'NAGRE DIKSHA GAJANAN', result:'PASS', total:547, sgpa:7.84, subjects:[
+    {code:'BTCOC501',marks:85,grade:'AB'},{code:'BTCOC502',marks:57,grade:'DD'},{code:'BTCOC503',marks:72,grade:'BC'},
+    {code:'BTCOE504A',marks:79,grade:'BB'},{code:'BTCOL506',marks:82,grade:'AB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:82,grade:'AB'}]},
+
+  { seat:'23010121245035', name:'SAYALI MANOHAR KHAWASHI', result:'PASS', total:555, sgpa:8.07, subjects:[
+    {code:'BTCOC501',marks:80,grade:'BB'},{code:'BTCOC502',marks:69,grade:'CC'},{code:'BTCOC503',marks:77,grade:'BB'},
+    {code:'BTCOE504A',marks:76,grade:'BB'},{code:'BTCOL506',marks:80,grade:'BB'},{code:'BTCOM507',marks:92,grade:'EX'},{code:'BTHM505B',marks:81,grade:'AB'}]},
+
+  { seat:'23010121245036', name:'KAKAD PRERNA VILASRAO', result:'PASS', total:561, sgpa:8.07, subjects:[
+    {code:'BTCOC501',marks:70,grade:'CC'},{code:'BTCOC502',marks:68,grade:'CC'},{code:'BTCOC503',marks:78,grade:'BB'},
+    {code:'BTCOE504A',marks:87,grade:'AA'},{code:'BTCOL506',marks:82,grade:'AB'},{code:'BTCOM507',marks:91,grade:'EX'},{code:'BTHM505B',marks:85,grade:'AB'}]},
+
+  { seat:'23010121245037', name:'RATHOD SEJAL VIJAY', result:'PASS', total:513, sgpa:7.30, subjects:[
+    {code:'BTCOC501',marks:67,grade:'CC'},{code:'BTCOC502',marks:63,grade:'CD'},{code:'BTCOC503',marks:63,grade:'CD'},
+    {code:'BTCOE504A',marks:79,grade:'BB'},{code:'BTCOL506',marks:80,grade:'BB'},{code:'BTCOM507',marks:90,grade:'AA'},{code:'BTHM505B',marks:71,grade:'BC'}]},
+
+  { seat:'23010121245038', name:'RAIBOLE SUHANI SURESH', result:'PASS', total:539, sgpa:7.73, subjects:[
+    {code:'BTCOC501',marks:79,grade:'BB'},{code:'BTCOC502',marks:65,grade:'CD'},{code:'BTCOC503',marks:76,grade:'BB'},
+    {code:'BTCOE504A',marks:71,grade:'BC'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:89,grade:'AA'},{code:'BTHM505B',marks:75,grade:'BC'}]},
+
+  { seat:'23010121245039', name:'HIWALE KULDIP KAILAS', result:'PASS', total:545, sgpa:7.91, subjects:[
+    {code:'BTCOC501',marks:70,grade:'CC'},{code:'BTCOC502',marks:86,grade:'AA'},{code:'BTCOC503',marks:67,grade:'CC'},
+    {code:'BTCOE504A',marks:80,grade:'BB'},{code:'BTCOL506',marks:81,grade:'AB'},{code:'BTCOM507',marks:92,grade:'EX'},{code:'BTHM505A',marks:69,grade:'CC'}]},
+
+  { seat:'23010121245040', name:'BHAMKAR SAMRUDDHI SUHAS', result:'PASS', total:529, sgpa:7.59, subjects:[
+    {code:'BTCOC501',marks:79,grade:'BB'},{code:'BTCOC502',marks:69,grade:'CC'},{code:'BTCOC503',marks:69,grade:'CC'},
+    {code:'BTCOE504B',marks:63,grade:'CD'},{code:'BTCOL506',marks:82,grade:'AB'},{code:'BTCOM507',marks:92,grade:'EX'},{code:'BTHM505B',marks:75,grade:'BC'}]},
+
+  { seat:'23010121245042', name:'VILAYATKAR GAYATRI UMESH', result:'PASS', total:543, sgpa:7.77, subjects:[
+    {code:'BTCOC501',marks:68,grade:'CC'},{code:'BTCOC502',marks:76,grade:'BB'},{code:'BTCOC503',marks:64,grade:'CD'},
+    {code:'BTCOE504A',marks:79,grade:'BB'},{code:'BTCOL506',marks:83,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:80,grade:'BB'}]},
+
+  { seat:'23010121245043', name:'SARVE VAISHNAVI SANJAY', result:'PASS', total:583, sgpa:8.55, subjects:[
+    {code:'BTCOC501',marks:82,grade:'AB'},{code:'BTCOC502',marks:82,grade:'AB'},{code:'BTCOC503',marks:78,grade:'BB'},
+    {code:'BTCOE504B',marks:83,grade:'AB'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:81,grade:'AB'}]},
+
+  { seat:'23010121245044', name:'BHANGALE ANUSHRI PRAFULL', result:'PASS', total:575, sgpa:8.34, subjects:[
+    {code:'BTCOC501',marks:78,grade:'BB'},{code:'BTCOC502',marks:81,grade:'AB'},{code:'BTCOC503',marks:71,grade:'BC'},
+    {code:'BTCOE504B',marks:78,grade:'BB'},{code:'BTCOL506',marks:90,grade:'AA'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:84,grade:'AB'}]},
+
+  { seat:'23010121245045', name:'AWCHAR SAMIKSHA BHAGWAT', result:'PASS', total:517, sgpa:7.32, subjects:[
+    {code:'BTCOC501',marks:69,grade:'CC'},{code:'BTCOC502',marks:58,grade:'DD'},{code:'BTCOC503',marks:58,grade:'DD'},
+    {code:'BTCOE504A',marks:79,grade:'BB'},{code:'BTCOL506',marks:82,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:78,grade:'BB'}]},
+
+  { seat:'23010121245046', name:'SURYAWANSHI ANJALI DATTAHARI', result:'PASS', total:505, sgpa:7.11, subjects:[
+    {code:'BTCOC501',marks:60,grade:'DD'},{code:'BTCOC502',marks:57,grade:'DD'},{code:'BTCOC503',marks:54,grade:'DE'},
+    {code:'BTCOE504A',marks:76,grade:'BB'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:81,grade:'AB'}]},
+
+  { seat:'23010121245047', name:'MINKE ANJALI GANGADHAR', result:'PASS', total:514, sgpa:7.36, subjects:[
+    {code:'BTCOC501',marks:70,grade:'CC'},{code:'BTCOC502',marks:69,grade:'CC'},{code:'BTCOC503',marks:51,grade:'DE'},
+    {code:'BTCOE504A',marks:78,grade:'BB'},{code:'BTCOL506',marks:76,grade:'BB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:77,grade:'BB'}]},
+
+  { seat:'23010121245048', name:'KAKDE SAMIKSHA MURLIDHAR', result:'PASS', total:547, sgpa:7.86, subjects:[
+    {code:'BTCOC501',marks:72,grade:'BC'},{code:'BTCOC502',marks:69,grade:'CC'},{code:'BTCOC503',marks:72,grade:'BC'},
+    {code:'BTCOE504A',marks:85,grade:'AB'},{code:'BTCOL506',marks:83,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:73,grade:'BC'}]},
+
+  { seat:'23010121245049', name:'GHONGE POOJA RAVIKIRAN', result:'PASS', total:561, sgpa:8.09, subjects:[
+    {code:'BTCOC501',marks:78,grade:'BB'},{code:'BTCOC502',marks:75,grade:'BC'},{code:'BTCOC503',marks:66,grade:'CC'},
+    {code:'BTCOE504A',marks:84,grade:'AB'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:81,grade:'AB'}]},
+
+  { seat:'23010121245050', name:'KHARBADE PRERANA DEVIDAS', result:'PASS', total:489, sgpa:6.93, subjects:[
+    {code:'BTCOC501',marks:73,grade:'BC'},{code:'BTCOC502',marks:47,grade:'EE'},{code:'BTCOC503',marks:43,grade:'EE'},
+    {code:'BTCOE504A',marks:80,grade:'BB'},{code:'BTCOL506',marks:78,grade:'BB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:75,grade:'BC'}]},
+
+  { seat:'23010121245051', name:'GIRHE AAKANKSHA PRABHAKAR', result:'PASS', total:545, sgpa:7.86, subjects:[
+    {code:'BTCOC501',marks:67,grade:'CC'},{code:'BTCOC502',marks:76,grade:'BB'},{code:'BTCOC503',marks:67,grade:'CC'},
+    {code:'BTCOE504A',marks:75,grade:'BC'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:83,grade:'AB'}]},
+
+  { seat:'23010121245052', name:'PATNEY JANVI DEEPAK', result:'PASS', total:564, sgpa:8.07, subjects:[
+    {code:'BTCOC501',marks:79,grade:'BB'},{code:'BTCOC502',marks:74,grade:'BC'},{code:'BTCOC503',marks:64,grade:'CD'},
+    {code:'BTCOE504A',marks:86,grade:'AA'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:84,grade:'AB'}]},
+
+  { seat:'23010121245053', name:'JADHAO ASHWIN RAMDAS', result:'PASS', total:485, sgpa:7.02, subjects:[
+    {code:'BTCOC501',marks:62,grade:'CD'},{code:'BTCOC502',marks:66,grade:'CC'},{code:'BTCOC503',marks:62,grade:'CD'},
+    {code:'BTCOE504B',marks:56,grade:'DD'},{code:'BTCOL506',marks:82,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:64,grade:'CD'}]},
+
+  { seat:'23010121245054', name:'ADE JAY SURESH', result:'FAIL', total:414, sgpa:null, subjects:[
+    {code:'BTCOC501',marks:40,grade:'EE'},{code:'BTCOC502',marks:41,grade:'EE'},{code:'BTCOC503',marks:37,grade:'FF'},
+    {code:'BTCOE504A',marks:67,grade:'CC'},{code:'BTCOL506',marks:76,grade:'BB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:60,grade:'DD'}]},
+
+  { seat:'23010121245055', name:'WARKHADE ANKITA ASHISH', result:'PASS', total:573, sgpa:8.34, subjects:[
+    {code:'BTCOC501',marks:79,grade:'BB'},{code:'BTCOC502',marks:82,grade:'AB'},{code:'BTCOC503',marks:67,grade:'CC'},
+    {code:'BTCOE504A',marks:88,grade:'AA'},{code:'BTCOL506',marks:81,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:83,grade:'AB'}]},
+
+  { seat:'23010121245056', name:'RAVANI SHRUSHTI MANILAL', result:'PASS', total:531, sgpa:7.57, subjects:[
+    {code:'BTCOC501',marks:75,grade:'BC'},{code:'BTCOC502',marks:59,grade:'DD'},{code:'BTCOC503',marks:63,grade:'CD'},
+    {code:'BTCOE504A',marks:77,grade:'BB'},{code:'BTCOL506',marks:81,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:83,grade:'AB'}]},
+
+  { seat:'23010121245057', name:'GAWALI ISHWAR ASHOK', result:'FAIL', total:448, sgpa:null, subjects:[
+    {code:'BTCOC501',marks:56,grade:'DD'},{code:'BTCOC502',marks:54,grade:'DE'},{code:'BTCOC503',marks:51,grade:'DE'},
+    {code:'BTCOE504B',marks:51,grade:'FF'},{code:'BTCOL506',marks:78,grade:'BB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:65,grade:'CD'}]},
+
+  { seat:'23010121245058', name:'SAYALI RAJENDRA KHUPSE', result:'PASS', total:535, sgpa:7.84, subjects:[
+    {code:'BTCOC501',marks:68,grade:'CC'},{code:'BTCOC502',marks:77,grade:'BB'},{code:'BTCOC503',marks:76,grade:'BB'},
+    {code:'BTCOE504B',marks:56,grade:'DD'},{code:'BTCOL506',marks:81,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:84,grade:'AB'}]},
+
+  { seat:'23010121245060', name:'INGLE VAIBHAV VINOD', result:'PASS', total:525, sgpa:7.39, subjects:[
+    {code:'BTCOC501',marks:70,grade:'CC'},{code:'BTCOC502',marks:64,grade:'CD'},{code:'BTCOC503',marks:60,grade:'DD'},
+    {code:'BTCOE504B',marks:73,grade:'BC'},{code:'BTCOL506',marks:86,grade:'AA'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:79,grade:'BB'}]},
+
+  { seat:'23010121245061', name:'MAHALE VAIBHAV DATTATRAY', result:'FAIL', total:470, sgpa:null, subjects:[
+    {code:'BTCOC501',marks:63,grade:'CD'},{code:'BTCOC502',marks:65,grade:'CD'},{code:'BTCOC503',marks:57,grade:'DD'},
+    {code:'BTCOE504A',marks:48,grade:'FF'},{code:'BTCOL506',marks:86,grade:'AA'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:58,grade:'DD'}]},
+
+  { seat:'23010121245062', name:'BUTLE KANISHK PRAMOD', result:'FAIL', total:453, sgpa:null, subjects:[
+    {code:'BTCOC501',marks:60,grade:'DD'},{code:'BTCOC502',marks:63,grade:'CD'},{code:'BTCOC503',marks:44,grade:'EE'},
+    {code:'BTCOE504A',marks:44,grade:'FF'},{code:'BTCOL506',marks:81,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:68,grade:'CC'}]},
+
+  { seat:'23010121245064', name:'BIRADAR MEGHA DATTATRAY', result:'PASS', total:517, sgpa:7.25, subjects:[
+    {code:'BTCOC501',marks:67,grade:'CC'},{code:'BTCOC502',marks:65,grade:'CD'},{code:'BTCOC503',marks:55,grade:'DE'},
+    {code:'BTCOE504A',marks:75,grade:'BC'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:78,grade:'BB'}]},
+
+  { seat:'23010121245065', name:'NANDURKAR ESHANT VIDYADHAR', result:'PASS', total:532, sgpa:7.64, subjects:[
+    {code:'BTCOC501',marks:74,grade:'BC'},{code:'BTCOC502',marks:75,grade:'BC'},{code:'BTCOC503',marks:74,grade:'BC'},
+    {code:'BTCOE504A',marks:69,grade:'CC'},{code:'BTCOL506',marks:78,grade:'BB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505B',marks:69,grade:'CC'}]},
+
+  { seat:'24010121245501', name:'SHAH KHIZROYA IRQUAM ZAHEER AHMAD', result:'PASS', total:578, sgpa:8.32, subjects:[
+    {code:'BTCOC501',marks:74,grade:'BC'},{code:'BTCOC502',marks:73,grade:'BC'},{code:'BTCOC503',marks:82,grade:'AB'},
+    {code:'BTCOE504A',marks:85,grade:'AB'},{code:'BTCOL506',marks:86,grade:'AA'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505A',marks:85,grade:'AB'}]},
+
+  { seat:'24010121245502', name:'JAYSINGPURE SAKSHI SUNIL', result:'PASS', total:553, sgpa:8.07, subjects:[
+    {code:'BTCOC501',marks:83,grade:'AB'},{code:'BTCOC502',marks:75,grade:'BC'},{code:'BTCOC503',marks:76,grade:'BB'},
+    {code:'BTCOE504A',marks:71,grade:'BC'},{code:'BTCOL506',marks:86,grade:'AA'},{code:'BTCOM507',marks:92,grade:'EX'},{code:'BTHM505A',marks:70,grade:'CC'}]},
+
+  { seat:'24010121245503', name:'TERKHEDKAR RUCHIR RAJEEV', result:'PASS', total:532, sgpa:7.57, subjects:[
+    {code:'BTCOC501',marks:70,grade:'CC'},{code:'BTCOC502',marks:68,grade:'CC'},{code:'BTCOC503',marks:75,grade:'BC'},
+    {code:'BTCOE504A',marks:72,grade:'BC'},{code:'BTCOL506',marks:85,grade:'AB'},{code:'BTCOM507',marks:93,grade:'EX'},{code:'BTHM505A',marks:69,grade:'CC'}]},
+
+  { seat:'24010121245504', name:'SHINGOTE BHAGWAT SANJAY', result:'PASS', total:538, sgpa:7.73, subjects:[
+    {code:'BTCOC501',marks:60,grade:'DD'},{code:'BTCOC502',marks:74,grade:'BC'},{code:'BTCOC503',marks:83,grade:'AB'},
+    {code:'BTCOE504A',marks:72,grade:'BC'},{code:'BTCOL506',marks:84,grade:'AB'},{code:'BTCOM507',marks:92,grade:'EX'},{code:'BTHM505A',marks:73,grade:'BC'}]},
+
+  { seat:'24010121245505', name:'GAWHALE NILESH NARAYAN', result:'PASS', total:582, sgpa:8.45, subjects:[
+    {code:'BTCOC501',marks:73,grade:'BC'},{code:'BTCOC502',marks:77,grade:'BB'},{code:'BTCOC503',marks:86,grade:'AA'},
+    {code:'BTCOE504B',marks:80,grade:'BB'},{code:'BTCOL506',marks:91,grade:'EX'},{code:'BTCOM507',marks:96,grade:'EX'},{code:'BTHM505B',marks:79,grade:'BB'}]},
+
+  { seat:'24010121245506', name:'KARNALE SANKET GOVIND', result:'PASS', total:547, sgpa:7.84, subjects:[
+    {code:'BTCOC501',marks:74,grade:'BC'},{code:'BTCOC502',marks:68,grade:'CC'},{code:'BTCOC503',marks:72,grade:'BC'},
+    {code:'BTCOE504B',marks:70,grade:'CC'},{code:'BTCOL506',marks:86,grade:'AA'},{code:'BTCOM507',marks:96,grade:'EX'},{code:'BTHM505B',marks:81,grade:'AB'}]},
+
+  { seat:'24010121245508', name:'GAIKWAD PRATIKSHA SUDHAKAR', result:'PASS', total:583, sgpa:8.50, subjects:[
+    {code:'BTCOC501',marks:77,grade:'BB'},{code:'BTCOC502',marks:77,grade:'BB'},{code:'BTCOC503',marks:82,grade:'AB'},
+    {code:'BTCOE504A',marks:81,grade:'AB'},{code:'BTCOL506',marks:90,grade:'AA'},{code:'BTCOM507',marks:94,grade:'EX'},{code:'BTHM505A',marks:82,grade:'AB'}]},
+
+  { seat:'24010121245509', name:'DHOBLE NIKITA GOVIND', result:'PASS', total:539, sgpa:7.82, subjects:[
+    {code:'BTCOC501',marks:66,grade:'CC'},{code:'BTCOC502',marks:79,grade:'BB'},{code:'BTCOC503',marks:71,grade:'BC'},
+    {code:'BTCOE504B',marks:70,grade:'CC'},{code:'BTCOL506',marks:82,grade:'AB'},{code:'BTCOM507',marks:94,grade:'EX'},{code:'BTHM505A',marks:77,grade:'BB'}]},
 ];
 
-// Sort by SGPA desc initially, assign ranks
+// Sort pass students by SGPA and assign ranks
 const passStudents = students.filter(s => s.result === 'PASS').sort((a,b) => b.sgpa - a.sgpa);
 passStudents.forEach((s, i) => s.rank = i + 1);
 students.filter(s => s.result === 'FAIL').forEach(s => s.rank = null);
@@ -643,25 +612,28 @@ function getProgressColor(sgpa) {
 }
 
 function buildCard(student, index) {
-  const gradeEntries = Object.entries(student.grades);
   const isPass = student.result === 'PASS';
   const progressPct = isPass ? Math.min((student.sgpa / 10) * 100, 100) : 0;
 
-  const subjectRows = gradeEntries.map(([code, grade]) => {
-    const name = SUBJECT_NAMES[code] || code;
+  const subjectRows = student.subjects.map(sub => {
+    const name = SUBJECT_NAMES[sub.code] || sub.code;
+    const cls = gradeClass(sub.grade);
+    const shortCode = sub.code.replace('BTCOC','C').replace('BTCOE','E').replace('BTCOL','L').replace('BTCOM','M').replace('BTHM','H');
     return `<div class="subject-row">
-      <span class="sub-code">${code.replace('BTCO','').replace('BTHM','')}</span>
+      <span class="sub-code">${shortCode}</span>
       <span class="sub-name">${name}</span>
-      <span class="sub-grade grade-${grade}">${grade}</span>
+      <div class="sub-marks-wrap">
+        <span class="sub-marks ${cls}">${sub.marks}<span style="font-size:0.55rem;opacity:0.7">/100</span></span>
+      </div>
     </div>`;
   }).join('');
 
   const topAttr = student.rank && student.rank <= 3 ? `data-top="${student.rank}"` : '';
   const rankBadge = student.rank ? `<span class="rank-badge">#${student.rank}</span>` : '';
 
-  return `<div class="card" 
-    data-result="${student.result.toLowerCase()}" 
-    data-name="${student.name.toLowerCase()}" 
+  return `<div class="card"
+    data-result="${student.result.toLowerCase()}"
+    data-name="${student.name.toLowerCase()}"
     data-seat="${student.seat}"
     data-sgpa="${student.sgpa || 0}"
     data-total="${student.total}"
@@ -685,7 +657,7 @@ function buildCard(student, index) {
   </div>`;
 }
 
-// Compute stats
+// Stats
 const passCount = students.filter(s => s.result === 'PASS').length;
 const failCount = students.filter(s => s.result === 'FAIL').length;
 const avgSGPA = (students.filter(s => s.sgpa).reduce((a, s) => a + s.sgpa, 0) / passCount).toFixed(2);
@@ -697,27 +669,13 @@ document.getElementById('fail-count').textContent = failCount;
 document.getElementById('avg-sgpa').textContent = avgSGPA;
 document.getElementById('top-sgpa').textContent = topSGPA;
 
-// Render
-let currentFilter = 'all';
-let currentSort = 'sgpa';
-let currentSearch = '';
+let currentFilter = 'all', currentSort = 'sgpa', currentSearch = '';
 
 function render() {
   let data = [...students];
-
-  // Filter
   if (currentFilter === 'pass') data = data.filter(s => s.result === 'PASS');
   if (currentFilter === 'fail') data = data.filter(s => s.result === 'FAIL');
-
-  // Search
-  if (currentSearch) {
-    data = data.filter(s =>
-      s.name.toLowerCase().includes(currentSearch) ||
-      s.seat.includes(currentSearch)
-    );
-  }
-
-  // Sort
+  if (currentSearch) data = data.filter(s => s.name.toLowerCase().includes(currentSearch) || s.seat.includes(currentSearch));
   if (currentSort === 'sgpa') data.sort((a, b) => (b.sgpa || 0) - (a.sgpa || 0));
   if (currentSort === 'marks') data.sort((a, b) => b.total - a.total);
   if (currentSort === 'name') data.sort((a, b) => a.name.localeCompare(b.name));
@@ -725,11 +683,8 @@ function render() {
 
   const grid = document.getElementById('grid');
   const noRes = document.getElementById('no-results');
-
   if (data.length === 0) {
-    grid.innerHTML = '';
-    grid.appendChild(noRes);
-    noRes.style.display = 'block';
+    grid.innerHTML = ''; grid.appendChild(noRes); noRes.style.display = 'block';
   } else {
     noRes.style.display = 'none';
     grid.innerHTML = data.map((s, i) => buildCard(s, i)).join('') + noRes.outerHTML;
@@ -738,37 +693,20 @@ function render() {
 
 render();
 
-// Events
-document.getElementById('search').addEventListener('input', e => {
-  currentSearch = e.target.value.toLowerCase().trim();
-  render();
-});
+document.getElementById('search').addEventListener('input', e => { currentSearch = e.target.value.toLowerCase().trim(); render(); });
+document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); currentFilter = btn.dataset.filter; render();
+}));
+document.querySelectorAll('.sort-btn').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); currentSort = btn.dataset.sort; render();
+}));
 
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.filter;
-    render();
-  });
-});
-
-document.querySelectorAll('.sort-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentSort = btn.dataset.sort;
-    render();
-  });
-});
-
-// THEME TOGGLE
 const root = document.documentElement;
-const themeToggle = document.getElementById('themeToggle');
 const savedTheme = localStorage.getItem('theme') || 'dark';
 if (savedTheme === 'light') root.classList.add('light');
-
-themeToggle.addEventListener('click', () => {
+document.getElementById('themeToggle').addEventListener('click', () => {
   root.classList.toggle('light');
   localStorage.setItem('theme', root.classList.contains('light') ? 'light' : 'dark');
 });
