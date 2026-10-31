@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CGPA Compare – Computer Engineering (DBATU)</title>
+<style>
+:root{--bg:#f4f1ff;--card:#fff;--tx:#1e1b3a;--mu:#6b6890;--bd:#e3dffa;--c0:#6c5ce7;--c1:#00b894;--c2:#ff6b81;--c3:#f39c12;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141226;--card:#1f1c3a;--tx:#eeecff;--mu:#a3a0c8;--bd:#322e5a}}
+:root[data-theme="dark"]{--bg:#141226;--card:#1f1c3a;--tx:#eeecff;--mu:#a3a0c8;--bd:#322e5a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:linear-gradient(135deg,#6c5ce7,#fd79a8 60%,#fdcb6e);color:#fff;padding:26px 18px 60px;text-align:center}
+header h1{margin:0;font-size:clamp(22px,4vw,34px)}header p{margin:6px 0 0;opacity:.92;font-size:14px}
+main{max-width:1050px;margin:-38px auto 30px;padding:0 14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border-radius:14px;padding:12px 14px;border:1px solid var(--bd);box-shadow:0 4px 14px #6c5ce722}
+.stat b{display:block;font-size:22px}.stat span{color:var(--mu);font-size:12px}
+.stat:nth-child(1) b{color:var(--c0)}.stat:nth-child(2) b{color:var(--c1)}.stat:nth-child(3) b{color:var(--c2)}.stat:nth-child(4) b{color:var(--c3)}
+.tabs{display:flex;gap:8px;margin:14px 0}
+.tab,.pill,.btn{border:0;border-radius:999px;padding:8px 16px;font:inherit;font-weight:600;cursor:pointer;background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.tab.on,.pill.on{background:linear-gradient(135deg,#6c5ce7,#fd79a8);color:#fff;border-color:transparent}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px #6c5ce714}
+.card h3{margin:0 0 10px;font-size:16px}
+input,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit}
+.sug{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sug button{border:1px dashed var(--c0);background:transparent;color:var(--tx);border-radius:10px;padding:5px 10px;font:inherit;font-size:13px;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{color:#fff;border-radius:999px;padding:6px 8px 6px 14px;font-weight:600;font-size:13px;display:flex;gap:8px;align-items:center}
+.chip i{font-style:normal;cursor:pointer;background:#fff3;border-radius:50%;width:20px;height:20px;text-align:center;line-height:20px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{padding:6px 14px;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.sc{border-radius:14px;padding:14px;color:#fff;position:relative}
+.sc b{font-size:30px;display:block}.sc small{opacity:.92}
+.sc .crown{position:absolute;right:12px;top:10px;font-size:20px}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--bd);white-space:nowrap}
+th{color:#fff}td:first-child,th:first-child{text-align:left}
+tr.sel td{background:#6c5ce714;font-weight:600}
+td.best{color:#00a37f;font-weight:800}
+.mu{color:var(--mu);font-size:12px}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--tx);font:11px system-ui,sans-serif}
+.lg{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:12px}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;color:#fff}
+.add{border:0;border-radius:8px;background:var(--c0);color:#fff;padding:4px 10px;cursor:pointer;font:inherit;font-size:12px}
+.add:disabled{opacity:.4}
+.row2{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:760px){.row2{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<header><h1>🎓 CGPA Compare Dashboard</h1><p>Computer Engineering (DBATU) · Government College of Engineering, Yavatmal · Sem 1 to Sem 6</p></header>
+<main>
+<div class="stats" id="stats"></div>
+<div class="tabs"><button class="tab on" data-t="cmp">⚖️ Compare</button><button class="tab" data-t="all">📋 All students</button></div>
+
+<section id="cmp">
+ <div class="card"><h3>1. Pick up to 4 students</h3>
+  <input id="q" placeholder="Search by name or serial number…" autocomplete="off">
+  <div class="sug" id="sug"></div><div class="chips" id="chips"></div></div>
+ <div class="card"><h3>2. Choose what to compare</h3>
+  <div class="pills" id="mode"></div><div class="pills" id="rng" style="margin-top:10px"></div></div>
+ <div id="out"></div>
+</section>
+
+<section id="all" hidden>
+ <div class="card"><div class="row2"><input id="q2" placeholder="Filter by name or serial number…"><select id="so"><option value="sr">Sort: Serial number</option><option value="c">Sort: CGPA (S1–S6), high to low</option><option value="n">Sort: Name (A–Z)</option></select></div></div>
+ <div class="card scroll"><table id="tb"></table></div>
+</section>
+<p class="mu">Compiled, unofficial summary. Cumulative CGPA uses the credit weights S1=18, S2=19, S3=24, S4=23, S5=22, S6=23; S1–S4, S1–S5 and S1–S6 use the values from the report. A dash means the semester is FAIL, pending or not applicable (lateral entry). Please verify against the university’s original statements of marks.</p>
+</main>
+<script>
+const R=[[1,"Haunskar Soham Ram",[6.42,7.63,7.0,7.2,6.93,7.93],"PASS",[7.07,7.04,7.2]],[2,"Adhal Harshwardhan Dinesh",[8.11,7.95,7.83,7.43,7.14,7.78],"PASS",[7.81,7.67,7.69]],[3,"Tetare Rutik Gajanan",[8.5,9.0,7.83,8.2,7.77,8.04],"PASS",[8.34,8.22,8.19]],[4,"Tidke Nivrutti Baburao",[7.28,7.68,6.38,7.09,7.36,8.11],"PASS",[7.06,7.12,7.3]],[5,"Gawande Sanchit Dinkar",[7.11,7.79,7.67,7.72,7.23,7.87],"PASS",[7.59,7.52,7.58]],[6,"Anjana Sarkar",[7.33,7.42,6.63,7.57,7.57,7.74],"PASS",[7.22,7.29,7.37]],[7,"Mhaske Shailesh Anil",[7.97,8.11,7.0,8.22,6.91,7.96],"PASS",[7.79,7.61,7.67]],[8,"Bhaltilak Navneet Shivajirao",[7.25,7.21,7.0,6.63,7.57,8.02],"PASS",[7.0,7.12,7.28]],[9,"Jatale Aditya Shriram",[6.5,7.26,5.79,7.39,7.73,7.67],"PASS",[6.71,6.92,7.06]],[10,"Shelke Anand Bapurao",[6.92,7.61,6.92,7.72,6.95,8.22],"PASS",[7.3,7.22,7.4]],[11,"Warhekar Devanshu Kishor",[7.53,7.31,4.21,6.96,6.45,7.87],"PASS",[6.38,6.39,6.65]],[12,"Raut Prem Suresh",[5.83,6.55,6.33,6.54,null,7.09],"PASS",[6.33,null,null]],[13,"Shewane Pratik Mohan",[6.69,7.16,7.33,7.59,6.64,7.35],"PASS",[7.23,7.1,7.15]],[14,"Altamash Khan Mahemood Khan",[6.64,7.74,6.92,5.67,6.84,7.26],"PASS",[6.7,6.73,6.83]],[15,"Yadav Brijesh Ramesh",[7.14,6.84,7.33,8.15,7.98,8.37],"PASS",[7.4,7.52,7.67]],[16,"Pawar Tejas Shrichand",[5.94,6.18,5.92,5.37,6.8,null],"COPY CASE",[5.83,6.03,null]],[17,"Sangade Jaykumar Sudhakar",[7.0,6.61,7.75,7.59,6.68,7.0],"PASS",[7.29,7.16,7.13]],[18,"Junghare Yash Gajanan",[6.03,6.61,4.75,5.26,6.8,null],"FAIL",[5.58,5.84,null]],[19,"Karwate Swapnil Ashok",[6.08,6.89,6.0,7.28,6.57,7.57],"PASS",[6.57,6.57,6.75]],[20,"Gawai Rachi Vinod",[6.14,7.32,6.54,7.98,7.66,7.78],"PASS",[7.03,7.16,7.27]],[21,"Magar Yogita Nitin",[6.72,7.89,7.33,8.15,7.61,8.15],"PASS",[7.55,7.56,7.67]],[22,"Abhimanyu Vitthalrao Mohite",[6.75,7.53,5.5,6.09,null,6.98],"PASS",[6.39,null,null]],[23,"Huzaif Ashhar Aslam Azim Sheikh",[7.36,8.58,7.67,7.85,7.27,7.37],"PASS",[7.86,7.74,7.67]],[24,"Misal Sanika Rajendra",[8.44,8.42,7.25,8.2,8.09,8.93],"PASS",[8.03,8.04,8.2]],[25,"Wadhonkar Vedant Anilrao",[7.17,8.53,7.92,8.33,7.84,8.26],"PASS",[8.01,7.97,8.02]],[26,"Nalgire Darshan Dattatray",[5.86,6.47,6.33,7.39,6.95,8.11],"PASS",[6.55,6.63,6.9]],[27,"Chaudhari Dhiraj Ram",[7.33,7.26,6.75,7.74,6.95,7.48],"PASS",[7.3,7.23,7.27]],[28,"Mule Kaiwalya Govind",[6.47,7.84,7.33,8.0,8.07,7.96],"PASS",[7.44,7.57,7.64]],[29,"Sukhadeve Harsh Rajesh",[6.25,7.82,5.88,7.74,7.61,7.67],"PASS",[6.9,7.05,7.16]],[30,"Patil Vivek Murlidhar",[6.83,7.53,6.67,7.3,7.2,7.07],"PASS",[7.07,7.1,7.09]],[31,"Nagre Diksha Gajanan",[6.69,7.2,5.58,7.61,7.84,8.15],"PASS",[6.74,6.97,7.18]],[32,"Sayali Manohar Khawashi",[7.28,7.66,7.25,7.85,8.07,8.33],"PASS",[7.51,7.63,7.75]],[33,"Kakad Prerna Vilasrao",[6.42,8.42,6.04,8.0,8.07,8.5],"PASS",[7.2,7.38,7.58]],[34,"Rathod Sejal Vijay",[6.08,7.08,6.13,6.35,7.3,8.02],"PASS",[6.39,6.58,6.84]],[35,"Raibole Suhani Suresh",[7.08,7.58,7.0,7.59,7.73,8.3],"PASS",[7.31,7.4,7.56]],[36,"Hiwale Kuldip Kailas",[6.67,7.61,5.67,7.5,7.91,7.15],"PASS",[6.82,7.05,7.07]],[37,"Bhamkar Samruddhi Suhas",[6.33,8.21,7.08,7.28,7.59,8.02],"PASS",[7.23,7.3,7.43]],[38,"Vilayatkar Gayatri Umesh",[7.81,8.05,7.33,7.59,7.77,8.52],"PASS",[7.67,7.69,7.84]],[39,"Sarve Vaishnavi Sanjay",[7.58,8.89,8.33,7.98,8.55,8.57],"PASS",[8.2,8.27,8.33]],[40,"Anushri Bhangale",[7.19,8.37,7.42,8.96,8.34,8.57],"PASS",[8.01,8.08,8.16]],[41,"Awchar Samiksha Bhagwat",[6.53,6.87,6.0,7.39,7.32,7.57],"PASS",[6.69,6.82,6.95]],[42,"Suryawanshi Anjali Dattahari",[6.47,7.16,5.38,7.98,7.11,7.33],"PASS",[6.73,6.81,6.9]],[43,"Minke Anjali Gangadhar",[6.11,6.58,5.67,7.09,7.36,7.57],"PASS",[6.36,6.57,6.74]],[44,"Kakde Samiksha Murlidhar",[6.17,6.82,6.71,7.37,7.86,7.37],"PASS",[6.8,7.02,7.08]],[45,"Ghonge Pooja Ravikiran",[6.22,7.11,6.83,6.96,8.09,8.5],"PASS",[6.8,7.07,7.32]],[46,"Kharbade Prerana Devidas",[6.08,6.24,4.96,5.46,6.93,7.15],"PASS",[5.63,5.9,6.12]],[47,"Aakanksha Prabhakar Girhe",[6.42,7.68,5.88,7.85,7.86,8.11],"PASS",[6.94,7.13,7.31]],[48,"Patney Janvi Deepak",[7.31,8.0,7.67,7.98,8.07,7.87],"PASS",[7.75,7.82,7.83]],[49,"Jadhao Ashwin Ramdas",[6.92,7.63,6.71,7.0,7.02,6.83],"PASS",[7.04,7.04,7.0]],[50,"Ade Jay Suresh",[5.53,6.03,3.75,3.61,null,6.37],"PASS",[4.61,null,null]],[51,"Warkhade Ankita Ashish",[7.97,8.63,7.67,8.0,8.34,8.07],"PASS",[8.04,8.1,8.1]],[52,"Ravani Shrushti Manilal",[7.25,8.37,6.46,7.67,7.57,7.87],"PASS",[7.39,7.43,7.51]],[53,"Sayali Rajendra Khupse",[7.19,8.11,7.75,6.24,7.84,8.13],"PASS",[7.3,7.41,7.54]],[54,"Biradar Megha Dattatray",[6.28,6.71,6.83,7.35,7.25,8.24],"PASS",[6.83,6.92,7.15]],[55,"Eshant Nandurkar",[6.92,6.63,6.08,7.07,7.64,6.89],"PASS",[6.65,6.86,6.87]],[56,"Ringne Rujal Raju",[4.92,2.66,0.17,5.48,null,null],"NOT FOUND",[3.2,null,null]],[57,"Aniket Siddhasagar Meshram",[7.78,null,0.0,4.35,null,7.02],"PASS",[null,null,null]],[58,"Shrikant Raju Phad",[5.64,6.55,4.08,6.24,6.18,6.72],"PASS",[5.56,5.69,5.87]],[59,"Warkhade Uday Dinesh",[null,null,null,5.67,5.82,null],"FAIL",[5.67,5.75,null]],[60,"Gawali Ishwar Ashok",[7.39,7.42,6.04,5.98,null,6.7],"PASS",[6.63,null,6.64]],[61,"Ingle Vaibhav Vinod",[8.19,7.26,6.42,7.7,7.39,7.72],"PASS",[7.34,7.35,7.42]],[62,"Mahale Vaibhav Dattatray",[6.81,6.89,7.0,7.46,null,7.5],"PASS",[7.06,null,7.15]],[63,"Butle Kanishk Pramod",[6.0,7.47,5.25,4.52,null,7.41],"PASS",[5.71,null,6.08]],[64,"Khizroya Irquam Zaheer Ahmad Shah",[null,null,7.08,8.17,8.32,7.93],"PASS",[7.61,7.84,7.86]],[65,"Sakshi Sunil Jaysingpure",[null,null,8.08,8.04,8.07,7.41],"PASS",[8.06,8.06,7.9]],[66,"Ruchir Rajeev Terkhedkar",[null,null,7.08,7.93,7.57,7.52],"PASS",[7.5,7.52,7.52]],[67,"Bhagwat Sanjay Shingote",[null,null,6.75,7.89,7.73,7.91],"PASS",[7.31,7.44,7.56]],[68,"Nilesh Narayan Gawhale",[null,null,8.0,8.09,8.45,8.24],"PASS",[8.04,8.17,8.19]],[69,"Karnale Sanket Govind",[null,null,7.75,8.24,7.84,7.57],"PASS",[7.99,7.94,7.85]],[70,"Dhoble Nikita Govind",[null,null,6.58,7.93,7.82,7.78],"PASS",[7.24,7.43,7.52]],[71,"Gaikwad Pratiksha Sudhakar",[null,null,null,null,8.5,8.09],"PASS",[null,8.5,8.29]],[72,"Jaisingpure Ishanay Vijay",[null,6.21,null,null,null,5.7],"PASS",[null,null,null]]];
+const D=R.map(r=>({id:r[0],n:r[1],s:r[2],r:r[3],c:r[4]}));
+const COL=['#6c5ce7','#00b894','#ff6b81','#f39c12'];
+const $=i=>document.getElementById(i);
+const f=v=>v==null?'–':v.toFixed(2);
+let sel=[],mode='cum',k=6;
+function cum(t,j){const s=t.s;if(j>=4)return t.c[j-4];if(j==1)return s[0];
+ if(j==2)return s[0]!=null&&s[1]!=null?(s[0]*18+s[1]*19)/37:null;
+ if(s[2]==null)return null;if(s[0]==null&&s[1]==null)return s[2];
+ return s[0]!=null&&s[1]!=null?(s[0]*18+s[1]*19+s[2]*24)/61:null}
+const val=(t,j)=>mode=='cum'?cum(t,j):t.s[j-1];
+const lab=j=>mode=='cum'?(j==1?'S1':'S1–S'+j):'Sem '+j;
+function rank(t,j){const v=val(t,j);if(v==null)return null;const a=D.map(x=>val(x,j)).filter(x=>x!=null).map(x=>+x.toFixed(2));
+ return [1+a.filter(x=>x>+v.toFixed(2)).length,a.length]}
+// stats
+(function(){const p=D.filter(t=>t.c[2]!=null),avg=p.reduce((a,t)=>a+t.c[2],0)/p.length,top=p.reduce((a,t)=>t.c[2]>a.c[2]?t:a);
+ $('stats').innerHTML=`<div class="stat"><b>${D.length}</b><span>Students listed</span></div><div class="stat"><b>${p.length}</b><span>With S1–S6 CGPA</span></div><div class="stat"><b>${avg.toFixed(2)}</b><span>Average CGPA (S1–S6)</span></div><div class="stat"><b>${top.c[2].toFixed(2)}</b><span>Top: ${top.n.split(' ').slice(0,2).join(' ')}</span></div>`})();
+// tabs
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x==b));$('cmp').hidden=b.dataset.t!='cmp';$('all').hidden=b.dataset.t!='all'});
+function add(id){if(sel.length<4&&!sel.includes(id)){sel.push(id);draw()}}
+function rm(id){sel=sel.filter(x=>x!=id);draw()}
+function match(q){q=q.trim().toLowerCase();return D.filter(t=>!q||t.n.toLowerCase().includes(q)||String(t.id)==q)}
+function draw(){
+ $('chips').innerHTML=sel.map((id,i)=>`<span class="chip" style="background:${COL[i]}">${D[id-1].n}<i onclick="rm(${id})">×</i></span>`).join('')||'<span class="mu">Nobody selected yet.</span>';
+ const q=$('q').value,full=sel.length>=4;
+ $('sug').innerHTML=full?'<span class="mu">Maximum of 4 students selected.</span>':match(q).filter(t=>!sel.includes(t.id)).slice(0,q?8:6).map(t=>`<button onclick="add(${t.id})">+ ${t.n}</button>`).join('');
+ $('mode').innerHTML=[['cum','Cumulative CGPA (S1–S2, S1–S3…)'],['sg','Single-semester SGPA']].map(m=>`<button class="pill ${mode==m[0]?'on':''}" onclick="mode='${m[0]}';draw()">${m[1]}</button>`).join('');
+ $('rng').innerHTML=[1,2,3,4,5,6].map(j=>`<button class="pill ${k==j?'on':''}" onclick="k=${j};draw()">${lab(j)}</button>`).join('');
+ out()}
+function out(){const T=sel.map(id=>D[id-1]);
+ if(T.length<2){$('out').innerHTML='<div class="card mu">Select at least 2 students to see the comparison.</div>';return}
+ const vs=T.map(t=>val(t,k)),best=Math.max(...vs.filter(v=>v!=null).map(v=>+v.toFixed(2)));
+ let h='<div class="cards">'+T.map((t,i)=>{const v=vs[i],r=rank(t,k),b=v!=null&&+v.toFixed(2)==best;
+  return `<div class="sc" style="background:linear-gradient(135deg,${COL[i]},${COL[i]}bb)">${b?'<span class="crown">👑</span>':''}<small>${t.n}</small><b>${f(v)}</b><small>${lab(k)} · ${r?'Rank '+r[0]+' of '+r[1]:'no rank'}${v!=null&&!b&&isFinite(best)?' · −'+(best-v).toFixed(2)+' vs best':''}</small></div>`}).join('')+'</div>';
+ h+=`<div class="card" style="margin-top:14px"><h3>${lab(k)} – bar comparison</h3>${bars(T,vs)}</div>`;
+ h+=`<div class="card"><h3>${mode=='cum'?'Progress of cumulative CGPA':'SGPA across semesters'}</h3>${lines(T)}<div class="lg">${T.map((t,i)=>`<span><i style="background:${COL[i]}"></i>${t.n}</span>`).join('')}</div></div>`;
+ h+=`<div class="card scroll"><h3>Full table (best in each row is green)</h3><table><tr><th style="background:#6c5ce7">${mode=='cum'?'Range':'Semester'}</th>${T.map((t,i)=>`<th style="background:${COL[i]}">${t.n.split(' ').slice(0,2).join(' ')}</th>`).join('')}</tr>`;
+ for(let j=1;j<=6;j++){const a=T.map(t=>val(t,j)),m=Math.max(...a.filter(v=>v!=null).map(v=>+v.toFixed(2)));
+  h+=`<tr class="${j==k?'sel':''}"><td>${lab(j)}</td>${a.map(v=>`<td class="${v!=null&&+v.toFixed(2)==m?'best':''}">${f(v)}</td>`).join('')}</tr>`}
+ h+=`<tr><td class="mu">Batch rank (${lab(k)})</td>${T.map(t=>{const r=rank(t,k);return `<td>${r?'#'+r[0]+'/'+r[1]:'–'}</td>`}).join('')}</tr></table></div>`;
+ $('out').innerHTML=h}
+function bars(T,vs){const W=600,H=230,m=Math.max(...vs.filter(v=>v!=null),1),lo=Math.max(0,Math.floor(Math.min(...vs.filter(v=>v!=null))-1)),bw=W/T.length;
+ return `<svg viewBox="0 0 ${W} ${H}">`+T.map((t,i)=>{const v=vs[i],x=i*bw+bw*.2,w=bw*.6,hh=v==null?0:Math.max(4,(v-lo)/(10-lo)*(H-60));
+  return `<rect x="${x}" y="${H-30-hh}" width="${w}" height="${hh}" rx="10" fill="${COL[i]}"/><text x="${x+w/2}" y="${H-36-hh}" text-anchor="middle" style="font-size:14px;font-weight:700">${f(v)}</text><text x="${x+w/2}" y="${H-10}" text-anchor="middle">${t.n.split(' ').slice(0,2).join(' ')}</text>`}).join('')+'</svg>'}
+function lines(T){const W=600,H=240,P=34,all=[];T.forEach(t=>{for(let j=1;j<=6;j++){const v=val(t,j);if(v!=null)all.push(v)}});
+ if(!all.length)return '<p class="mu">No data.</p>';
+ const lo=Math.floor(Math.min(...all)*2)/2-.5,hi=Math.min(10,Math.ceil(Math.max(...all)*2)/2+.5),X=j=>P+(j-1)*(W-2*P)/5,Y=v=>H-26-(v-lo)/(hi-lo)*(H-50);
+ let s=`<svg viewBox="0 0 ${W} ${H}">`;
+ for(let g=lo;g<=hi+.01;g+=.5)s+=`<line x1="${P}" x2="${W-10}" y1="${Y(g)}" y2="${Y(g)}" stroke="#8884" stroke-width="1"/><text x="2" y="${Y(g)+4}">${g.toFixed(1)}</text>`;
+ for(let j=1;j<=6;j++)s+=`<text x="${X(j)}" y="${H-6}" text-anchor="middle">${lab(j)}</text>`;
+ T.forEach((t,i)=>{let d='',pen=false;for(let j=1;j<=6;j++){const v=val(t,j);if(v==null){pen=false;continue}d+=(pen?'L':'M')+X(j)+' '+Y(v);pen=true}
+  s+=`<path d="${d}" fill="none" stroke="${COL[i]}" stroke-width="3" stroke-linecap="round"/>`;
+  for(let j=1;j<=6;j++){const v=val(t,j);if(v!=null)s+=`<circle cx="${X(j)}" cy="${Y(v)}" r="4.5" fill="${COL[i]}"><title>${t.n} ${lab(j)}: ${f(v)}</title></circle>`}});
+ return s+'</svg>'}
+function tbl(){const q=$('q2').value,so=$('so').value;let a=match(q);
+ if(so=='c')a.sort((x,y)=>(y.c[2]??-1)-(x.c[2]??-1));if(so=='n')a.sort((x,y)=>x.n.localeCompare(y.n));
+ $('tb').innerHTML='<tr>'+['Sr','Student','S1','S2','S3','S4','S5','S6','CGPA (S1–S6)',''].map((h,i)=>`<th style="background:${COL[i%4]}">${h}</th>`).join('')+'</tr>'+
+ a.map(t=>`<tr><td>${t.id}</td><td style="text-align:left">${t.n}</td>${t.s.map(v=>`<td>${f(v)}</td>`).join('')}<td><b style="color:${t.c[2]==null?'inherit':'#6c5ce7'}">${f(t.c[2])}</b></td><td><button class="add" onclick="add(${t.id});document.querySelector('.tab').click()">Compare</button></td></tr>`).join('')}
+$('q').oninput=draw;$('q2').oninput=tbl;$('so').onchange=tbl;
+sel=D.filter(t=>t.c[2]!=null).sort((a,b)=>b.c[2]-a.c[2]).slice(0,3).map(t=>t.id);
+draw();tbl();
+</script></body></html>
